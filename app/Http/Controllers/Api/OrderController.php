@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\Order as OrderResource;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -21,5 +23,22 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         return new OrderResource($order);
+    }
+
+    public function store(StoreOrderRequest $request){
+        $order = new Order();
+        $order->fill($request->validated());
+        $order->save();
+        return new OrderResource($order);
+    }
+
+    public function update(UpdateOrderRequest $request, Order $order){
+        $order->update($request->validate());
+        return new OrderResource($order);
+    }
+
+    public function destroy (Order $order){
+        $order->delete();
+        return response()->json(null, 204);
     }
 }

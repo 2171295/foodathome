@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Http\Request;
@@ -44,3 +45,10 @@ Route::get('products/{product}',[ProductController::class, 'show']);
 Route::post('products',[ProductController::class, 'store']);
 Route::put('products/{product}',[ProductController::class, 'update']);
 Route::delete('products/{product}',[ProductController::class, 'destroy']);
+
+//Rotas para as orders
+Route::get('orders',[OrderController::class, 'index']);
+Route::get('orders/{order}',[OrderController::class, 'show']);
+Route::post('orders',[OrderController::class, 'store']);
+Route::put('orders/{order}',[OrderController::class, 'update']);
+Route::delete('orders/{order}',[OrderController::class, 'destroy']);
