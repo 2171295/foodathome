@@ -28,6 +28,7 @@ Route::middleware('auth:api')->post('logout', [LoginController::class,'logout'])
 Route::get('users',[UserController::class, 'index']);
 Route::get('users/emailavailable',[UserController::class, 'emailAvailable']);
 Route::get('users/{user}',[UserController::class, 'show']);
+Route::get('users/me',[UserController::class, 'myProfile']);
 Route::post('users',[UserController::class, 'store']);
 Route::put('users/{user}',[UserController::class, 'update']);
 Route::delete('users/{user}',[UserController::class, 'destroy']);

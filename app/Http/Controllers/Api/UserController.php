@@ -56,4 +56,9 @@ class UserController extends Controller
         }
         return response()->json($totalEmail == 0);
     }
+    public function myProfile(Request $request)
+    {
+        dd($request);
+        return new UserResource($request->user());
+    }
 }
