@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\User as UserResource;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\User;
+use App\Models\User;
 
 class UserController extends Controller
 {
