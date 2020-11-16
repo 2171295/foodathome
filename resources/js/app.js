@@ -4,6 +4,8 @@ import VueRouter from 'vue-router'
 import vuetify from './vuetify'
 import Vuex from 'vuex'
 Vue.use(Vuex)
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
 
 import store from "./stores/global-store";
 
