@@ -4,10 +4,7 @@
         <h1>HOME</h1>
         <h1>HOME</h1>
         <h1>HOME</h1>
-        user:
-        {{this.$store.state.user}}
-        token:
-        {{this.$store.state.token}}
+
     </div>
 </template>
 

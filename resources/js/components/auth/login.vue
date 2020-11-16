@@ -84,10 +84,12 @@ export default {
                 this.$store.commit("setToken", response.data.access_token);
                 console.log("Sucesso")
                 return axios.get("api/users/me");
-               /* this.$router.push('/home');*/
             })
             .then(response => {
                 console.log(response);
+                this.$store.commit("setUser", response.data.data);
+                this.$router.push('/home');
+
             })
             .catch(error => {
                 this.$store.commit("clearUserAndToken");
