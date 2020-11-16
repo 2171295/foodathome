@@ -79,18 +79,19 @@ export default {
     },
     methods:{
         onSubmit(){
-            axios.post("api/login", this.user).then(response => {
+            axios.post("api/login", this.user).
+            then(response => {
                 this.$store.commit("setToken", response.data.access_token);
-                return axios.get("api/users/profile")
-               /* this.$router.push('/home');*/
                 console.log("Sucesso")
+                return axios.get("api/users/me");
+               /* this.$router.push('/home');*/
             })
             .then(response => {
-                this.$store.commit("setUser", response.data.data);
-
-            }).catch(error => {
-            this.$store.commit("clearUserAndToken");
-            console.log(error);
+                console.log(response);
+            })
+            .catch(error => {
+                this.$store.commit("clearUserAndToken");
+                console.log(error);
             });
         },
     },
