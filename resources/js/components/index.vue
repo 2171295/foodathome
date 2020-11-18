@@ -1,8 +1,9 @@
 <template>
     <div>
+        <photo_cold_dishes></photo_cold_dishes>
         <v-row>
             <v-col cols="4">
-                <Photo1></Photo1>
+                <photo_cold_drinks></photo_cold_drinks>
             </v-col>
         </v-row>
     </div>
@@ -10,11 +11,14 @@
 </template>
 
 <script>
-import Photo1 from './images/photo1'
+
+
+import photo_cold_drinks from "./images/photo_cold_drinks";
+
 export default {
     name: "index",
     components:{
-        Photo1:Photo1
+        photo_cold_drinks,
     }
 
 }

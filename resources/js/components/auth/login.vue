@@ -86,6 +86,7 @@ export default {
                 return axios.get("api/users/me");
             })
             .then(response => {
+                /*TODO enviar toast ao utilizador no caso de erro*/
                 console.log(response);
                 this.$store.commit("setUser", response.data.data);
                 this.$router.push('/home');

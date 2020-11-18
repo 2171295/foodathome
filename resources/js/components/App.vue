@@ -60,7 +60,7 @@
                 </v-list>
             </v-navigation-drawer>
             <v-app-bar :clipped-left="clipped" fixed app color="deep-orange lighten-1">
-                <v-btn @click.stop="drawer = !drawer" >
+                <v-btn @click.stop="drawer = !drawer" icon>
                     <v-icon>{{iconMenu}}</v-icon>
                 </v-btn>
                 <v-btn icon @click.stop="miniVariant = !miniVariant">
@@ -74,7 +74,6 @@
                 <v-btn icon to="/">
                     <v-icon>{{ iconHome }}</v-icon>
                 </v-btn>
-
                 <v-spacer />
                 <v-toolbar-title class="white--text" v-text="title" />
                 <v-spacer />
