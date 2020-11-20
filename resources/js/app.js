@@ -21,7 +21,6 @@ import Login from './components/auth/login';
 const login = Vue.component('login',Login);
 import Home from './components/home';
 const home = Vue.component('home',Home);
-import ImgDessert  from './components/images/photo_desserts'
 
 
 const routes = [

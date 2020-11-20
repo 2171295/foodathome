@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <v-app>
-            <v-app-bar :clipped-left="true" fixed app color="deep-orange lighten-1" v-if="!this.$store.state.user">
+    <div >
+        <v-app v-if="!this.$store.state.user">
+            <v-app-bar :clipped-left="true" fixed app color="deep-orange lighten-1" >
                 <v-btn icon to="/">
                     <v-icon>{{ iconHome }}</v-icon>
                 </v-btn>
@@ -39,7 +39,14 @@
                     Login
                 </v-btn>
             </v-app-bar>
-            <template v-else>
+            <v-main>
+                <v-container>user:
+                    {{this.$store.state.user}}
+                    <router-view></router-view>
+                </v-container>
+            </v-main>
+        </v-app>
+        <v-app v-if="this.$store.state.user">
             <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app color="grey lighten-1">
                 <v-list>
                     <v-list-item
@@ -71,7 +78,7 @@
                         <v-icon>{{iconChevronLeft}}</v-icon>
                     </template>
                 </v-btn>
-                <v-btn icon to="/">
+                <v-btn icon to="/home">
                     <v-icon>{{ iconHome }}</v-icon>
                 </v-btn>
                 <v-spacer />
@@ -93,7 +100,6 @@
                     </v-list>
                 </v-menu>
             </v-app-bar>
-            </template>
             <v-main>
                 <v-container>user:
                     {{this.$store.state.user}}
@@ -127,11 +133,11 @@ export default {
             rightDrawer: false,
             selected:'',
             items: [
-            {
-                icon: this.iconHome,
-                title: 'Consultar Projetos',
-                to: '/projetos/',
-            },
+                {
+                    icon: this.iconHome,
+                    title: 'Consultar Projetos',
+                    to: '/projetos/',
+                },
             ],
         }
     },methods:{

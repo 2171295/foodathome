@@ -3,6 +3,7 @@
         <v-row>
             <v-col cols="4">
                 <photo_desserts></photo_desserts>
+                página inciial
 
             </v-col>
         </v-row>
