@@ -13,11 +13,12 @@ export default new Vuex.Store({
     },
     mutations: {
         clearUserAndToken: state => {
-            state.user = null;
-            state.token = "";
+
             sessionStorage.removeItem("user");
             sessionStorage.removeItem("token");
             axios.defaults.headers.common.Authorization = undefined;
+            state.user = null;
+            state.token = "";
         },
         clearUser: state => {
             state.user = null;
@@ -53,7 +54,7 @@ export default new Vuex.Store({
             }
         },
         getUser: state => {
-            let user = axios.get('api/users/me/1');
+            let user = axios.get('api/users/me/');
             state.userTest = user;
         }
     }

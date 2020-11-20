@@ -13,7 +13,7 @@
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-list-item to="/user/perfil/">
+                        <v-list-item>
                             <v-icon>mdi-account</v-icon>Hot Dish
                         </v-list-item>
                         <v-list-item>
@@ -24,7 +24,6 @@
                         </v-list-item>
                         <v-list-item>
                             <v-icon>mdi-logout</v-icon>Dessert
-                            <Pudim></Pudim>
                         </v-list-item>
                     </v-list>
                 </v-menu>
@@ -40,13 +39,12 @@
                 </v-btn>
             </v-app-bar>
             <v-main>
-                <v-container>user:
-                    {{this.$store.state.user}}
+                <v-container>
                     <router-view></router-view>
                 </v-container>
             </v-main>
         </v-app>
-        <v-app v-if="this.$store.state.user">
+        <v-app v-else>
             <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app color="grey lighten-1">
                 <v-list>
                     <v-list-item
@@ -102,7 +100,7 @@
             </v-app-bar>
             <v-main>
                 <v-container>user:
-                    {{this.$store.state.user}}
+                    {{this.$store.state.user  == null ? 'Null' : this.$store.state.user }}
                     <router-view></router-view>
                 </v-container>
             </v-main>
@@ -148,6 +146,18 @@ export default {
             this.$router.push("/login")
         },
         logout(){
+            axios.post("/api/logout").then((response)=>{
+                this.$store.commit("clearUserAndToken");
+                this.$nextTick()
+                    .then(() => {
+                        console.log("Estou aqui" )
+                        console.dir(this.$store.state.user)
+                        this.$router.push("/")
+                    })
+
+            }).catch((error)=>{
+                console.log(error)
+            })
 
         },
     },
