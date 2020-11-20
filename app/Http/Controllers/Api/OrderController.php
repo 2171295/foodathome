@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\Order as OrderResource;
+use App\Http\Resources\OrderProducts as OrderProductsResource;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -40,5 +41,9 @@ class OrderController extends Controller
     public function destroy (Order $order){
         $order->delete();
         return response()->json(null, 204);
+    }
+
+    public function getProducts(Order $order){
+        return OrderProductsResource::collection($order->products);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\Order_ItemsController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
@@ -45,6 +46,7 @@ Route::get('products/{product}',[ProductController::class, 'show']);
 Route::post('products',[ProductController::class, 'store']);
 Route::put('products/{product}',[ProductController::class, 'update']);
 Route::delete('products/{product}',[ProductController::class, 'destroy']);
+Route::get('products/{product}/orders',[ProductController::class, 'getOrders']);
 
 //Rotas para as orders
 Route::get('orders',[OrderController::class, 'index']);
@@ -52,3 +54,14 @@ Route::get('orders/{order}',[OrderController::class, 'show']);
 Route::post('orders',[OrderController::class, 'store']);
 Route::put('orders/{order}',[OrderController::class, 'update']);
 Route::delete('orders/{order}',[OrderController::class, 'destroy']);
+Route::get('orders/{order}/products',[OrderController::class, 'getProducts']);
+
+
+//Rotas para as Order_Items
+Route::get('orders_items',[Order_ItemsController::class, 'index']);
+Route::get('orders_items/{orders_items}',[Order_ItemsController::class, 'show']);
+Route::post('orders_items',[Order_ItemsController::class, 'store']);
+Route::put('orders_items/{orders_items}',[Order_ItemsController::class, 'update']);
+Route::delete('orders_items/{orders_items}',[Order_ItemsController::class, 'destroy']);
+Route::get('orders_items/order/{id}',[Order_ItemsController::class, 'orderItems']);
+Route::get('orders_items/product/{id}',[Order_ItemsController::class, 'itemOrders']);
