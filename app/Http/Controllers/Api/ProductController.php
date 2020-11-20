@@ -39,4 +39,8 @@ class ProductController extends Controller
         $product->delete();
         return response()->json(null, 204);
     }
+
+    public function getOrders(Product $product){
+        return $product->orders;
+    }
 }
