@@ -2,7 +2,7 @@
     <img
         class="VuetifyLogo"
         alt="Photo1"
-        src="photo_hot_dishes.jpg"
+        src="../../../../public/img/photo_hot_dishes.jpg"
     >
 </template>
 
@@ -14,10 +14,8 @@ export default {
 
 <style scoped>
 .VuetifyLogo {
-
-      height: 200px;
-      width: 200px;
-
-
+    border-radius: 50%;
+    height: 200px;
+     width: 200px;
 }
 </style>

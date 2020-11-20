@@ -2,7 +2,7 @@
     <img
         class="VuetifyLogo"
         alt="Photo1"
-        src="photo_desserts.jpg"
+        src="../../../../public/img/photo_desserts.jpg"
     >
 </template>
 
@@ -13,11 +13,10 @@ export default {
 </script>
 
 <style scoped>
+
 .VuetifyLogo {
-
-      height: 200px;
-      width: 200px;
-
-
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
 }
 </style>
