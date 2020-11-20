@@ -82,19 +82,19 @@ export default {
             axios.post("api/login", this.user).
             then(response => {
                 this.$store.commit("setToken", response.data.access_token);
-                console.log("Sucesso")
                 return axios.get("api/users/me");
             })
             .then(response => {
-                /*TODO enviar toast ao utilizador no caso de erro*/
-                console.log(response);
                 this.$store.commit("setUser", response.data.data);
+                /*this.$store.commit("getUser")*/
                 this.$router.push('/home');
 
             })
             .catch(error => {
                 this.$store.commit("clearUserAndToken");
-                console.log(error);
+                this.color = "black";
+                this.text = "Your username and/or password do not match."
+                this.snackbar = true;
             });
         },
     },
