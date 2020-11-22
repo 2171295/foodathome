@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\Order_ItemsController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +41,13 @@ Route::middleware(['auth:api'])->group(function (){
 Route::post('users',[UserController::class, 'store']);
 Route::get('users/emailavailable',[UserController::class, 'emailAvailable']);
 
+//Rotas para os customers
+Route::get('customers',[CustomerController::class, 'index']);
+Route::get('customers/{customer}',[CustomerController::class, 'show']);
+Route::post('customers',[CustomerController::class, 'store']);
+Route::put('customers/{customer}',[CustomerController::class, 'update']);
+Route::delete('customers/{customer}',[CustomerController::class, 'destroy']);
+
 //Rotas para os products
 Route::get('products',[ProductController::class, 'index']);
 Route::get('products/{product}',[ProductController::class, 'show']);
@@ -55,7 +63,6 @@ Route::post('orders',[OrderController::class, 'store']);
 Route::put('orders/{order}',[OrderController::class, 'update']);
 Route::delete('orders/{order}',[OrderController::class, 'destroy']);
 Route::get('orders/{order}/products',[OrderController::class, 'getProducts']);
-
 
 //Rotas para as Order_Items
 Route::get('orders_items',[Order_ItemsController::class, 'index']);
