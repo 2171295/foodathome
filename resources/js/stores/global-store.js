@@ -9,7 +9,6 @@ export default new Vuex.Store({
     state: {
         token: "",
         user: null,
-        userTest:'',
     },
     mutations: {
         clearUserAndToken: state => {
@@ -53,9 +52,5 @@ export default new Vuex.Store({
                 state.user = JSON.parse(user);
             }
         },
-        getUser: state => {
-            let user = axios.get('api/users/me/');
-            state.userTest = user;
-        }
     }
 });

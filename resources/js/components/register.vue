@@ -1,12 +1,6 @@
 <template>
-    <div>
-        <v-snackbar v-model="snackbar" :bottom="y === 'bottom'"
-            :color="color"
-            :left="x === 'left'"
-            :multi-line="mode === 'multi-line'"
-            :timeout="timeout"
-            :top="y === 'top'"
-            :vertical="mode === 'vertical'">
+    <v-container>
+        <v-snackbar v-model="snackbar" :bottom="y === 'bottom'" :color="color" :left="x === 'left'" :multi-line="mode === 'multi-line'" :timeout="timeout" :top="y === 'top'" :vertical="mode === 'vertical'">
             {{ text }}
             <v-btn dark text @click="snackbar = false">
                 <v-icon>{{iconClose}}</v-icon>
@@ -74,7 +68,7 @@
                 </v-btn>
             </form>
         </validation-observer>
-    </div>
+    </v-container>
 </template>
 
 <script>

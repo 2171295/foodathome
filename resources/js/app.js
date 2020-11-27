@@ -21,6 +21,8 @@ import Login from './components/auth/login';
 const login = Vue.component('login',Login);
 import Home from './components/home';
 const home = Vue.component('home',Home);
+import FoodMenu from './components/foodmenu';
+const foodMenu = Vue.component('foodMenu',FoodMenu);
 
 
 const routes = [
@@ -28,6 +30,7 @@ const routes = [
     {path: '/register', component: register},
     {path: '/login', component: login},
     {path: '/home', component: home},
+    {path: '/menu', component: foodMenu},
 ];
 
 const router = new VueRouter({

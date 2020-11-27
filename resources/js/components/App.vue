@@ -39,7 +39,7 @@
                 </v-btn>
             </v-app-bar>
             <v-main>
-                <v-container>
+                <v-container fluid>
                     <router-view></router-view>
                 </v-container>
             </v-main>
@@ -99,8 +99,7 @@
                 </v-menu>
             </v-app-bar>
             <v-main>
-                <v-container>user:
-                    {{this.$store.state.user  == null ? 'Null' : this.$store.state.user }}
+                <v-container>
                     <router-view></router-view>
                 </v-container>
             </v-main>
@@ -130,7 +129,28 @@ export default {
             right: true,
             rightDrawer: false,
             selected:'',
-            items: [
+            items_admin: [
+                {
+                    icon: this.iconHome,
+                    title: 'Consultar Projetos',
+                    to: '/projetos/',
+                },
+            ],
+            items_cook: [
+                {
+                    icon: this.iconHome,
+                    title: 'Consultar Projetos',
+                    to: '/projetos/',
+                },
+            ],
+            items_deliveryman: [
+                {
+                    icon: this.iconHome,
+                    title: 'Consultar Projetos',
+                    to: '/projetos/',
+                },
+            ],
+            items_admin: [
                 {
                     icon: this.iconHome,
                     title: 'Consultar Projetos',

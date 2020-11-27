@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <v-container>
         <div  id="h2" style="text-align: center">What do you feel like eating today?</div>
         <v-row>
             <v-col style="text-align: center">
@@ -44,7 +44,7 @@
             </v-col>
         </v-row>
 
-    </div>
+    </v-container>
 
 </template>
 
@@ -65,7 +65,8 @@ export default {
     },
     methods:{
         menuHotDishes(){
-            console.log("Olá")
+            this.$store.commit("setPage")
+            this.$router.push("/menu")
         },
         menuColdDishes(){
 
