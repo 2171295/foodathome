@@ -150,13 +150,6 @@ export default {
                     to: '/projetos/',
                 },
             ],
-            items_admin: [
-                {
-                    icon: this.iconHome,
-                    title: 'Consultar Projetos',
-                    to: '/projetos/',
-                },
-            ],
         }
     },methods:{
         redirectRegister(){
