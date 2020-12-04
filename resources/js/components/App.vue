@@ -126,7 +126,6 @@ export default {
                     items: [{ title: 'List' }],
                     title: 'Products',
                 },
-
             ],
             items_cook: [
                 {
@@ -165,8 +164,8 @@ export default {
             })
 
         },
-        toProgile(){
-            this.$router.push("/")
+        toProfile(){
+            this.$router.push("/profile")
         },
         setUser(){
             if(this.$store.state.user.type === 'EM'){

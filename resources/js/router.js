@@ -17,6 +17,8 @@ import Home from './components/home';
 const home = Vue.component('home',Home);
 import FoodMenu from './components/foodmenu';
 const foodMenu = Vue.component('foodMenu',FoodMenu);
+import Profile from './components/profile/index';
+const profile = Vue.component('profile', Profile);
 
 const routes = [
     {
@@ -41,6 +43,10 @@ const routes = [
     {
         path: '/menu',
         component: foodMenu,
+    },
+    {
+        path:  '/profile',
+        component: profile,
     }
 ];
 

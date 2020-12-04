@@ -22,6 +22,6 @@ class Customer extends Model
 
     public function users()
     {
-        return $this->hasOne('App\Models\User', 'id');
+        return $this->belongsTo('App\Models\User', 'id');
     }
 }
