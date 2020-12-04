@@ -42,5 +42,8 @@ new Vue({
     vuetify,
     router,
     store,
-    render: h => h(App)
+    render: h => h(App),
+    created() {
+        this.$store.dispatch('rebuildUserFromStorage')
+    }
 }).$mount('#app');

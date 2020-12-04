@@ -52,5 +52,12 @@ export default new Vuex.Store({
                 state.user = JSON.parse(user);
             }
         },
+    },
+    actions: {
+        rebuildUserFromStorage (context) {
+            if (sessionStorage.getItem('token') !== null && sessionStorage.getItem('user') !== null){
+                context.commit("loadTokenAndUserFromSession")
+            }
+        }
     }
 });
