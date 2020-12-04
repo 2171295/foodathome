@@ -62,6 +62,9 @@ export default new Vuex.Store({
             if (sessionStorage.getItem('token') !== null && sessionStorage.getItem('user') !== null){
                 context.commit("loadTokenAndUserFromSession")
             }
+        },
+        setUser(context) {
+            context.commit("setUser")
         }
     }
 });

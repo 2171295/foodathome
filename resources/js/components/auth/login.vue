@@ -86,8 +86,11 @@ export default {
             })
             .then(response => {
                 this.$store.commit("setUser", response.data.data);
+                this.$nextTick(() =>{
+                    this.$router.push('/home');
+                })
                 /*this.$store.commit("getUser")*/
-                this.$router.push('/home');
+
 
             })
             .catch(error => {
