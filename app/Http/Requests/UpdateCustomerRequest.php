@@ -24,10 +24,12 @@ class UpdateCustomerRequest extends FormRequest
     public function rules()
     {
         return [
+            'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:3|confirmed',
+            'photo_url' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'address' => 'required|min:3',
-            //'address' => 'nullable|min:3',
             'phone' => 'required|min:9',
-            //'phone' => 'nullable|min:9',
             'nif' => 'nullable|min:9|regex:/^[0-9]{9}$/',
         ];
     }
