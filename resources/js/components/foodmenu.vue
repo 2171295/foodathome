@@ -18,7 +18,6 @@
             :items="$store.state.menu_items"
             :page="page"
             :search="search"
-            hide-default-footer
         >
             <template v-slot:header>
                 <v-row>
