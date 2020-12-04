@@ -38,7 +38,7 @@ const routes = [
         path: '/home',
         name: "home",
         component: home,
-        //meta: {requiresAuth: true}
+        meta: {requiresAuth: true}
     },
     {
         path: '/menu',
@@ -56,25 +56,19 @@ const router = new VueRouter({
 
 router.beforeEach((to,from,next) => {
     console.log("Entrou aqui Router")
-    console.log(store)
-    console.log(store.user)
+    console.log(store.state.user)
     if(to.matched.some(record => record.meta.requiresAuth)){
-        console.log('A')
-        if(!store.user){
-            console.log('B')
+        if(!store.state.user){
             next({
                 path:'/login',
                 query: {redirect: to.fullPath}
             })
         }else{
-            console.log('C')
             next();
         }
     }else{
-        console.log('D')
         next();
     }
-    console.log('E')
 });
 
 export default router;
