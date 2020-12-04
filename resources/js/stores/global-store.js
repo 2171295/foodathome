@@ -9,6 +9,8 @@ export default new Vuex.Store({
     state: {
         token: "",
         user: null,
+        menu_items:[],
+        menu_search:'',
     },
     mutations: {
         clearUserAndToken: state => {
@@ -52,5 +54,21 @@ export default new Vuex.Store({
                 state.user = JSON.parse(user);
             }
         },
+        setMenuItems: (state, list) => {
+                state.menu_items = list;
+        },
+        setMenuSearch: (state, type) => {
+            state.menu_search = type;
+        }
+    },
+    actions: {
+        rebuildUserFromStorage (context) {
+            if (sessionStorage.getItem('token') !== null && sessionStorage.getItem('user') !== null){
+                context.commit("loadTokenAndUserFromSession")
+            }
+        },
+        setUser(context,user) {
+            context.commit("setUser",user)
+        }
     }
 });

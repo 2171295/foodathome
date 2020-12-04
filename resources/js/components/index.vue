@@ -30,15 +30,7 @@
                 <v-card @click="menuColdDrinks" elevation="0" >
                     <v-card-text>
                         <photo_cold_drinks/>
-                        <p>Cold Drinks</p>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col style="text-align: center">
-                <v-card @click="menuHotDrinks" elevation="0" >
-                    <v-card-text>
-                        <photo_hot_drinks/>
-                        <p>Hot Drinks</p>
+                        <p>Drinks</p>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -66,20 +58,29 @@ export default {
     methods:{
         menuHotDishes(){
             this.$store.commit("setPage")
+            this.$store.commit("setMenuSearch", "Hot Dish")
             this.$router.push("/menu")
+
         },
         menuColdDishes(){
-
+            this.$store.commit("setPage")
+            this.$store.commit("setMenuSearch", "Cold Dish")
+            this.$router.push("/menu")
         },
         menuDesserts(){
-
+            this.$store.commit("setPage")
+            this.$store.commit("setMenuSearch", "Dessert")
+            this.$router.push("/menu")
         },
         menuColdDrinks(){
-
+            this.$store.commit("setPage")
+            this.$store.commit("setMenuSearch", "Drink")
+            this.$router.push("/menu")
         },
-        menuHotDrinks(){
 
-        }
+    },
+    created() {
+
     }
 
 }

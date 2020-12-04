@@ -85,9 +85,14 @@ export default {
                 return axios.get("api/users/me");
             })
             .then(response => {
-                this.$store.commit("setUser", response.data.data);
+                this.$store.dispatch('setUser',response.data.data)
+                .then(() => {
+                    console.log(this.$store.state.user)
+                    this.$router.push('/home');
+                })
+                //this.$store.commit("setUser", response.data.data);
                 /*this.$store.commit("getUser")*/
-                this.$router.push('/home');
+
 
             })
             .catch(error => {
