@@ -54,6 +54,7 @@ new Vue({
     },
     created() {
         this.$store.dispatch('rebuildUserFromStorage')
+        this.$store.dispatch('rebuildCartFromStorage')
         this.getItemsMenu()
     }
 }).$mount('#app');

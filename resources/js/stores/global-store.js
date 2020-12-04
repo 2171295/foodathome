@@ -11,6 +11,7 @@ export default new Vuex.Store({
         user: null,
         menu_items:[],
         menu_search:'',
+        cart:[],
     },
     mutations: {
         clearUserAndToken: state => {
@@ -59,7 +60,20 @@ export default new Vuex.Store({
         },
         setMenuSearch: (state, type) => {
             state.menu_search = type;
-        }
+        },
+        // Mutations to handle Cart
+        clearCart (state) {
+            state.cart = []
+            localStorage.removeItem('cart')
+        },
+        setCart (state, cart) {
+            state.cart = cart
+            localStorage.setItem('cart', state.cart)
+        },
+        addItemToCart (state, itemCart) {
+            state.cart.push(itemCart)
+            localStorage.setItem('cart', state.cart)
+        },
     },
     actions: {
         rebuildUserFromStorage (context) {
@@ -69,6 +83,13 @@ export default new Vuex.Store({
         },
         setUser(context,user) {
             context.commit("setUser",user)
-        }
+        },
+        rebuildCartFromStorage (context) {
+            if (localStorage.getItem('cart') === null) {
+                context.commit('clearCart')
+            } else {
+                context.commit('setCart', localStorage.getItem('cart'))
+            }
+        },
     }
 });

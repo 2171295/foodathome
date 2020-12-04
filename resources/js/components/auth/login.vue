@@ -90,7 +90,6 @@ export default {
                     console.log(this.$store.state.user)
                     this.$router.push('/home');
                 })
-                //this.$store.commit("setUser", response.data.data);
                 /*this.$store.commit("getUser")*/
 
 
