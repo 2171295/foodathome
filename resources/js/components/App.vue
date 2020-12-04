@@ -70,7 +70,7 @@
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-list-item to="">
+                        <v-list-item @click="toProfile">
                             <v-icon>{{iconAccount}}</v-icon>Profile
                         </v-list-item>
                         <v-list-item @click="logout">
@@ -164,6 +164,9 @@ export default {
                 console.log(error)
             })
 
+        },
+        toProgile(){
+            this.$router.push("/")
         },
         setUser(){
             if(this.$store.state.user.type === 'EM'){
