@@ -10,6 +10,7 @@ export default new Vuex.Store({
         token: "",
         user: null,
         menu_items:[],
+        menu_search:'',
     },
     mutations: {
         clearUserAndToken: state => {
@@ -55,6 +56,9 @@ export default new Vuex.Store({
         },
         setMenuItems: (state, list) => {
                 state.menu_items = list;
+        },
+        setMenuSearch: (state, type) => {
+            state.menu_search = type;
         }
     },
     actions: {

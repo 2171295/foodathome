@@ -8,24 +8,12 @@
                     {{ detailedProduct.name }}
                 </v-card-title>
                 <v-card-text>
+                    <p> <b>Type:</b> {{detailedProduct.type}}</p>
+                    <p> <b>Description:</b> {{detailedProduct.description}}</p>
+                    <p> <b>Price:</b> {{detailedProduct.price}}€</p>
                 </v-card-text>
             </v-card>
         </v-dialog>
-        <v-navigation-drawer clipped fixed app floating>
-            <v-card height="91vh" width="256" class="mx-auto">
-                <v-navigation-drawer permanent>
-                    <v-list-item>
-                        <v-list-item-content>
-                            <v-list-item-title class="title" style="text-align: center">
-                                Filters
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-divider></v-divider>
-                        <v-checkbox v-model="checkboxHotDishes" label="Hot Dishes"></v-checkbox>
-                </v-navigation-drawer>
-            </v-card>
-        </v-navigation-drawer>
         <v-data-iterator
             :items="$store.state.menu_items"
             :page="page"
@@ -33,11 +21,20 @@
             hide-default-footer
         >
             <template v-slot:header>
-                <v-text-field
-                    v-model="search"
-                    prepend-inner-icon="mdi-magnify"
-                    label="Search"
-                ></v-text-field>
+                <v-row>
+                    <v-col align="center">
+                        <v-text-field
+                            v-model="search"
+                            prepend-inner-icon="mdi-magnify"
+                            label="Search"
+                            clearable
+                        ></v-text-field>
+                    </v-col>
+                    <v-col md="2">
+                        <v-combobox :items="comboboxItems" v-model="search" label="Type of Product:" chips ></v-combobox>
+                    </v-col>
+                </v-row>
+
             </template>
             <template v-slot:default="props">
              <v-row>
@@ -71,7 +68,8 @@ name: "foodmenu",
 data:function () {
     return {
         products:[],
-        checkboxHotDishes:true,
+        checkboxHotDishes:false,
+        checkboxColdDishes:false,
         dialogProductInformation:false,
         detailedProduct:'',
         search:'',
@@ -81,8 +79,8 @@ data:function () {
             'Name',
 
         ],
-        loading:false,
-        loading_text:'',
+        comboboxItems:['','Hot Dish', 'Cold Dish', 'Drink', 'Dessert'],
+
     }
 },
     methods:{
@@ -90,11 +88,28 @@ data:function () {
         showProductInformation(product){
             this.dialogProductInformation = true;
             this.detailedProduct = product;
-        }
+        },
+        searchHotDishes(){
+            if(this.checkboxHotDishes){
+               this.search = "Hot Dish"
+            }else{
+                this.search = ""
+            }
+        },
+        searchColdDishes(){
+            if(this.checkboxColdDishes){
+                this.search = "Cold Dish"
+            }else{
+                this.search = ""
+            }
+        },
     },
 
     created() {
-
+        if(this.$store.state.menu_search != ""){
+            this.search = this.$store.state.menu_search;
+            this.$store.commit("setMenuSearch", "")
+        }
     },
     computed:{
         filteredKeys () {
