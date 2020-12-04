@@ -67,8 +67,8 @@ export default new Vuex.Store({
                 context.commit("loadTokenAndUserFromSession")
             }
         },
-        setUser(context) {
-            context.commit("setUser")
+        setUser(context,user) {
+            context.commit("setUser",user)
         }
     }
 });
