@@ -1,28 +1,16 @@
 <template>
-    <div>
-        <v-snackbar
-            v-model="snackbar"
-            :bottom="y === 'bottom'"
-            :color="color"
-            :left="x === 'left'"
-            :multi-line="mode === 'multi-line'"
-            :timeout="timeout"
-            :top="y === 'top'"
-            :vertical="mode === 'vertical'">
+    <v-container>
+        <v-snackbar v-model="snackbar" :bottom="y === 'bottom'" :color="color" :left="x === 'left'" :multi-line="mode === 'multi-line'" :timeout="timeout" :top="y === 'top'" :vertical="mode === 'vertical'">
             {{ text }}
             <v-btn dark text @click="snackbar = false">
-                <v-icon>mdi-close</v-icon>
+                <v-icon>{{iconClose}}</v-icon>
             </v-btn>
         </v-snackbar>
         <!--TODO refefinir as validações deste formulário-->
         <p class="subtitle-1 text-center">Register</p>
         <validation-observer ref="observer" v-slot="{ invalid }">
             <form @submit.prevent="submit">
-                <validation-provider
-                    v-slot="{ errors }"
-                    name="Name"
-                    rules="required|alpha_spaces"
-                >
+                <validation-provider v-slot="{ errors }" name="Name" rules="required|alpha_spaces">
                     <v-text-field
                         v-model="name"
                         :counter="10"
@@ -31,11 +19,7 @@
                         required
                     ></v-text-field>
                 </validation-provider>
-                <validation-provider
-                    v-slot="{ errors }"
-                    name="Email"
-                    rules="required|email"
-                >
+                <validation-provider v-slot="{ errors }" name="Email" rules="required|email">
                     <v-text-field
                         v-model="email"
                         :counter="10"
@@ -44,11 +28,7 @@
                         required
                     ></v-text-field>
                 </validation-provider>
-                <validation-provider
-                    v-slot="{ errors }"
-                    name="Address"
-                    rules="required"
-                >
+                <validation-provider v-slot="{ errors }" name="Address" rules="required">
                     <v-text-field
                         v-model="address"
                         :counter="10"
@@ -57,11 +37,7 @@
                         required
                     ></v-text-field>
                 </validation-provider>
-                <validation-provider
-                    v-slot="{ errors }"
-                    name="Phone"
-                    rules="required|numeric"
-                >
+                <validation-provider v-slot="{ errors }" name="Phone" rules="required|numeric">
                     <v-text-field
                         v-model="phone"
                         :counter="10"
@@ -70,11 +46,7 @@
                         required
                     ></v-text-field>
                 </validation-provider>
-                <validation-provider
-                    v-slot="{ errors }"
-                    name="Nif"
-                    rules="numeric|length:9"
-                >
+                <validation-provider v-slot="{ errors }" name="Nif" rules="numeric|length:9">
                     <v-text-field
                         v-model="nif"
                         :counter="10"
@@ -82,27 +54,27 @@
                         label="NIF"
                     ></v-text-field>
                 </validation-provider>
-                <v-file-input
+                <!--<v-file-input
                     counter
                     accept="image/png, image/jpeg"
                     label="Pick a photo:"
                     v-model="photo"
                     :rules="rulesPhoto"
                     :prepend-icon="iconCamera"
-                ></v-file-input>
+                ></v-file-input>-->
 
                 <v-btn class="mr-4" type="submit" :disabled="invalid">
                     Submit
                 </v-btn>
             </form>
         </validation-observer>
-    </div>
+    </v-container>
 </template>
 
 <script>
 import { required, email, max, alpha_spaces, numeric, length} from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
-import {mdiCamera} from "@mdi/js";
+import {mdiCamera, mdiClose} from "@mdi/js";
 
 setInteractionMode('eager')
 
@@ -155,20 +127,24 @@ export default {
         v => !v || v.size < 2000000 || 'Avatar size should be less than 2 MB!',
     ],
     iconCamera: mdiCamera,
+    iconClose: mdiClose,
 
     }),
 
     methods:{
-        submit(){
-            if(this.$refs.observer.validate()){
-                /*TODO tornar rota disponivel para utilizadores não logados*/
-                /*axios.get("/api/users/emailavailable", this.email).then(response => {
+        submit: function () {
+            if (this.$refs.observer.validate()) {
+                axios.post("/api/users/", {
+                    "name":this.name,
+                    "email":this.email,
+                    "address":this.address,
+                    "phone":this.phone,
+                    "nif":this.nif,
+                    "photo_url":this.photo})
+                    .then(response => {
                     console.log(response)
-                })*/
-
-                /*axios.post("api/users/", )*/
+                })
             }
-
         }
     },
     components: {

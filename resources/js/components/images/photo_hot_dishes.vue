@@ -15,7 +15,7 @@ export default {
 <style scoped>
 .VuetifyLogo {
     border-radius: 50%;
-    height: 200px;
-     width: 200px;
+    height: 180px;
+     width: 180px;
 }
 </style>

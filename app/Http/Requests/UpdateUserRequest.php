@@ -24,11 +24,16 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
-            'email' => 'required|email|unique:users,email,' . $this->user->id,
-            'password' => 'required|min:8|confirmed',
-            'photo_url' => 'nullable|image|mimes:jpeg,jpg|max:2048',
-            'type' => 'required|in:C,EC,ED,EM',
+            'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
+            //'name' => 'nullable|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
+            'email' => 'required|email|unique:users',
+            //'email' => 'nullable|email|unique:users',
+            'password' => 'required|min:3|confirmed',
+            //'password' => 'nullable|min:3|confirmed',
+            //'photo_url' => 'nullable|image|mimes:jpeg,jpg|max:2048',
+            'photo_url' => 'nullable',
+            //'type' => 'required|in:C,EC,ED,EM',
+            'type' => 'nullable|in:C,EC,ED,EM',
         ];
     }
 
