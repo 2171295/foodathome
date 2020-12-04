@@ -5,29 +5,6 @@
                 <v-btn icon to="/">
                     <v-icon>{{ iconHome }}</v-icon>
                 </v-btn>
-                <v-icon>mdi-account</v-icon>
-                <v-menu offset-y>
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-btn v-bind="attrs" v-on="on" depressed small color="deep-orange lighten-1" class="white--text" style="margin-right: 10px;">
-                            Products
-                        </v-btn>
-                    </template>
-                    <v-list>
-                        <v-list-item>
-                            <v-icon>mdi-account</v-icon>Hot Dish
-                        </v-list-item>
-                        <v-list-item>
-                            <v-icon>mdi-logout</v-icon>Cold Dish
-                        </v-list-item>
-                        <v-list-item>
-                            <v-icon>mdi-logout</v-icon>Drink
-                        </v-list-item>
-                        <v-list-item>
-                            <v-icon>mdi-logout</v-icon>Dessert
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-
                 <v-spacer />
                 <v-toolbar-title class="white--text" v-text="title" />
                 <v-spacer />
@@ -46,23 +23,27 @@
         </v-app>
         <v-app v-else>
             <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app color="grey lighten-1">
-                <v-list>
-                    <v-list-item
-                        v-for="(item, i) in items"
-                        :key="i"
-                        :to="item.to"
-                        router
-                        exact
-                        :disabled="item.active"
-                    >
-                        <v-list-item-action>
-                            <v-icon>{{ item.icon }}</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title v-text="item.title" />
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
+                <v-card class="mx-auto" max-width="500">
+                    <v-list>
+                        <v-list-item
+                            v-for="(item, i) in items"
+                            :key="i"
+                            :to="item.to"
+                            router
+                            exact
+                            :disabled="item.active"
+                        >
+                            <v-list-item-action>
+                                <v-icon>{{ item.icon }}</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title v-text="item.title" />
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
+
+                </v-card>
+
             </v-navigation-drawer>
             <v-app-bar :clipped-left="clipped" fixed app color="deep-orange lighten-1">
                 <v-btn @click.stop="drawer = !drawer" icon>
@@ -129,12 +110,23 @@ export default {
             right: true,
             rightDrawer: false,
             selected:'',
+            items:'',
             items_admin: [
                 {
-                    icon: this.iconHome,
-                    title: 'Consultar Projetos',
-                    to: '/projetos/',
+                    action: 'mdi-silverware-fork-knife',
+                    active: true,
+                    items: [
+                        { title: 'Create' },
+                        { title: 'List' },
+                    ],
+                    title: 'Users',
                 },
+                {
+                    action: 'mdi-school',
+                    items: [{ title: 'List' }],
+                    title: 'Products',
+                },
+
             ],
             items_cook: [
                 {
@@ -173,7 +165,23 @@ export default {
             })
 
         },
+        setUser(){
+            if(this.$store.state.user.type === 'EM'){
+                this.items = this.items_admin;
+            }
+            if(this.$store.state.user.type === 'ED'){
+                this.items = this.items_deliveryman;
+            }
+            if(this.$store.state.user.type === 'EC'){
+                this.items = this.items_cook;
+            }
+        },
     },
+    updated() {
+        if(this.$store.state.user){
+            this.setUser()
+        }
+    }
 
 }
 </script>

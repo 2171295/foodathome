@@ -79,7 +79,13 @@ export default {
         },
         menuHotDrinks(){
 
+        },
+        getItemsMenu(){
+
         }
+    },
+    created() {
+
     }
 
 }

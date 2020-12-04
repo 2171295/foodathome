@@ -17,6 +17,7 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
+        dd("aqui");
         if ($request->has('page')) {
             return CustomerResource::collection(Customer::paginate(5));
         } else {
@@ -29,19 +30,21 @@ class CustomerController extends Controller
         return new CustomerResource($customer);
     }
 
-    public function store(StoreUserRequest $requestUser, StoreCustomerRequest $requestCustomer)
+    public function store(StoreUserRequest $requestUser)
     {
         $user = new User();
         $user->fill($requestUser->validated());
         $user->password = bcrypt($user->password);
         $user->type = "C";
         $user->save();
+        dd($user);
         $customer = new Customer();
         $customer->fill($requestCustomer->validated());
         $customer->id = $user->id;
         $customer->save();
         return response()->json(new CustomerResource($customer), 201);
     }
+
 
     public function update(UpdateUserRequest  $requestUser, UpdateCustomerRequest $requestCustomer, Customer $customer)
     {

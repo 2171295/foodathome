@@ -9,6 +9,7 @@ export default new Vuex.Store({
     state: {
         token: "",
         user: null,
+        menu_items:[],
     },
     mutations: {
         clearUserAndToken: state => {
@@ -52,6 +53,9 @@ export default new Vuex.Store({
                 state.user = JSON.parse(user);
             }
         },
+        setMenuItems: (state, list) => {
+                state.menu_items = list;
+        }
     },
     actions: {
         rebuildUserFromStorage (context) {

@@ -37,13 +37,22 @@ const router = new VueRouter({
     routes:routes
 });
 
+
 import App from './components/App.vue'
 new Vue({
     vuetify,
     router,
     store,
     render: h => h(App),
+    methods:{
+        getItemsMenu(){
+            axios.get("api/products").then((response) => {
+                this.$store.commit("setMenuItems", response.data.data)
+            })
+        }
+    },
     created() {
         this.$store.dispatch('rebuildUserFromStorage')
+        this.getItemsMenu()
     }
 }).$mount('#app');

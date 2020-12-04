@@ -13,7 +13,6 @@
                 <validation-provider v-slot="{ errors }" name="Name" rules="required|alpha_spaces">
                     <v-text-field
                         v-model="name"
-                        :counter="10"
                         :error-messages="errors"
                         label="Name"
                         required
@@ -22,7 +21,6 @@
                 <validation-provider v-slot="{ errors }" name="Email" rules="required|email">
                     <v-text-field
                         v-model="email"
-                        :counter="10"
                         :error-messages="errors"
                         label="Email"
                         required
@@ -31,7 +29,6 @@
                 <validation-provider v-slot="{ errors }" name="Address" rules="required">
                     <v-text-field
                         v-model="address"
-                        :counter="10"
                         :error-messages="errors"
                         label="Address"
                         required
@@ -40,7 +37,6 @@
                 <validation-provider v-slot="{ errors }" name="Phone" rules="required|numeric">
                     <v-text-field
                         v-model="phone"
-                        :counter="10"
                         :error-messages="errors"
                         label="Phone"
                         required
@@ -134,15 +130,27 @@ export default {
     methods:{
         submit: function () {
             if (this.$refs.observer.validate()) {
-                axios.post("/api/users/", {
+                axios.post("/api/customers", {
                     "name":this.name,
                     "email":this.email,
                     "address":this.address,
                     "phone":this.phone,
                     "nif":this.nif,
-                    "photo_url":this.photo})
-                    .then(response => {
-                    console.log(response)
+                    "photo_url":this.photo
+                /*TODO se nenhuma photo for adicionada, mandar null*/
+                })
+                    .then((response) => {
+                    this.snackbar = true;
+                    this.text = "Account created succesfully."
+                    this.color = "green"
+                    setTimeout(() => {
+                        this.$router.push('/');
+                    }, 1500);
+
+                }).catch(error => {
+                    this.snackbar = true;
+                    this.text = "There was an error creating your account. Please try again latter."
+                    this.color = "red"
                 })
             }
         }
