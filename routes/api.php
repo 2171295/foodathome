@@ -29,6 +29,9 @@ Route::post('login', [LoginController::class,'login']);
 Route::middleware('auth:api')->post('logout', [LoginController::class,'logout']);
 
 
+Route::post('users',[UserController::class, 'store']);
+Route::get('users/emailavailable',[UserController::class, 'emailAvailable']);
+
 Route::middleware(['auth:api'])->group(function (){
 //Rotas para os users
     Route::get('users/me',[UserController::class, 'myProfile']);
@@ -38,8 +41,6 @@ Route::middleware(['auth:api'])->group(function (){
     Route::delete('users/{user}',[UserController::class, 'destroy']);
 });
 
-Route::post('users',[UserController::class, 'store']);
-Route::get('users/emailavailable',[UserController::class, 'emailAvailable']);
 
 //Rotas para os customers
 Route::get('customers',[CustomerController::class, 'index']);

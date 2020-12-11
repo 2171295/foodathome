@@ -22,6 +22,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        dd("AQUI");
         return new UserResource($user);
     }
 
@@ -48,12 +49,14 @@ class UserController extends Controller
 
     public function emailAvailable(Request $request)
     {
+        //dd($request->email);
         $totalEmail = 1;
         if ($request->has('email') && $request->has('id')) {
             $totalEmail = User::where('email', '=', $request->email)->where('id', '<>', $request->id)->count();
         } else if ($request->has('email')) {
-            $totalEmail = User::where('email', '=', $request->email)->count();
+            $totalEmail = User::where('email', '=', $request->email)->withTrashed()->count();
         }
+        //$totalEmail += User::where('email', '=', $request->email)->whereNotNull('deleted_at')->count();
         return response()->json($totalEmail == 0);
     }
 

@@ -130,6 +130,7 @@ export default {
     methods:{
         submit: function () {
             if (this.$refs.observer.validate()) {
+
                 axios.post("/api/customers", {
                     "name":this.name,
                     "email":this.email,
