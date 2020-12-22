@@ -86,7 +86,7 @@ export default {
                 return axios.get("api/users/me");
             })
             .then(response => {
-                console.log(response.data.data)
+                axios.put("api/users/"+response.data.data.id+"/logged");
                 this.$store.dispatch('setUser',response.data.data)
                 .then(() => {
                     console.log(this.$store.state.user)

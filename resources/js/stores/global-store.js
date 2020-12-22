@@ -12,6 +12,10 @@ export default new Vuex.Store({
         menu_items:[],
         menu_search:'',
         cart:[],
+        loggedUsers:[],
+        availableManagers:[],
+        availableCookers:[],
+        availableDeliveryman:[],
     },
     mutations: {
         clearUserAndToken (state) {
@@ -87,6 +91,18 @@ export default new Vuex.Store({
             state.cart.push(itemCart)
             localStorage.setItem('cart', state.cart)
         },
+        setLoggedUsers(state, users){
+            state.loggedUsers = users;
+        },
+        setAvailableManagers(state, users){
+            state.availableManagers = users;
+        },
+        setAvailableCookers(state, users){
+            state.availableCookers = users;
+        },
+        setAvailableDeliveryman(state, users){
+            state.availableDeliveryman = users;
+        },
     },
     actions: {
         rebuildUserFromStorage (context) {
@@ -104,5 +120,32 @@ export default new Vuex.Store({
                 context.commit('setCart', localStorage.getItem('cart'))
             }
         },
+        loadLoggedUser (context){
+            axios.get("api/users/logged_users")
+                .then((response)=>{
+                    context.commit("setLoggedUsers",response.data)
+                })
+                .catch((error) =>{
+                    console.log("Error getting logged users: "+error)
+                })
+        },
+        loadAvailableCookers (context){
+            axios.get("api/users/available_cookers")
+                .then((response)=>{
+                    context.commit("setAvailableCookers",response.data)
+                })
+                .catch((error) =>{
+                    console.log("Error getting available cookers: "+error)
+                })
+        },
+        loadAvailableDeliveryman (context){
+            axios.get("api/users/available_deliveryman")
+                .then((response)=>{
+                    context.commit("setAvailableDeliveryman",response.data)
+                })
+                .catch((error) =>{
+                    console.log("Error getting available deliveryman: "+error)
+                })
+        }
     }
 });

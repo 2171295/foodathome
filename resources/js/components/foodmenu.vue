@@ -105,7 +105,7 @@ data:function () {
     },
 
     created() {
-        if(this.$store.state.menu_search != ""){
+        if(this.$store.state.menu_search !== ""){
             this.search = this.$store.state.menu_search;
             this.$store.commit("setMenuSearch", "")
         }

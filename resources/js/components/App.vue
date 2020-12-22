@@ -125,6 +125,13 @@ export default {
                     action: 'mdi-school',
                     items: [{ title: 'List' }],
                     title: 'Products',
+                    to: '/products'
+                },
+                {
+                    action: 'mdi-school',
+                    to: '/mensagens',
+                    items: [{ title: 'List' }],
+                    title: 'Mensagens',
                 },
             ],
             items_cook: [
@@ -151,6 +158,7 @@ export default {
         },
         logout(){
             axios.post("/api/logout").then((response)=>{
+                axios.put("api/users/"+this.$store.state.user.id+"/logout");
                 this.$store.commit("clearUserAndToken");
                 this.$nextTick()
                     .then(() => {

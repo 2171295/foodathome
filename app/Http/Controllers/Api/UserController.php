@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Resources\User as UserResource;
 use App\Http\Requests\StoreUserRequest;
@@ -11,6 +12,7 @@ use App\Models\User;
 
 class UserController extends Controller
 {
+
     public function index(Request $request)
     {
         if ($request->has('page')) {
@@ -22,7 +24,6 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        dd("AQUI");
         return new UserResource($user);
     }
 
@@ -63,5 +64,36 @@ class UserController extends Controller
     public function myProfile(Request $request)
     {
         return new UserResource($request->user());
+    }
+
+    public function usersLogged(){
+        $users = User::where('logged_at','!=',null)->get();
+        return response()->json($users);
+        //return UserResource::collection($users);
+    }
+
+    public function availableCookers(){
+        return User::where('available_at','!=',null)->where('type','=','EC')->get();
+    }
+
+    public function availableDeliveryman(){
+        return User::where('available_at','!=',null)->where('type','=','ED')->get();
+    }
+
+    public function availableManagers(){
+        return User::where('available_at','!=',null)->where('type','=','EM')->get();
+    }
+
+    public function loggedAt(User $user){
+        $mytime = Carbon::now();
+        $user->logged_at = $mytime->toDateTimeString();
+        $user->available_at = $mytime->toDateTimeString();
+        $user->save();
+    }
+
+    public function logout(User $user){
+        $user->logged_at = null;
+        $user->available_at = null;
+        $user->save();
     }
 }

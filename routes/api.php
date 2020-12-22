@@ -31,6 +31,11 @@ Route::middleware('auth:api')->post('logout', [LoginController::class,'logout'])
 
 Route::post('users',[UserController::class, 'store']);
 Route::get('users/emailavailable',[UserController::class, 'emailAvailable']);
+Route::put('users/{user}/logout',[UserController::class, 'logout']);
+Route::get('users/logged_users',[UserController::class, 'usersLogged']);
+Route::get('users/available_cookers',[UserController::class, 'availableCookers']);
+Route::get('users/available_deliveryman',[UserController::class, 'availableDeliveryman']);
+Route::get('users/available_managers',[UserController::class, 'availableManagers']);
 
 Route::middleware(['auth:api'])->group(function (){
 //Rotas para os users
@@ -39,6 +44,7 @@ Route::middleware(['auth:api'])->group(function (){
     Route::get('users/{user}',[UserController::class, 'show']);
     Route::put('users/{user}',[UserController::class, 'update']);
     Route::delete('users/{user}',[UserController::class, 'destroy']);
+    Route::put('users/{user}/logged',[UserController::class, 'loggedAt']);
 });
 
 

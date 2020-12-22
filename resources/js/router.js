@@ -19,6 +19,10 @@ import FoodMenu from './components/foodmenu';
 const foodMenu = Vue.component('foodMenu',FoodMenu);
 import Profile from './components/profile/index';
 const profile = Vue.component('profile', Profile);
+import Mensagens from './components/globalMessages';
+const mensagens = Vue.component('mensagens', Mensagens);
+import IndexProducts from './components/products/index';
+const index_produtos = Vue.component('index_produtos',IndexProducts);
 
 const routes = [
     {
@@ -30,15 +34,15 @@ const routes = [
         component: register
     },
     {
-        path: '/login',
-        name: "login",
-        component: login
-    },
-    {
         path: '/home',
         name: "home",
         component: home,
         meta: {requiresAuth: true}
+    },
+    {
+        path: '/login',
+        name: "login",
+        component: login
     },
     {
         path: '/menu',
@@ -47,17 +51,28 @@ const routes = [
     {
         path:  '/profile',
         component: profile,
+        meta: {requiresAuth: true}
+    },
+    {
+        path:  '/mensagens',
+        component: mensagens,
+        meta: {requiresAuth: true}
+    },
+    {
+        path:  '/products',
+        component: index_produtos,
+        meta: {requiresAuth: true}
     }
 ];
 
 const router = new VueRouter({
-    mode: 'history',
+    //mode: 'history',
     routes:routes
 });
 
 router.beforeEach((to,from,next) => {
     if(to.matched.some(record => record.meta.requiresAuth)){
-        if(!store.state.user){
+        if(!sessionStorage.getItem("user")){
             next({
                 path:'/login',
                 query: {redirect: to.fullPath}
