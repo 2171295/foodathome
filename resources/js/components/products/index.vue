@@ -10,10 +10,12 @@
                     :items="products"
                     :items-per-page="10"
                     class="elevation-1"
-                ></v-data-table>
-                <template v-slot:item.img="{ item }">
-                    <v-img :src="'/storage/products/'+item.photo" width="150px" height="150px" style="border-radius: 50%"/>
-                </template>
+                >
+                    <template v-slot:item.img="{ item }">
+                        <v-img :src="'/storage/products/'+item.photo" width="130px" height="130px" style="border-radius: 50%"/>
+                    </template>
+                </v-data-table>
+
             </v-card-text>
         </v-card>
         {{products}}
@@ -27,7 +29,7 @@ export default {
         return {
             products: [],
             headers: [
-                {text: 'Photo', sortable: false, value: 'img'},
+                {text: 'Photo', value: 'img'},
                 {text: 'Name', align: 'start', sortable: true, value: 'name',},
                 {text: 'Type', align: 'start', sortable: true, value: 'type',},
                 {text: 'Price', sortable: true, value: 'price'},

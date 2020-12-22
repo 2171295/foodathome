@@ -1,9 +1,10 @@
 <template>
     <div v-if="this.$store.state.user != null">
         <v-toolbar class="d-flex justify-center">
-            <v-toolbar-title v-if="this.$store.state.user.type === 'EM'">Manager {{this.$store.state.user.name}}</v-toolbar-title>
-            <v-toolbar-title v-if="this.$store.state.user.type === 'EC'">Cooker {{this.$store.state.user.name}}</v-toolbar-title>
-            <v-toolbar-title v-if="this.$store.state.user.type === 'ED'">-Deliveryman {{this.$store.state.user.name}}</v-toolbar-title>
+            <v-toolbar-title v-if="this.$store.state.user.type === 'EM'">Employee-Manager's Panel</v-toolbar-title>
+            <v-toolbar-title v-if="this.$store.state.user.type === 'EC'">Cook's Panel</v-toolbar-title>
+            <v-toolbar-title v-if="this.$store.state.user.type === 'ED'">Deliveryman's Panel</v-toolbar-title>
+            <v-toolbar-title v-if="this.$store.state.user.type === 'C'">Customer's Panel</v-toolbar-title>
         </v-toolbar>
         <template v-if="this.$store.state.user.type === 'EM'">
             <aux_home_manager></aux_home_manager>
