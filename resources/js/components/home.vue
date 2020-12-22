@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="this.$store.state.user != null">
         <v-toolbar class="d-flex justify-center">
             <v-toolbar-title v-if="this.$store.state.user.type === 'EM'">Employee-Manager's Panel</v-toolbar-title>
             <v-toolbar-title v-if="this.$store.state.user.type === 'EC'">Cook's Panel</v-toolbar-title>
