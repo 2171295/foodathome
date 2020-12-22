@@ -21,7 +21,9 @@
         "@mdi/js": "^5.8.55",
         "vee-validate": "^3.4.5",
         "vue": "^2.6.12",
+        "vue-resource": "^1.5.1",
         "vue-router": "^3.4.9",
+        "vue-socket.io": "^3.0.10",
         "vuelidate": "^0.7.6",
         "vuetify": "^2.3.17",
         "vuex": "^3.5.1"

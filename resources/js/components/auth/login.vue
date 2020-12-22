@@ -79,22 +79,28 @@ export default {
     },
     methods:{
         onSubmit(){
+            this.$store.commit('clearUserAndToken')
             axios.post("api/login", this.user).
             then(response => {
                 this.$store.commit("setToken", response.data.access_token);
                 return axios.get("api/users/me");
             })
             .then(response => {
+                console.log(response.data.data)
                 this.$store.dispatch('setUser',response.data.data)
                 .then(() => {
                     console.log(this.$store.state.user)
                     this.$router.push('/home');
                 })
+                .catch(error => {
+                    this.color = "black";
+                    this.text = "Set user in store didn't work."
+                    this.snackbar = true;
+                })
                 /*this.$store.commit("getUser")*/
-
-
             })
             .catch(error => {
+                console.log(error)
                 this.$store.commit("clearUserAndToken");
                 this.color = "black";
                 this.text = "Your username and/or password do not match."

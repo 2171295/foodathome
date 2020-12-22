@@ -55,8 +55,6 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to,from,next) => {
-    console.log("Entrou aqui Router")
-    console.log(store.state.user)
     if(to.matched.some(record => record.meta.requiresAuth)){
         if(!store.state.user){
             next({

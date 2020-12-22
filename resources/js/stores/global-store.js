@@ -1,5 +1,5 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import Vue from "vue"
+import Vuex from "vuex"
 
 Vue.use(Vuex);
 
@@ -14,33 +14,46 @@ export default new Vuex.Store({
         cart:[],
     },
     mutations: {
-        clearUserAndToken: state => {
-
+        clearUserAndToken (state) {
+            if (state.user) {
+                this._vm.$socket.emit('user_logged_out', state.user)
+            }
             sessionStorage.removeItem("user");
             sessionStorage.removeItem("token");
             axios.defaults.headers.common.Authorization = undefined;
             state.user = null;
             state.token = "";
         },
-        clearUser: state => {
+        clearUser (state) {
+            if (state.user) {
+                this._vm.$socket.emit('user_logged_out', state.user)
+            }
             state.user = null;
             sessionStorage.removeItem("user");
         },
-        clearToken: state => {
+        clearToken (state) {
             state.token = "";
             sessionStorage.removeItem("token");
             axios.defaults.headers.common.Authorization = undefined;
         },
-        setUser: (state, user) => {
-            state.user = user;
-            sessionStorage.setItem("user", JSON.stringify(user));
+        setUser (state, user) {
+            if (state.user !== user) {
+                if (state.user) {
+                    this._vm.$socket.emit('user_logged_out', state.user)
+                }
+                state.user = user
+                sessionStorage.setItem("user", JSON.stringify(user));
+                if (state.user) {
+                    this._vm.$socket.emit('user_logged', state.user)
+                }
+            }
         },
-        setToken: (state, token) => {
+        setToken (state, token) {
             state.token = token;
             sessionStorage.setItem("token", token);
             axios.defaults.headers.common.Authorization = "Bearer " + token;
         },
-        loadTokenAndUserFromSession: state => {
+        loadTokenAndUserFromSession (state) {
             state.token = "";
             state.user = null;
             let token = sessionStorage.getItem("token");
@@ -55,10 +68,10 @@ export default new Vuex.Store({
                 state.user = JSON.parse(user);
             }
         },
-        setMenuItems: (state, list) => {
+        setMenuItems (state, list) {
                 state.menu_items = list;
         },
-        setMenuSearch: (state, type) => {
+        setMenuSearch (state, type) {
             state.menu_search = type;
         },
         // Mutations to handle Cart
@@ -81,7 +94,7 @@ export default new Vuex.Store({
                 context.commit("loadTokenAndUserFromSession")
             }
         },
-        setUser(context,user) {
+        setUser (context,user) {
             context.commit("setUser",user)
         },
         rebuildCartFromStorage (context) {

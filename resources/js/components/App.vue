@@ -154,7 +154,7 @@ export default {
                 this.$store.commit("clearUserAndToken");
                 this.$nextTick()
                     .then(() => {
-                        console.log("Estou aqui" )
+                        console.log("Log out com sucesso" )
                         console.dir(this.$store.state.user)
                         this.$router.push("/")
                     })
