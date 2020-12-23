@@ -12,13 +12,12 @@
                     class="elevation-1"
                 >
                     <template v-slot:item.img="{ item }">
-                        <v-img :src="'/storage/products/'+item.photo" width="130px" height="130px" style="border-radius: 50%"/>
+                        <v-img :src="'/storage/products/'+item.photo" width="100px" height="100px" style="border-radius: 50%"/>
                     </template>
                 </v-data-table>
 
             </v-card-text>
         </v-card>
-        {{products}}
     </div>
 </template>
 
@@ -29,7 +28,7 @@ export default {
         return {
             products: [],
             headers: [
-                {text: 'Photo', value: 'img'},
+                {text: '', value: 'img'},
                 {text: 'Name', align: 'start', sortable: true, value: 'name',},
                 {text: 'Type', align: 'start', sortable: true, value: 'type',},
                 {text: 'Price', sortable: true, value: 'price'},

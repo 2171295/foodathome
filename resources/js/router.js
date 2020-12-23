@@ -23,6 +23,8 @@ import Mensagens from './components/globalMessages';
 const mensagens = Vue.component('mensagens', Mensagens);
 import IndexProducts from './components/products/index';
 const index_produtos = Vue.component('index_produtos',IndexProducts);
+import IndexUsers from './components/users/index';
+const index_users = Vue.component('index_users',IndexUsers);
 
 const routes = [
     {
@@ -61,6 +63,11 @@ const routes = [
     {
         path:  '/products',
         component: index_produtos,
+        meta: {requiresAuth: true}
+    },
+    {
+        path:  '/users',
+        component: index_users,
         meta: {requiresAuth: true}
     }
 ];

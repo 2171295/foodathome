@@ -49,7 +49,7 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Models\Customer', 'id');
     }
-    
+
     public function typeToString(){
         switch ($this->type) {
             case 'EC':
@@ -58,6 +58,15 @@ class User extends Authenticatable
                 return 'Manager';
             case 'ED':
                 return 'Deliveryman';
+        }
+    }
+
+    public function blockedToStr(){
+        switch ($this->blocked) {
+            case 1:
+                return 'Yes';
+            case 0:
+                return 'No';
         }
     }
 }

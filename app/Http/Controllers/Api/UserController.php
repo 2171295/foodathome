@@ -22,6 +22,11 @@ class UserController extends Controller
         }
     }
 
+    public function indexWithTrash(Request $request)
+    {
+        return UserResource::collection(User::withTrashed()->get());
+    }
+
     public function show(User $user)
     {
         return new UserResource($user);

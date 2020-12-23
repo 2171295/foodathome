@@ -114,11 +114,9 @@ export default {
             items_admin: [
                 {
                     action: 'mdi-silverware-fork-knife',
-                    active: true,
-                    items: [
-                        { title: 'Create' },
-                        { title: 'List' },
-                    ],
+                    // active: true,
+                    items: [{ title: 'List' }],
+                    to: '/users',
                     title: 'Users',
                 },
                 {
