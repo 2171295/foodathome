@@ -4,8 +4,17 @@
             <v-toolbar-title>Users</v-toolbar-title>
         </v-toolbar>
         <v-card>
-            <v-toolbar class="d-flex" style="margin-bottom: 10px;">
-                <v-btn @click="">Create User</v-btn>
+            <v-toolbar style="margin-bottom: 10px;">
+                <v-text-field label="Search:" v-model="search"></v-text-field>
+                <v-spacer></v-spacer>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn v-on="on"  icon @click="" >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>CreateUser</span>
+                </v-tooltip>
             </v-toolbar>
             <v-card-text>
                 <v-data-table
@@ -14,6 +23,7 @@
                     :items-per-page="10"
                     :item-class= "row_classes"
                     class="elevation-1"
+                    :search="search"
                 >
                     <template v-slot:item.img="{ item }">
                         <v-img :src="'/storage/fotos/'+item.photo_url" width="100px" height="100px" style="border-radius: 50%"/>
@@ -63,6 +73,7 @@ export default {
     name: "index",
     data: () => {
         return {
+            search:'',
             users: [],
             headers: [
                 {text: '', sortable: false, value: 'img'},
@@ -77,7 +88,7 @@ export default {
     methods: {
         row_classes(item) {
             if (item.blocked === 'Yes') {
-                return "orange";
+                return "grey";
             }
         },
         getUsers(){
