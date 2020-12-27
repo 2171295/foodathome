@@ -49,6 +49,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('users/{user}/logged', [UserController::class, 'loggedAt']);
     Route::put('users/{user}/block', [UserController::class, 'block']);
     Route::put('users/{user}/unblock', [UserController::class, 'unblock']);
+    Route::put('users/{user}/confirmpassword', [UserController::class, 'confirmPassword']);
+
 });
 
 

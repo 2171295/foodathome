@@ -6,29 +6,7 @@
                 <v-icon>mdi-close</v-icon>
             </v-btn>
         </v-snackbar>
-        <v-dialog v-model="dialog_password" max-width="490">
-            <v-card>
-                <v-card-title class="headline">
-                    Alterar a Palavra-Chave
-                </v-card-title>
-                <v-card-text>
-                    <form>
-                        <v-text-field label="Palavra-Chave antiga" :error-messages="error_old" v-model="old_password" type="password"></v-text-field>
-                        <v-text-field label="Nova Palavra-Chave" :error-messages="error_new" :rules="passwordRules"  v-model="new_password" type="password"></v-text-field>
-                        <v-text-field label="Confirmação da nova Palavra-Chave" :error-messages="error_confirmation" :rules="passwordRules"  v-model="confirmation_password" type="password"></v-text-field>
-                    </form>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="error" text @click="dialog_password = false">
-                        Cancelar
-                    </v-btn>
-                    <v-btn color="success" text  @click="updatePassword">
-                        Guardar
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+        <aux_edit_password ref="editPassword"/>
         <v-dialog v-model="dialog_edit_user">
             <v-card>
                 <v-card-title class="headline">
@@ -98,7 +76,7 @@
                     <v-toolbar>{{ vcardTitle }}
                     <v-spacer></v-spacer>
                     <v-btn x-small @click="dialog_edit_user = true">Edit Profile</v-btn>
-                    <v-btn x-small @click.stop="dialog_password = true">Change Password</v-btn>
+                    <v-btn x-small @click="editPassword">Change Password</v-btn>
                     </v-toolbar>
                     <v-card-text>
                         <div justify="center" align="center">
@@ -123,7 +101,7 @@
 
 <script>
 import {ValidationObserver, ValidationProvider} from "vee-validate";
-
+import aux_edit_password from "../auxiliares/aux_edit_password";
 export default {
 name: "index",
     data: () => {
@@ -132,9 +110,6 @@ name: "index",
             client:'',
             dialog_edit_user:false,
             dialog_password:false,
-            new_password:'',
-            old_password:'',
-            vcardTitle:'',
 
 
             // Dados para editar password:
@@ -152,7 +127,6 @@ name: "index",
             x: null,
             y: 'top',
             // ------------------------
-
         }
     },
     methods:{
@@ -166,6 +140,7 @@ name: "index",
         },
         getUser(){
             axios.get('api/users/me').then((response) => {
+                console.log(response.data.data)
                 this.user = response.data.data
                 this.email = this.user.email;
                 this.name = this.user.name;
@@ -181,6 +156,13 @@ name: "index",
                     this.vcardTitle  = "Employee's Personal Data";
                 }
             })
+        },
+        async editPassword() {
+            if (
+                await this.$refs.editPassword.open()
+            ) {
+                this.getUser()
+            }
         },
         updateUser(){
             if (this.$refs.observer.validate()) {
@@ -292,6 +274,7 @@ name: "index",
     components: {
         ValidationProvider,
         ValidationObserver,
+        aux_edit_password,
     },
 }
 </script>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Http\Resources\User as UserResource;
 use App\Http\Requests\StoreUserRequest;
@@ -112,5 +113,15 @@ class UserController extends Controller
         $user->blocked = 0;
         $user->save();
         return new UserResource($user);
+    }
+
+    public function confirmPassword(Request $request, User $user){
+        dd($request->oldPassword());
+
+        $old_Password = bcrypt($request->oldPassword);
+        if($user->password === $old_Password){
+            return response()->json(null, 200);
+        }
+        return response()->json(null, 542);
     }
 }
