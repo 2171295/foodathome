@@ -50,7 +50,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-        return response()->json(null, 204);
+        return response()->json($user, 204);
     }
 
     public function emailAvailable(Request $request)
@@ -100,5 +100,17 @@ class UserController extends Controller
         $user->logged_at = null;
         $user->available_at = null;
         $user->save();
+    }
+
+    public function block(User $user){
+        $user->blocked = 1;
+        $user->save();
+        return new UserResource($user);
+    }
+
+    public function unblock(User $user){
+        $user->blocked = 0;
+        $user->save();
+        return new UserResource($user);
     }
 }
