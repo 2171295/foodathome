@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use http\Env\Response;
 use Illuminate\Http\Request;
 use App\Http\Resources\User as UserResource;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -37,7 +37,7 @@ class UserController extends Controller
     {
         $user = new User();
         $user->fill($request->validated());
-        $user->password = bcrypt($user->password);
+        $user->password = Hash::make($user->password);
         $user->save();
         return response()->json(new UserResource($user), 201);
     }
@@ -116,12 +116,9 @@ class UserController extends Controller
     }
 
     public function confirmPassword(Request $request, User $user){
-        dd($request->oldPassword());
-
-        $old_Password = bcrypt($request->oldPassword);
-        if($user->password === $old_Password){
+        if(Hash::check($request->get('oldPassword'),$user->password)){
             return response()->json(null, 200);
         }
-        return response()->json(null, 542);
+        return response()->json(null, 400);
     }
 }
