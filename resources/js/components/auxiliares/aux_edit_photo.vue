@@ -3,9 +3,9 @@
         <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
         <v-dialog v-model="display">
             <v-card>
-                <v-card-title class="headline">
-                    Change profile photo
-                </v-card-title>
+                <v-toolbar class="d-flex justify-center align-center">
+                    Shopping Cart
+                </v-toolbar>>
                 <v-card-text>
                     <v-file-input
                     counter

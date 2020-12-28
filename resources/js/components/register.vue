@@ -26,6 +26,24 @@
                         required
                     ></v-text-field>
                 </validation-provider>
+                <validation-provider v-slot="{ errors }" name="Password" rules="required|password:@confirmation">
+                    <v-text-field
+                        v-model="password"
+                        :error-messages="errors"
+                        label="Password"
+                        type="password"
+                        required
+                    ></v-text-field>
+                </validation-provider>
+                <validation-provider v-slot="{ errors }" name="confirmation" rules="required">
+                    <v-text-field
+                        v-model="confirmationPassword"
+                        :error-messages="errors"
+                        label="Password Confirmation"
+                        type="password"
+                        required
+                    ></v-text-field>
+                </validation-provider>
                 <validation-provider v-slot="{ errors }" name="Address" rules="required">
                     <v-text-field
                         v-model="address"
@@ -34,7 +52,7 @@
                         required
                     ></v-text-field>
                 </validation-provider>
-                <validation-provider v-slot="{ errors }" name="Phone" rules="required|numeric">
+                <validation-provider v-slot="{ errors }" name="Phone" rules="required|numeric|length:9">
                     <v-text-field
                         v-model="phone"
                         :error-messages="errors"
@@ -117,8 +135,10 @@ export default {
     email:'',
     address:'',
     phone:'',
-    nif:'',
-    photo:'',
+    nif:null,
+    photo:null,
+    password:'',
+    confirmationPassword:'',
     rulesPhoto: [
         v => !v || v.size < 2000000 || 'Avatar size should be less than 2 MB!',
     ],
@@ -136,6 +156,8 @@ export default {
                     "email":this.email,
                     "address":this.address,
                     "phone":this.phone,
+                    "password":this.password,
+
                     "nif":this.nif,
                     "photo_url":this.photo
                 /*TODO se nenhuma photo for adicionada, mandar null*/

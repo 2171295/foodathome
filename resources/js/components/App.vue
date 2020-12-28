@@ -1,5 +1,6 @@
 <template>
     <div >
+        <aux_shopping_cart ref="shoppingCart"/>
         <v-app v-if="!this.$store.state.user">
             <v-app-bar :clipped-left="true" fixed app color="deep-orange lighten-1" >
                 <v-btn icon to="/">
@@ -63,6 +64,9 @@
                 <v-spacer />
                 <v-toolbar-title class="white--text" v-text="title" />
                 <v-spacer />
+                <v-btn icon v-if="$store.state.user.type === 'C'" @click="shoppingCart">
+                    <v-icon>mdi-cart</v-icon>
+                </v-btn>
                 <v-menu offset-y>
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn v-bind="attrs" v-on="on">
@@ -90,6 +94,7 @@
 </template>
 
 <script>
+import aux_shopping_cart from "./auxiliares/aux_shopping_cart";
 import { mdiHome, mdiAccount, mdiLogout, mdiChevronRight, mdiChevronLeft, mdiMenu} from '@mdi/js'
 export default {
     name: "App",
@@ -154,6 +159,12 @@ export default {
         redirectLogin(){
             this.$router.push("/login")
         },
+        async shoppingCart(){
+            if (await this.$refs.shoppingCart.open()) {
+            }else{
+                return null;
+            }
+        },
         logout(){
             axios.post("/api/logout").then((response)=>{
                 axios.put("api/users/"+this.$store.state.user.id+"/logout");
@@ -189,6 +200,9 @@ export default {
         if(this.$store.state.user){
             this.setUser()
         }
+    },
+    components:{
+        aux_shopping_cart,
     }
 
 }
