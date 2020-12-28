@@ -80,7 +80,7 @@
 <script>
 import Aux_dialog_confirmacao from "../auxiliares/aux_dialog_confirmacao";
 import Aux_snackbar from "../auxiliares/aux_snackbar";
-import Aux_create_user from "../auxiliares/aux_create_user";
+import Aux_create_user from "../auxiliares/users/aux_create_user";
 
 export default {
     name: "index",

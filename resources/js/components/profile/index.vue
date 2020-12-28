@@ -47,9 +47,9 @@
 
 <script>
 import {ValidationObserver, ValidationProvider} from "vee-validate";
-import aux_edit_password from "../auxiliares/aux_edit_password";
-import aux_edit_profile from "../auxiliares/aux_edit_profile";
-import aux_edit_photo from "../auxiliares/aux_edit_photo";
+import aux_edit_password from "../auxiliares/users/aux_edit_password";
+import aux_edit_profile from "../auxiliares/users/aux_edit_profile";
+import aux_edit_photo from "../auxiliares/users/aux_edit_photo";
 export default {
 name: "index",
     data: () => {

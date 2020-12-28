@@ -47,12 +47,13 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('users/{user}', [UserController::class, 'show']);
     Route::put('users/{user}', [UserController::class, 'update']);
     Route::delete('users/{user}', [UserController::class, 'destroy']);
+    Route::put('users/{user}/update_photo', [UserController::class, 'updatePhoto']);
     Route::put('users/{user}/logged', [UserController::class, 'loggedAt']);
     Route::put('users/{user}/block', [UserController::class, 'block']);
     Route::put('users/{user}/unblock', [UserController::class, 'unblock']);
     Route::put('users/{user}/confirm_password', [UserController::class, 'confirmPassword']);
     Route::put('users/{user}/update_password', [UserController::class, 'updatePassword']);
-    Route::put('users/{user}/update_photo', [UserController::class, 'updatePhoto']);
+
 
 });
 

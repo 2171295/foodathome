@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\InsertImageRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Resources\User as UserResource;
@@ -64,10 +65,25 @@ class UserController extends Controller
            }
         }
     }
-    public function updatePhoto(UpdateUserRequest $request, User $user)
+    public function updatePhoto(Request $request, User $user)
     {
-        $user->photo_url = $request->get('photo');
-        $user->save();
+        $request->validate([
+            'photo' => 'required|file|image|mimes:jpeg,jpg,png|max:2048',
+        ]);
+
+        if($request->get('photo') != null) {
+            $image = $request->file('photo');
+            $name = $user->id . '_' . time() . '.' . $image->getClientOriginalExtension();
+            if($user->foto_url != null) {
+                Storage::disk('public')->delete('fotos/'.$user->foto_url);
+            }
+            Storage::putFileAs('public/fotos', $image, $name);
+
+            $user->foto_url = $name;
+            $user->save();
+            return response()->json("User Photo Updated", 200);
+        }
+        return response()->json("Photo not Updated", 400);
     }
 
     public function destroy(User $user)
