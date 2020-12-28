@@ -7,7 +7,6 @@
                     Edit User's Personal Data
                 </v-card-title>
                 <v-card-text>
-                    {{aux_user}}
                     <validation-observer ref="observer" v-slot="{ invalid }">
                         <form @submit.prevent="updateUser">
                             <validation-provider v-slot="{ errors }" name="Name" rules="required|alpha_spaces">

@@ -52,6 +52,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('users/{user}/unblock', [UserController::class, 'unblock']);
     Route::put('users/{user}/confirm_password', [UserController::class, 'confirmPassword']);
     Route::put('users/{user}/update_password', [UserController::class, 'updatePassword']);
+    Route::put('users/{user}/update_photo', [UserController::class, 'updatePhoto']);
 
 });
 

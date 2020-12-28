@@ -55,6 +55,11 @@ class UserController extends Controller
            }
         }
     }
+    public function updatePhoto(UpdateUserRequest $request, User $user)
+    {
+        $user->photo_url = $request->get('photo');
+        $user->save();
+    }
 
     public function destroy(User $user)
     {

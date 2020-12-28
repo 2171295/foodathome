@@ -8,7 +8,7 @@
         </v-snackbar>
         <aux_edit_password ref="editPassword" :user="user"/>
         <aux_edit_profile ref="editProfile" :user="user" :client="client"/>
-        {{user}}
+        <aux_edit_photo ref="editPhoto" :user="user"/>
         <v-row>
             <v-col md="12">
                 <v-card>
@@ -20,6 +20,14 @@
                     <v-card-text>
                         <div justify="center" align="center">
                             <v-img :src="'/storage/fotos/'+user.photo_url" max-height="200px" max-width="200px" style="border-radius: 50%;"/>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn v-on="on"  icon @click="editPhoto" >
+                                        <v-icon>mdi-pencil</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Edit profile picture</span>
+                            </v-tooltip>
                         </div>
                         <p><b>Name:</b> {{user.name}}</p>
                         <p><b>Email:</b> {{user.email}}</p>
@@ -41,6 +49,7 @@
 import {ValidationObserver, ValidationProvider} from "vee-validate";
 import aux_edit_password from "../auxiliares/aux_edit_password";
 import aux_edit_profile from "../auxiliares/aux_edit_profile";
+import aux_edit_photo from "../auxiliares/aux_edit_photo";
 export default {
 name: "index",
     data: () => {
@@ -96,6 +105,13 @@ name: "index",
                 this.getUser()
             }
         },
+        async editPhoto() {
+            if (
+                await this.$refs.editPhoto.open()
+            ) {
+                this.getUser()
+            }
+        },
         async editProfile() {
             if (
                 await this.$refs.editProfile.open()
@@ -111,6 +127,7 @@ name: "index",
     components: {
         ValidationProvider,
         ValidationObserver,
+        aux_edit_photo,
         aux_edit_password,
         aux_edit_profile,
     },
