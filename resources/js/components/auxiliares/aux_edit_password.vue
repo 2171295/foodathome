@@ -1,5 +1,6 @@
 <template>
     <div>
+        <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
         <v-dialog v-model="display" max-width="490">
             <v-card>
                 <v-card-title class="headline">
@@ -11,11 +12,15 @@
                             <validation-provider v-slot="{ errors }" name="Old Password" rules="required">
                                 <v-text-field label="Old password" :error-messages="error_old" v-model="old_password" type="password"></v-text-field>
                             </validation-provider>
-                            <validation-provider>
-                                <v-text-field label="New password" :error-messages="error_new"  v-model="new_password" type="password"></v-text-field>
+                            <validation-provider v-slot="{ errors }" name="Old Password" rules="required|password:@confirm">
+                                <v-text-field
+                                    label="New password"
+                                  :error-messages="errors"
+                                    v-model="new_password"
+                                    type="password"></v-text-field>
                             </validation-provider>
-                            <validation-provider v-slot="{ errors }" name="Name" rules="required">
-                                <v-text-field label="Confirmation password" :error-messages="error_confirmation" v-model="confirmation_password" type="password"></v-text-field>
+                            <validation-provider v-slot="{ errors }" name="confirm" rules="required">
+                                <v-text-field label="Confirmation password" :error-messages="errors" v-model="confirmation_password" type="password"></v-text-field>
                             </validation-provider>
                             <v-spacer></v-spacer>
                             <v-btn color="error" text @click="display = false">
@@ -37,6 +42,8 @@
 
 <script>
 import {ValidationObserver, ValidationProvider} from "vee-validate";
+import {password} from "../../validations/vee-validate"
+import aux_snackbar from "./aux_snackbar";
 export default {
 name: "aux_edit_profile",
 data: () => {
@@ -47,8 +54,11 @@ data: () => {
         confirmation_password:'',
         vcardTitle:'',
         error_old:'',
-        error_new:'',
-        error_confirmation:'',
+        // ---- SNACKBAR INFO -----
+        color: '',
+        snackbar: false,
+        text: '',
+        // ------------------------
     }
 },methods:{
         open() {
@@ -67,15 +77,19 @@ data: () => {
             axios.put('api/users/'+this.$store.state.user.id+'/confirm_password', {
                 oldPassword: this.old_password
             }).then((response)=>{
-                console.log(response)
+                if (response.status === 200){
+                    this.error_old=null;
+                    /*TODO fazer a alteraçaõ da password*/
+                }
             }).catch((error)=>{
-                console.log(error)
+                this.error_old="Old password doesn't match."
             })
         }
 },
     components: {
         ValidationProvider,
         ValidationObserver,
+        aux_snackbar
     },
 }
 </script>
