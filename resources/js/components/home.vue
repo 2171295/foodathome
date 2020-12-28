@@ -23,10 +23,10 @@
 </template>
 
 <script>
-import aux_home_customer from "./auxiliares/aux_home_customer";
-import Aux_home_manager from "./auxiliares/aux_home_manager";
-import Aux_home_cook from "./auxiliares/aux_home_cook";
-import Aux_home_deliveryman from "./auxiliares/aux_home_deliveryman";
+import aux_home_customer from "./auxiliares/homes/aux_home_customer";
+import Aux_home_manager from "./auxiliares/homes/aux_home_manager";
+import Aux_home_cook from "./auxiliares/homes/aux_home_cook";
+import Aux_home_deliveryman from "./auxiliares/homes/aux_home_deliveryman";
 export default {
     name: "home",
     components: {

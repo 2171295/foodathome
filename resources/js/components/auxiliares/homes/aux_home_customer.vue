@@ -40,11 +40,11 @@
 </template>
 
 <script>
-import photo_cold_drinks from "../images/photo_cold_drinks";
-import photo_desserts from "../images/photo_desserts";
-import photo_hot_drinks from "../images/photo_hot_drinks";
-import photo_cold_dishes from "../images/photo_cold_dishes";
-import photo_hot_dishes from "../images/photo_hot_dishes";
+import photo_cold_drinks from "../../images/photo_cold_drinks";
+import photo_desserts from "../../images/photo_desserts";
+import photo_hot_drinks from "../../images/photo_hot_drinks";
+import photo_cold_dishes from "../../images/photo_cold_dishes";
+import photo_hot_dishes from "../../images/photo_hot_dishes";
 export default {
     name: "aux_home_customer",
 
