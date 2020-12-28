@@ -7,6 +7,7 @@
                     Edit User's Personal Data
                 </v-card-title>
                 <v-card-text>
+                    {{aux_user}}
                     <validation-observer ref="observer" v-slot="{ invalid }">
                         <form @submit.prevent="updateUser">
                             <validation-provider v-slot="{ errors }" name="Name" rules="required|alpha_spaces">
@@ -28,7 +29,7 @@
                             <div v-if="user.type === 'C'">
                                 <validation-provider v-slot="{ errors }" name="Address" rules="">
                                     <v-text-field
-                                        v-model="aux_user.address"
+                                        v-model="aux_client.address"
                                         :error-messages="errors"
                                         label="Address"
                                         required
@@ -36,7 +37,7 @@
                                 </validation-provider>
                                 <validation-provider v-slot="{ errors }" name="NIF" rules="numeric|length:9">
                                     <v-text-field
-                                        v-model="aux_user.nif"
+                                        v-model="aux_client.nif"
                                         :error-messages="errors"
                                         label="NIF"
                                         required
@@ -45,7 +46,7 @@
                                 <!--TODO adicionar validação personalizada para o phone-->
                                 <validation-provider v-slot="{ errors }" name="Phone" rules="">
                                     <v-text-field
-                                        v-model="aux_user.phone"
+                                        v-model="aux_client.phone"
                                         :error-messages="errors"
                                         label="Phone"
                                         required
@@ -72,11 +73,12 @@ import aux_snackbar from "./aux_snackbar";
 
 export default {
     name: "aux_edit_profile",
-    props:['user'],
+    props:['user','client'],
     data: () => {
         return {
             display: false,
             aux_user:'',
+            aux_client:'',
 
             // ---- SNACKBAR INFO -----
             color: '',
@@ -90,6 +92,7 @@ export default {
             this.display = true;
             this.valid = true
             this.aux_user = JSON.parse(JSON.stringify(this.user));
+            this.aux_client = JSON.parse(JSON.stringify(this.client));
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
                 this.reject = reject;
@@ -106,9 +109,9 @@ export default {
                         // Updates the rest of the customer's fields
                         axios.put('api/customers/'+this.user.id, {
                             "name":this.aux_user.name,
-                            "nif":this.aux_user.nif,
-                            "phone":this.aux_user.phone,
-                            "address":this.aux_user.address,
+                            "nif":this.aux_client.nif,
+                            "phone":this.aux_client.phone,
+                            "address":this.aux_client.address,
                         }).then((response) => {
                             this.color = 'success';
                             this.text = "customer's personal data edited successfully."
@@ -141,9 +144,9 @@ export default {
                                 axios.put('api/customers/' + this.user.id, {
                                         "name": this.aux_user.name,
                                         "email": this.aux_user.email,
-                                        "nif":this.aux_user.nif,
-                                        "phone":this.aux_user.phone,
-                                        "address":this.aux_user.address,
+                                        "nif":this.aux_client.nif,
+                                        "phone":this.aux_client.phone,
+                                        "address":this.aux_client.address,
                                     }
                                 ).then((response) => {
                                     this.getUser();
@@ -169,7 +172,8 @@ export default {
                 }else{
                     if(this.aux_user.email === this.user.email){
                         axios.put('api/users/'+this.user.id, {
-                                "name":this.aux_user.name,
+                            "name":this.aux_user.name,
+                            "type": this.aux_user.type
                             }
                         ).then((response) => {
                             this.color = 'success';
@@ -201,8 +205,9 @@ export default {
                                 return;
                             }else{
                                 axios.put('api/users/'+this.user.id, {
-                                        "name":this.aux_user.name,
-                                        "email":this.aux_user.email,
+                                    "name":this.aux_user.name,
+                                    "email":this.aux_user.email,
+                                    "type": this.aux_user.type
                                     }
                                 ).then((response) => {
                                     this.color = 'success';

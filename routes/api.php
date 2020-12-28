@@ -39,6 +39,7 @@ Route::get('users/available_cookers', [UserController::class, 'availableCookers'
 Route::get('users/available_deliveryman', [UserController::class, 'availableDeliveryman']);
 Route::get('users/available_managers', [UserController::class, 'availableManagers']);
 
+
 Route::middleware(['auth:api'])->group(function () {
 //Rotas para os users
     Route::get('users/me', [UserController::class, 'myProfile']);
@@ -50,6 +51,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('users/{user}/block', [UserController::class, 'block']);
     Route::put('users/{user}/unblock', [UserController::class, 'unblock']);
     Route::put('users/{user}/confirm_password', [UserController::class, 'confirmPassword']);
+    Route::put('users/{user}/update_password', [UserController::class, 'updatePassword']);
 
 });
 

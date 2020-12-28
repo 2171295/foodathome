@@ -6,8 +6,8 @@
                 <v-icon>mdi-close</v-icon>
             </v-btn>
         </v-snackbar>
-        <aux_edit_password ref="editPassword"/>
-        <aux_edit_profile ref="editProfile" :user="user"/>
+        <aux_edit_password ref="editPassword" :user="user"/>
+        <aux_edit_profile ref="editProfile" :user="user" :client="client"/>
         {{user}}
         <v-row>
             <v-col md="12">

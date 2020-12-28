@@ -47,6 +47,14 @@ class UserController extends Controller
         $user->update($request->validated());
         return new UserResource($user);
     }
+    public function updatePassword(Request $request, User $user){
+        if(Hash::check($request->get('oldPassword'),$user->password)){
+           if($request->get('newPassword') === $request->get('confirmationPassword')){
+                $user->password = Hash::make($request->get('newPassword'));
+                $user->save();
+           }
+        }
+    }
 
     public function destroy(User $user)
     {
