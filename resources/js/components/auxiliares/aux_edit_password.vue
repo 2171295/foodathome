@@ -45,7 +45,8 @@ import {ValidationObserver, ValidationProvider} from "vee-validate";
 import {password} from "../../validations/vee-validate"
 import aux_snackbar from "./aux_snackbar";
 export default {
-name: "aux_edit_profile",
+    name: "aux_edit_profile",
+    props:['user'],
 data: () => {
     return {
         display: false,
@@ -80,6 +81,28 @@ data: () => {
                 if (response.status === 200){
                     this.error_old=null;
                     /*TODO fazer a alteraçaõ da password*/
+                    axios.put('api/users/'+this.user.id+'/update_password', {
+                        "oldPassword":this.old_password,
+                        "newPassword": this.new_password,
+                        "confirmationPassword":this.confirmation_password
+                        }
+                    ).then((response) => {
+                        this.color = 'success';
+                        this.text = "Password changed successfully."
+                        this.snackbar = true;
+                        this.resolve(true);
+                        this.display = false;
+                        setTimeout(() => {
+                            this.snackbar = false;
+                        }, 2000);
+                    }).catch(error =>{
+                        this.color = 'red';
+                        this.text = "Error changing password"
+                        this.snackbar = true;
+                        setTimeout(() => {
+                            this.snackbar = false;
+                        }, 2000);
+                    })
                 }
             }).catch((error)=>{
                 this.error_old="Old password doesn't match."
