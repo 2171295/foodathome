@@ -15,17 +15,26 @@
         <template v-if="this.$store.state.user.type === 'ED'">
             <aux_home_deliveryman></aux_home_deliveryman>
         </template>
+        <template v-if="this.$store.state.user.type === 'C'">
+            <aux_home_customer/>
+        </template>
 
     </div>
 </template>
 
 <script>
-import Aux_home_manager from "./auxiliares/homes/aux_home_manager";
-import Aux_home_cook from "./auxiliares/homes/aux_home_cook";
-import Aux_home_deliveryman from "./auxiliares/homes/aux_home_deliveryman";
+import aux_home_customer from "./auxiliares/aux_home_customer";
+import Aux_home_manager from "./auxiliares/aux_home_manager";
+import Aux_home_cook from "./auxiliares/aux_home_cook";
+import Aux_home_deliveryman from "./auxiliares/aux_home_deliveryman";
 export default {
     name: "home",
-    components: {Aux_home_deliveryman, Aux_home_cook, Aux_home_manager},
+    components: {
+        Aux_home_deliveryman,
+        Aux_home_cook,
+        Aux_home_manager,
+        aux_home_customer
+    },
 
     data: () => {
         return {

@@ -26,7 +26,7 @@ class StoreCustomerRequest extends FormRequest
         return [
             'name' => 'required|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:3|confirmed',
+            'password' => 'required|min:3',
             'photo_url' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'address' => 'required|min:3',
             'phone' => 'required|min:9',

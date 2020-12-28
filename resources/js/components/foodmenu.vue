@@ -43,11 +43,20 @@
                 cols="4"
                 >
                 <v-card>
-                    <v-img :src="'/storage/products/'+product.photo" max-height="200px"/>
+                    <v-img :src="'/storage/products/'+product.photo" height="200px"/>
                     <v-card-title>
                         {{ product.name }}
                         <v-spacer/>
                         <v-btn icon @click="showProductInformation(product)"><v-icon>mdi-information-outline</v-icon></v-btn>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn icon  v-on="on" v-if="$store.state.user.type === 'C'" @click="addToCart(product)">
+                                    <v-icon>mdi-cart</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Add item to cart</span>
+                        </v-tooltip>
+
                     </v-card-title>
                     <v-card-subtitle>
                         {{product.price}} €
@@ -102,6 +111,9 @@ data:function () {
                 this.search = ""
             }
         },
+        addToCart(item){
+
+        }
     },
 
     created() {
