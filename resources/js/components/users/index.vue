@@ -1,14 +1,10 @@
 <template>
     <v-container>
-        <v-snackbar v-model="snackbar" :bottom="y === 'bottom'" :color="color" :left="x === 'left'" :multi-line="mode === 'multi-line'" :timeout="timeout" :top="y === 'top'" :vertical="mode === 'vertical'">
-            {{ text }}
-            <v-btn dark text @click="snackbar = false">
-                <v-icon>{{iconClose}}</v-icon>
-            </v-btn>
-        </v-snackbar>
+        <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
+
+        <aux_create_user ref="createUser"/>
 
         <aux_dialog_confirmacao ref="confirm"/>
-
 
         <v-toolbar class="d-flex justify-center align-center" style="margin-bottom: 20px;">
             <v-toolbar-title>Users</v-toolbar-title>
@@ -19,11 +15,11 @@
                 <v-spacer></v-spacer>
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
-                        <v-btn v-on="on"  icon @click="" >
+                        <v-btn v-on="on"  icon @click="createUser()" >
                             <v-icon>mdi-plus</v-icon>
                         </v-btn>
                     </template>
-                    <span>CreateUser</span>
+                    <span>Create User</span>
                 </v-tooltip>
             </v-toolbar>
             <v-card-text>
@@ -36,11 +32,12 @@
                     :search="search"
                 >
                     <template v-slot:item.img="{ item }">
-                        <v-img :src="'/storage/fotos/'+item.photo_url" width="100px" height="100px" style="border-radius: 50%"/>
+                        <v-img v-if="item.photo_url !== null" :src="'/storage/fotos/'+item.photo_url" width="100px" height="100px" style="border-radius: 50%"/>
+                        <v-img v-else :src="'/images/user_no_photo.png'" width="100px" height="100px" style="border-radius: 50%"/>
                     </template>
                     <template v-slot:item.actions="{item}">
                         <div v-if="item.email !== loggedUser.email && item.deleted_At === null">
-                            <v-tooltip bottom>
+                            <v-tooltip bottom v-if="item.type !== 'C'">
                                 <template v-slot:activator="{ on }" >
                                     <v-btn v-on="on" icon @click="updateUser(item)">
                                         <v-icon>mdi-account-edit</v-icon>
@@ -81,12 +78,13 @@
 </template>
 
 <script>
-import {mdiClose} from "@mdi/js";
 import Aux_dialog_confirmacao from "../auxiliares/aux_dialog_confirmacao";
+import Aux_snackbar from "../auxiliares/aux_snackbar";
+import Aux_create_user from "../auxiliares/aux_create_user";
 
 export default {
     name: "index",
-    components: {Aux_dialog_confirmacao},
+    components: {Aux_create_user, Aux_snackbar, Aux_dialog_confirmacao},
     data: () => {
         return {
             search:'',
@@ -94,6 +92,7 @@ export default {
             loggedUser: '',
             headers: [
                 {text: '', sortable: false, value: 'img'},
+                {text: 'ID', align: 'start', sortable: true, value: 'id',},
                 {text: 'Name', align: 'start', sortable: true, value: 'name',},
                 {text: 'Email', sortable: true, value: 'email'},
                 {text: 'Type', align: 'start', sortable: true, value: 'type',},
@@ -103,14 +102,9 @@ export default {
 
             // ---- SNACKBAR INFO -----
             color: '',
-            mode: '',
             snackbar: false,
             text: '',
-            timeout: 4000,
-            x: null,
-            y: 'top',
-            iconClose: mdiClose,
-            //---------------------------
+            // ------------------------
 
             user:'',
         }
@@ -216,6 +210,13 @@ export default {
                     })
             }else{
                 return null;s
+            }
+        },
+        async createUser(){
+            if (await this.$refs.createUser.open()) {
+                this.getUsers()
+            }else{
+                return null;
             }
         },
         updateUser(item){

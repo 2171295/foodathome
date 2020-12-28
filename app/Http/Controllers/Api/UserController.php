@@ -38,6 +38,15 @@ class UserController extends Controller
         $user = new User();
         $user->fill($request->validated());
         $user->password = Hash::make($user->password);
+
+        if($request->get('photo_url')!= null) {
+            $image = $request->file('photo_url');
+            $name = ($user->id) . '-' . time() . '.' . $image->getClientOriginalExtension();
+            Storage::putFileAs('public/fotos', $image, $name);
+            $user->photo_url = $name;
+        }else{
+            $user->photo_url = null;
+        }
         $user->save();
         return response()->json(new UserResource($user), 201);
     }
