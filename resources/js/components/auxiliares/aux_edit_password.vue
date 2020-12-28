@@ -44,6 +44,7 @@ data: () => {
         display: false,
         new_password:'',
         old_password:'',
+        confirmation_password:'',
         vcardTitle:'',
         error_old:'',
         error_new:'',
@@ -63,14 +64,13 @@ data: () => {
             this.display = false;
         },
         submit() {
-            axios.put('api/users/'+this.$store.state.user.id+'/confirmpassword', {
+            axios.put('api/users/'+this.$store.state.user.id+'/confirm_password', {
                 oldPassword: this.old_password
             }).then((response)=>{
                 console.log(response)
             }).catch((error)=>{
-
+                console.log(error)
             })
-
         }
 },
     components: {
