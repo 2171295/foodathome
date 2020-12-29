@@ -15,13 +15,13 @@
             text
             class="body-2 font-weight-bold"
             @click.native="cancel"
-          >Cancelar</v-btn>
+          >Cancel</v-btn>
           <v-btn
             color="success"
             class="body-2 font-weight-bold"
             outlined
             @click.native="agree"
-          >Aceitar</v-btn>
+          >Accept</v-btn>
         </v-card-actions>
     </v-card>
 

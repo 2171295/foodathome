@@ -1,10 +1,22 @@
 <template>
     <div>
         <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
-        <v-dialog v-model="display">
+        <aux_dialog_confirmacao ref="confirmDialog"/>
+        <v-dialog v-model="display" @keydown.esc="!display">
             <v-card>
                 <v-toolbar class="d-flex justify-center">
                     <v-toolbar-title>Shopping Cart</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-tooltip bottom >
+                        <template v-slot:activator="{ on, attrs }">
+                            <div v-on="on">
+                                <v-btn icon v-bind="attrs" v-on="on" @click="display = false">
+                                    <v-icon>mdi-close</v-icon>
+                                </v-btn>
+                            </div>
+                        </template>
+                        <span>Close</span>
+                    </v-tooltip>
                 </v-toolbar>
                 <v-card-text>
                     <v-btn @click="clearCart" x-small>Clear Cart</v-btn>
@@ -23,6 +35,7 @@
                                                 <v-col md="2">
                                                     <p>Name</p>
                                                     <p>{{product.name}}</p>
+                                                    <p>({{product.unit_price}}€/unit)</p>
                                                 </v-col>
                                                 <v-col md="2">
                                                     <p>Quantity</p>
@@ -45,6 +58,10 @@
                             </v-row>
                         </template>
                     </v-data-iterator>
+                    <div class="d-flex justify-end black--text v-size--large">Total value: {{ total_value }}€</div>
+                    <div class="d-flex justify-end black--text">
+                        <v-btn @click="submit">Checkout</v-btn>
+                    </div>
                 </v-card-text>
             </v-card>
         </v-dialog>
@@ -54,6 +71,7 @@
 <script>
 import {mdiCamera} from "@mdi/js";
 import aux_snackbar from "./aux_snackbar";
+import aux_dialog_confirmacao from "./aux_dialog_confirmacao";
 
 export default {
     name: "aux_shopping_cart",
@@ -66,6 +84,7 @@ export default {
         // ------------------------
         items:'',
         order_item:[],
+        total_value:'',
         found: false,
     }),
     methods:{
@@ -81,10 +100,12 @@ export default {
         },
         getItems(){
             this.order_item = JSON.parse(JSON.stringify(this.$store.state.cart))
+            this.total_value = JSON.parse(JSON.stringify(this.$store.state.totalValueCart))
         },
         clearCart(){
             this.$store.commit('clearCart')
             this.order_item = [];
+            this.total_value = null;
         },
         addQuantity(product){
             this.$store.commit('addQuantityItemToCart', product);
@@ -102,11 +123,18 @@ export default {
             this.resolve(false);
             this.display = false;
         },
-        submit() {
+        async submit() {
+            if (await this.$refs.confirmDialog.open(
+                "Place order",
+                "Are you sure about placing this order?")
+            ) {
+
+            }
         },
     },
     components: {
-        aux_snackbar
+        aux_snackbar,
+        aux_dialog_confirmacao
     },
 }
 </script>
