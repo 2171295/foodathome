@@ -16,6 +16,7 @@ export default new Vuex.Store({
         availableManagers:[],
         availableCookers:[],
         availableDeliveryman:[],
+        totalValueCart:'',
     },
     mutations: {
         clearUserAndToken (state) {
@@ -85,11 +86,53 @@ export default new Vuex.Store({
         },
         setCart (state, cart) {
             state.cart = cart
-            localStorage.setItem('cart', state.cart)
+            localStorage.setItem('cart', JSON.stringify(state.cart))
         },
         addItemToCart (state, itemCart) {
+            for(var i in state.cart){
+                if(state.cart[i].id === itemCart.id){
+                    state.cart[i].quantity ++;
+                    state.cart[i].total_price =(state.cart[i].quantity * itemCart.unit_price).toFixed(2);
+                    localStorage.setItem('cart', JSON.stringify(state.cart))
+
+                    return;
+                }
+            }
             state.cart.push(itemCart)
-            localStorage.setItem('cart', state.cart)
+            localStorage.setItem('cart', JSON.stringify(state.cart))
+        },
+        removeItemFromCart (state, itemCart) {
+            for(var i in state.cart){
+                if(state.cart[i].id === itemCart.id){
+                    state.cart.splice(state.cart.indexOf(i), 1);
+                    localStorage.setItem('cart', JSON.stringify(state.cart))
+                    return;
+                }
+            }
+        },
+        addQuantityItemToCart(state, itemCart){
+            for(var i in state.cart) {
+                if (state.cart[i].id === itemCart.id) {
+                    state.cart[i].quantity++;
+                    state.cart[i].total_price = (state.cart[i].quantity*itemCart.unit_price).toFixed(2);
+                    localStorage.setItem('cart', JSON.stringify(state.cart))
+                    return;
+                }
+            }
+        },
+        removeQuantityItemFromCart(state, itemCart){
+            for(var i in state.cart) {
+                if (state.cart[i].id === itemCart.id) {
+                    if (state.cart[i].quantity === 1) {
+                        state.cart.splice(state.cart.indexOf(i), 1);
+                    } else {
+                        state.cart[i].quantity--;
+                        state.cart[i].total_price = (state.cart[i].quantity * itemCart.unit_price).toFixed(2);
+                    }
+                    localStorage.setItem('cart', JSON.stringify(state.cart))
+                    return;
+                }
+            }
         },
         setLoggedUsers(state, users){
             state.loggedUsers = users;
@@ -117,7 +160,7 @@ export default new Vuex.Store({
             if (localStorage.getItem('cart') === null) {
                 context.commit('clearCart')
             } else {
-                context.commit('setCart', localStorage.getItem('cart'))
+                context.commit('setCart', JSON.parse(localStorage.getItem('cart')))
             }
         },
         loadLoggedUser (context){

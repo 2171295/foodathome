@@ -76,6 +76,7 @@ name: "foodmenu",
 data:function () {
     return {
         products:[],
+        selectedProduct:[],
         checkboxHotDishes:false,
         checkboxColdDishes:false,
         dialogProductInformation:false,
@@ -85,10 +86,8 @@ data:function () {
         page:1,
         keys: [
             'Name',
-
         ],
         comboboxItems:['','Hot Dish', 'Cold Dish', 'Drink', 'Dessert'],
-
     }
 },
     methods:{
@@ -112,7 +111,8 @@ data:function () {
             }
         },
         addToCart(item){
-
+            this.selectedProduct = {"id":item.id, "photo": item.photo, "name":item.name, "quantity": 1, "unit_price": parseFloat(item.price), "total_price": parseFloat(item.price) }
+            this.$store.commit('addItemToCart', this.selectedProduct);
         }
     },
 
@@ -121,6 +121,7 @@ data:function () {
             this.search = this.$store.state.menu_search;
             this.$store.commit("setMenuSearch", "")
         }
+
     },
     computed:{
         filteredKeys () {
