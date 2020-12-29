@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
@@ -10,26 +11,50 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        $http = new \GuzzleHttp\Client;
-        $form_params = [
-            'grant_type' => 'password',
-            'client_id' => env('PASSPORT_ID', 2),
-            'client_secret' => env('PASSPORT_SECRET'),
-            'username' => $request->email,
-            'password' => $request->password,
-            'scope' => ''
-        ];
-        $response = $http->post(env('PASSPORT_URL').'/oauth/token', [
-            'form_params' => $form_params,
-            'exceptions' => true,
-        ]);
-        $errorCode = $response->getStatusCode();
-        if ($errorCode == '200') {
-            return json_decode((string)$response->getBody(), true);
-        } else {
-            return response()->json(
-                ['msg' => 'User credentials are invalid'], $errorCode);
+        $errorCode = 0;
+        $user = User::withTrashed()->where('email',$request->email)->get();
+        if($user[0]->blocked && $user[0]->deleted_at === null){
+            $errorCode = '301';
         }
+        if($user[0]->blocked && $user[0]->deleted_at!== null){
+            $errorCode = '302';
+        }
+
+        if ($errorCode === 0) {
+            $http = new \GuzzleHttp\Client;
+            $form_params = [
+                'grant_type' => 'password',
+                'client_id' => env('PASSPORT_ID', 2),
+                'client_secret' => env('PASSPORT_SECRET'),
+                'username' => $request->email,
+                'password' => $request->password,
+                'scope' => ''
+            ];
+            $response = $http->post(env('PASSPORT_URL') . '/oauth/token', [
+                'form_params' => $form_params,
+                'exceptions' => true,
+            ]);
+            $errorCode = $response->getStatusCode();
+        }
+
+        switch ($errorCode){
+            case '200':
+                return json_decode((string)$response->getBody(), true);
+                break;
+            case '301':
+                return response()->json(
+                    ['msg' => 'Your account was blocked.', 'errorCode' => $errorCode]);
+            break;
+            case '302':
+                return response()->json(
+                    ['msg' => 'Your account was deleted.', 'errorCode' => $errorCode]);
+            break;
+            default:
+                return response()->json(
+                    ['msg' => 'User credentials are invalid'], $errorCode);
+        }
+
+
     }
 
     public function logout()

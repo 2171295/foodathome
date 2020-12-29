@@ -70,6 +70,7 @@ export default {
             timeout: 4000,
             x: null,
             y: 'top',
+            break: false,
             // ------------------------
             user: {
                 email: '',
@@ -79,28 +80,36 @@ export default {
     },
     methods:{
         onSubmit(){
+            this.break = false;
             this.$store.commit('clearUserAndToken')
             axios.post("api/login", this.user).
-            then(response => {
-                this.$store.commit("setToken", response.data.access_token);
-                return axios.get("api/users/me");
-            })
-            .then(response => {
-                axios.put("api/users/"+response.data.data.id+"/logged");
-                this.$store.dispatch('setUser',response.data.data)
-                .then(() => {
-                    console.log(this.$store.state.user)
-                    this.$router.push('/home');
-                })
-                .catch(error => {
+            then((response) => {
+                if(response.data.errorCode){
                     this.color = "black";
-                    this.text = "Set user in store didn't work."
+                    this.text =  response.data.msg;
                     this.snackbar = true;
-                })
-                /*this.$store.commit("getUser")*/
+                    this.break = true;
+                }else{
+                    this.$store.commit("setToken", response.data.access_token);
+                    return axios.get("api/users/me");
+                }
             })
-            .catch(error => {
-                console.log(error)
+            .then((response) => {
+                if (this.break === false) {
+                    axios.put("api/users/" + response.data.data.id + "/logged");
+                    this.$store.dispatch('setUser', response.data.data)
+                        .then(() => {
+                            this.$router.push('/home');
+                        })
+                        .catch(error => {
+                            this.color = "black";
+                            this.text = "Set user in store didn't work."
+                            this.snackbar = true;
+                        })
+                    /*this.$store.commit("getUser")*/
+                }
+            })
+            .catch((response)=> {
                 this.$store.commit("clearUserAndToken");
                 this.color = "black";
                 this.text = "Your username and/or password do not match."
