@@ -40,14 +40,18 @@ class UserController extends Controller
         $user->fill($request->validated());
         $user->password = Hash::make($user->password);
 
-        if($request->get('photo_url')!= null) {
-            $image = $request->file('photo_url');
-            $name = ($user->id) . '-' . time() . '.' . $image->getClientOriginalExtension();
-            Storage::putFileAs('public/fotos', $image, $name);
+        if($request->photo_url != null) {
+            $name = $user->id . '_' . time() . '.' . $request->photo_url->getClientOriginalExtension();
+            if($user->photo_url != null) {
+                Storage::disk('public')->delete('fotos/'.$user->foto_url);
+            }
+            Storage::putFileAs('public/fotos', $request->photo_url, $name);
+
             $user->photo_url = $name;
         }else{
             $user->photo_url = null;
         }
+
         $user->save();
         return response()->json(new UserResource($user), 201);
     }

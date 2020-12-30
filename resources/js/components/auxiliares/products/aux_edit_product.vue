@@ -10,7 +10,7 @@
                 </v-toolbar>
                 <v-card-text style="margin-top: 20px">
                     <validation-observer ref="observer" v-slot="{ invalid }">
-                        <form @submit.prevent="submit">
+                        <form @submit="submit" enctype="multipart/form-data">
                             <validation-provider v-slot="{ errors }" name="Name" rules="required|max:50">
                                 <v-text-field
                                     v-model="aux_product.name"
@@ -41,17 +41,23 @@
                                 label="Select Product Type"
                                 single-line
                             ></v-select>
-<!--                            <v-file-input-->
-<!--                                counter-->
-<!--                                accept="image/png, image/jpeg"-->
-<!--                                label="Pick a photo:"-->
-<!--                                v-model="photo_url"-->
-<!--                                :rules="rulesPhoto"-->
-<!--                                prepend-icon="mdi-camera"-->
-<!--                            ></v-file-input>-->
-                            <v-btn class="mr-4" type="submit" :disabled="invalid">
-                                Submit
-                            </v-btn>
+                            <v-img :src="'/storage/products/'+aux_product.photo" max-height="200px" max-width="200px" style="border-radius: 50%;"/>
+                            <v-file-input
+                                counter
+                                accept="image/png, image/jpeg"
+                                label="Pick a new photo:"
+                                v-model="file"
+                                prepend-icon="mdi-camera"
+                                v-on:change="onFileChange"
+                            />
+                            <div>
+                                <v-btn class="mr-4" type="submit" :disabled="invalid">
+                                    Submit
+                                </v-btn>
+                                <v-btn class="mr-4" @click="cancel">
+                                    Cancel
+                                </v-btn>
+                            </div>
                         </form>
                     </validation-observer>
                 </v-card-text>
@@ -83,6 +89,7 @@ export default {
 
             display: false,
             aux_product: '',
+            file: null,
 
             product_types: [
                 {name: 'Drink', type_value: 'drink'},
@@ -105,6 +112,19 @@ export default {
         cancel() {
             this.resolve(false);
             this.display = false;
+        },
+        onFileChange(e){
+            console.log(e);
+            this.file = e;
+        },
+        gatherFormData(){
+            let data = new FormData();
+            data.append("name",this.aux_product.name)
+            data.append("type",this.aux_product.type)
+            data.append("price",this.aux_product.price)
+            data.append("description",this.aux_product.description)
+            data.append("photo_url",this.file)
+            return data;
         },
         submit() {
             if (this.$refs.observer.validate()) {

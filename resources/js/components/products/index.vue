@@ -121,6 +121,7 @@ export default {
                         setTimeout(() => {
                             this.snackbar = false;
                         }, 2000);
+                        this.getProducts()
                     })
                     .catch(() => {
                         this.snackbar = true;

@@ -1,17 +1,29 @@
 <template>
     <div>
         <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
-        <v-dialog v-model="display">
+        <v-dialog v-model="display" max-width="700px">
             <v-card>
                 <v-toolbar class="d-flex justify-center align-center">
                     Edit Profile Photo
                 </v-toolbar>
                 <v-card-text>
                     <form @submit="formSubmit" enctype="multipart/form-data">
-                        <strong>File:</strong>
-                        <input type="file" class="form-control" v-on:change="onFileChange">
-
-                        <button class="btn btn-success">Submit</button>
+                        <div>
+                            <v-file-input
+                                counter
+                                accept="image/png, image/jpeg"
+                                label="Pick a new photo:"
+                                v-model="file"
+                                prepend-icon="mdi-camera"
+                                v-on:change="onFileChange"
+                            />
+                        </div>
+                        <v-btn class="mr-4" type="submit">
+                            Upload
+                        </v-btn>
+                        <v-btn class="mr-4" @click="cancel">
+                            Cancel
+                        </v-btn>
                     </form>
                 </v-card-text>
             </v-card>
@@ -27,7 +39,7 @@ export default {
     props:['user'],
     data: () => ({
         iconCamera: mdiCamera,
-        file: '',
+        file: null,
         display:false,
         // ---- SNACKBAR INFO -----
         color: '',

@@ -10,7 +10,7 @@
                 </v-toolbar>
                 <v-card-text style="margin-top: 20px">
                     <validation-observer ref="observer" v-slot="{ invalid }">
-                        <form @submit.prevent="submit">
+                        <form @submit="submit" enctype="multipart/form-data">
                             <validation-provider v-slot="{ errors }" name="Name" rules="required|max:50">
                                 <v-text-field
                                     v-model="name"
@@ -40,17 +40,22 @@
                                 label="Select Product Type"
                                 single-line
                             ></v-select>
-                            <!--                            <v-file-input-->
-                            <!--                                counter-->
-                            <!--                                accept="image/png, image/jpeg"-->
-                            <!--                                label="Pick a photo:"-->
-                            <!--                                v-model="photo_url"-->
-                            <!--                                :rules="rulesPhoto"-->
-                            <!--                                prepend-icon="mdi-camera"-->
-                            <!--                            ></v-file-input>-->
-                            <v-btn class="mr-4" type="submit" :disabled="invalid">
-                                Submit
-                            </v-btn>
+                            <v-file-input
+                                counter
+                                accept="image/png, image/jpeg"
+                                label="Pick a photo:"
+                                v-model="file"
+                                prepend-icon="mdi-camera"
+                                v-on:change="onFileChange"
+                            />
+                            <div>
+                                <v-btn class="mr-4" type="submit" :disabled="invalid">
+                                    Submit
+                                </v-btn>
+                                <v-btn class="mr-4" @click="cancel">
+                                    Cancel
+                                </v-btn>
+                            </div>
                         </form>
                     </validation-observer>
                 </v-card-text>
@@ -84,7 +89,7 @@ export default {
             type: '',
             description: '',
             price: '',
-            photo: null,
+            file: null,
 
             product_types: [
                 {name: 'Drink', type_value: 'drink'},
@@ -107,24 +112,37 @@ export default {
             this.resolve(false);
             this.display = false;
         },
-        submit() {
+        onFileChange(e){
+            console.log(e);
+            this.file = e;
+        },
+        gatherFormData(){
+            let data = new FormData();
+            data.append("name",this.name)
+            data.append("type",this.type)
+            data.append("price",this.price)
+            data.append("description",this.description)
+            data.append("photo_url",this.file)
+            return data;
+        },
+        submit(e) {
+            e.preventDefault();
             if (this.$refs.observer.validate()) {
-                axios.post('api/products/',{
-                    name: this.name,
-                    type: this.type,
-                    price: this.price,
-                    description: this.description,
-                    photo_url: this.photo,
-                }) .then(() => {
-                    this.color = 'success';
-                    this.text = "Product successfully created."
-                    this.snackbar = true;
-                    this.resolve(true);
-                    this.display = false;
-                    setTimeout(() => {
-                        this.snackbar = false;
-                    }, 2000);
-                })
+                let data = this.gatherFormData();
+                const config = {
+                    headers: {'content-type': 'multipart/form-data'}
+                }
+                axios.post('api/products/', data, config)
+                    .then(() => {
+                        this.color = 'success';
+                        this.text = "Product successfully created."
+                        this.snackbar = true;
+                        this.resolve(true);
+                        this.display = false;
+                        setTimeout(() => {
+                            this.snackbar = false;
+                        }, 2000);
+                    })
                     .catch(() => {
                         this.color = 'red';
                         this.text = "Error creating product."

@@ -11,7 +11,7 @@
                 </v-toolbar>
                 <v-card-text style="margin-top: 20px">
                     <validation-observer ref="observer" v-slot="{ invalid }">
-                        <form @submit.prevent="submit">
+                        <form @submit="submit" enctype="multipart/form-data">
                             <validation-provider v-slot="{ errors }" name="Name" rules="required|alpha_spaces|max:50">
                                 <v-text-field
                                     v-model="name"
@@ -50,18 +50,22 @@
                                 label="Select User Type"
                                 single-line
                             ></v-select>
-<!--                            <v-file-input-->
-<!--                                counter-->
-<!--                                accept="image/png, image/jpeg"-->
-<!--                                label="Pick a photo:"-->
-<!--                                v-model="photo_url"-->
-<!--                                :rules="rulesPhoto"-->
-<!--                                prepend-icon="mdi-camera"-->
-<!--                            ></v-file-input>-->
-                            <input type="file" class="custom-file-input" id="customFile" ref="file" @change="handleFileObject()">
-                            <v-btn class="mr-4" type="submit" :disabled="invalid">
-                                Submit
-                            </v-btn>
+                            <v-file-input
+                                counter
+                                accept="image/png, image/jpeg"
+                                label="Pick a photo:"
+                                v-model="file"
+                                prepend-icon="mdi-camera"
+                                v-on:change="onFileChange"
+                            />
+                            <div>
+                                <v-btn class="mr-4" type="submit" :disabled="invalid">
+                                    Submit
+                                </v-btn>
+                                <v-btn class="mr-4" @click="cancel">
+                                    Cancel
+                                </v-btn>
+                            </div>
                         </form>
                     </validation-observer>
                 </v-card-text>
@@ -96,16 +100,12 @@ export default {
             email:'',
             password:'',
             password_confirmation:'',
-            avatar: null,
-            avatarName: null,
+            file: null,
             type:'',
             users_types: [
                 {name: 'Cooker', type_value: 'EC'},
                 {name: 'Deliveryman', type_value: 'ED'},
                 {name: 'Manager', type_value: 'EM'},
-            ],
-            rulesPhoto: [
-                v => !v || v.size < 2000000 || 'Avatar size should be less than 2 MB!',
             ],
         }
     },
@@ -122,7 +122,22 @@ export default {
             this.resolve(false);
             this.display = false;
         },
-        submit() {
+        onFileChange(e){
+            console.log(e);
+            this.file = e;
+        },
+        gatherFormData(){
+            let data = new FormData();
+            data.append("name",this.name)
+            data.append("email",this.email)
+            data.append("password",this.password)
+            data.append("password_confirmation",this.password_confirmation)
+            data.append("photo_url",this.file)
+            data.append("type",this.type)
+            return data;
+        },
+        submit(e) {
+            e.preventDefault();
             if (this.$refs.observer.validate()) {
                 axios.get('api/users/emailavailable?email='+this.email)
                 .then((response) => {
@@ -134,19 +149,12 @@ export default {
                             this.snackbar = false;
                         }, 2000);
                     } else {
-                        let data = new FormData();
-                        data.append("name",this.name)
-                        data.append("email",this.email)
-                        data.append("password",this.password)
-                        data.append("password_confirmation",this.password_confirmation)
-                        data.append("photo_url",this.avatar)
-                        data.append("type",this.type)
-                        console.log(data)
-                        axios.post("api/users", data, {
-                            headers: {
-                                'Content-Type': "multipart/form-data; charset=utf-8; boundary=" + Math.random().toString().substr(2)
-                            }
-                        })
+                        let data = this.gatherFormData();
+                        const config = {
+                            headers: { 'content-type': 'multipart/form-data' }
+                        }
+
+                        axios.post("api/users", data, config)
                             .then(() => {
                                 this.color = 'success';
                                 this.text = "New employee created successfully."

@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Http\Resources\Product as ProductResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -26,13 +27,34 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request){
         $product = new Product();
         $product->fill($request->validated());
-        $product->photo_url = null;
+        if($request->photo_url != null) {
+            $name = $product->id . '_' . time() . '.' . $request->photo_url->getClientOriginalExtension();
+            if($product->photo_url != null) {
+                Storage::disk('public')->delete('products/'.$product->foto_url);
+            }
+            Storage::putFileAs('public/products', $request->photo_url, $name);
+
+            $product->photo_url = $name;
+        }else{
+            $product->photo_url = null;
+        }
         $product->save();
         return new ProductResource($product);
     }
 
     public function update(UpdateProductRequest $request, Product $product){
         $product->update($request->validated());
+        if($request->photo_url != $product->photo_url) {
+            $name = $product->id . '_' . time() . '.' . $request->photo_url->getClientOriginalExtension();
+            if($product->photo_url != null) {
+                Storage::disk('public')->delete('products/'.$product->foto_url);
+            }
+            Storage::putFileAs('public/products', $request->photo_url, $name);
+
+            $product->photo_url = $name;
+        }
+
+        $product->save();
         return new ProductResource($product);
     }
 
