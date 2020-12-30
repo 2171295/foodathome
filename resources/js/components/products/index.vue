@@ -3,6 +3,8 @@
         <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
 
         <aux_dialog_confirmacao ref="confirm"/>
+        <aux_edit_product ref="updateProduct"/>
+        <aux_create_product ref="createProduct"/>
 
         <v-toolbar class="d-flex justify-center align-center" style="margin-bottom: 20px;">
             <v-toolbar-title>Products</v-toolbar-title>
@@ -59,9 +61,11 @@
 <script>
 import Aux_snackbar from "../auxiliares/aux_snackbar";
 import Aux_dialog_confirmacao from "../auxiliares/aux_dialog_confirmacao";
+import Aux_edit_product from "../auxiliares/products/aux_edit_product";
+import Aux_create_product from "../auxiliares/products/aux_create_product";
 export default {
     name: "index",
-    components: {Aux_dialog_confirmacao, Aux_snackbar},
+    components: {Aux_create_product, Aux_edit_product, Aux_dialog_confirmacao, Aux_snackbar},
     data: () => {
         return {
             search:'',
@@ -80,6 +84,8 @@ export default {
             snackbar: false,
             text: '',
             // ------------------------
+
+            product:'',
         }
     },
     methods: {
@@ -90,10 +96,18 @@ export default {
             })
         },
         async createProduct(){
-
+            if (await this.$refs.createProduct.open()) {
+                this.getProducts()
+            }else{
+                return null;
+            }
         },
         async updateProduct(item){
-
+            if (await this.$refs.updateProduct.open(item)) {
+                this.getProducts()
+            }else{
+                return null;
+            }
         },
         async deleteProduct(item){
             if(await this.$refs.confirm.open(

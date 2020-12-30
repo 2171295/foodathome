@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\InsertImageRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Resources\User as UserResource;
@@ -11,6 +10,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -68,26 +68,24 @@ class UserController extends Controller
     public function updatePhoto(Request $request, User $user)
     {
         $request->validate([
-            'photo' => 'required|file|image|mimes:jpeg,jpg,png|max:2048',
+            'photo' => 'image|mimes:jpeg,jpg,png',
         ]);
 
-        if($request->get('photo') != null) {
-            $image = $request->file('photo');
-            $name = $user->id . '_' . time() . '.' . $image->getClientOriginalExtension();
-            if($user->foto_url != null) {
-                Storage::disk('public')->delete('fotos/'.$user->foto_url);
-            }
-            Storage::putFileAs('public/fotos', $image, $name);
-
-            $user->foto_url = $name;
-            $user->save();
-            return response()->json("User Photo Updated", 200);
+        $name = $user->id . '_' . time() . '.' . $request->photo->getClientOriginalExtension();
+        if($user->photo_url != null) {
+            Storage::disk('public')->delete('fotos/'.$user->foto_url);
         }
-        return response()->json("Photo not Updated", 400);
+        Storage::putFileAs('public/fotos', $request->photo, $name);
+
+        $user->photo_url = $name;
+        $user->save();
+
+        return response()->json("User Photo Updated", 200);
     }
 
     public function destroy(User $user)
     {
+        $user->blocked = 1;
         $user->delete();
         return response()->json($user, 204);
     }

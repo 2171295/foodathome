@@ -24,10 +24,10 @@ class UpdateProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:products|min:3|regex:/^[A-Za-záàâãéèêíóôõúçÁÀÂÃÉÈÍÓÔÕÚÇ ]+$/',
+            'name' => 'required|unique:products|min:3',
             'price' => 'required|numeric|between:0,999.99|min:1',
             'description' => 'required|',
-            'photo_url' => 'nullable|image|mimes:jpeg,jpg|max:2048',
+            //'photo_url' => 'nullable|image|mimes:jpeg,jpg|max:2048',
             'type' => 'required|in:hot dish,cold dish,drink,dessert',
         ];
     }

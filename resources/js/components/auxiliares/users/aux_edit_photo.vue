@@ -4,24 +4,15 @@
         <v-dialog v-model="display">
             <v-card>
                 <v-toolbar class="d-flex justify-center align-center">
-                    Shopping Cart
-                </v-toolbar>>
+                    Edit Profile Photo
+                </v-toolbar>
                 <v-card-text>
-<!--                    <v-file-input-->
-<!--                    counter-->
-<!--                    accept="image/png, image/jpeg"-->
-<!--                    label="Pick a photo:"-->
-<!--                    v-model="photo"-->
-<!--                    :prepend-icon="iconCamera"-->
-<!--                ></v-file-input>-->
-                    <input @change="selectFile" type="file" class="text-center center-block file-upload">
-                    {{photo}}
-                <v-btn color="error" text @click="display = false">
-                    Cancel
-                </v-btn>
-                <v-btn color="success" text  @click="submit">
-                    Save
-                </v-btn>
+                    <form @submit="formSubmit" enctype="multipart/form-data">
+                        <strong>File:</strong>
+                        <input type="file" class="form-control" v-on:change="onFileChange">
+
+                        <button class="btn btn-success">Submit</button>
+                    </form>
                 </v-card-text>
             </v-card>
         </v-dialog>
@@ -36,7 +27,7 @@ export default {
     props:['user'],
     data: () => ({
         iconCamera: mdiCamera,
-        photo:null,
+        file: '',
         display:false,
         // ---- SNACKBAR INFO -----
         color: '',
@@ -45,10 +36,6 @@ export default {
         // ------------------------
     }),
     methods:{
-        selectFile(event) {
-            // `files` is always an array because the file input may be in multiple mode
-            this.photo = event.target.files[0];
-        },
         open() {
             this.display = true;
             this.valid = true
@@ -57,34 +44,45 @@ export default {
                 this.reject = reject;
             });
         },
-        cancel(){
+        cancel() {
             this.resolve(false);
             this.display = false;
         },
-        submit() {
-            axios.put('api/users/'+this.user.id+'/update_photo', {
-                photo: this.photo
-            }).then((response) => {
-                console.log(response)
-                this.color = 'success';
-                this.text = "Photo updated successfully."
-                this.snackbar = true;
-                setTimeout(() => {
-                    this.snackbar = false;
-                }, 2000);
-                this.resolve(true);
-                this.display = false;
-
-            }).catch((error) =>{
-                console.log(error)
-                this.color = 'red';
-                this.text = "Error updating photo."
-                this.snackbar = true;
-                setTimeout(() => {
-                    this.snackbar = false;
-                }, 2000);
-            })
+        onFileChange(e){
+            console.log(e.target.files[0]);
+            this.file = e.target.files[0];
         },
+        formSubmit(e) {
+            e.preventDefault();
+
+            const config = {
+                headers: { 'content-type': 'multipart/form-data' }
+            }
+
+            let formData = new FormData();
+            formData.append('photo', this.file);
+
+            axios.post('api/users/'+this.user.id+'/update_photo', formData, config)
+                .then((response)=> {
+                    console.log(response)
+                    this.color = 'success';
+                    this.text = "New user's photo successfuly uploaded."
+                    this.snackbar = true;
+                    this.resolve(true);
+                    this.display = false;
+                    setTimeout(() => {
+                        this.snackbar = false;
+                    }, 2000);
+                })
+                .catch(function (error) {
+                    this.color = 'red';
+                    this.text = "Error uploading new image."
+                    this.snackbar = true;
+                    setTimeout(() => {
+                        this.snackbar = false;
+                    }, 2000);
+                });
+        }
     },
     components: {
         aux_snackbar

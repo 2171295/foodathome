@@ -1,5 +1,6 @@
 <template>
     <div>
+
         <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
         <v-dialog v-model="display" max-width="700px">
             <v-card style="margin-top: 10px">
@@ -41,23 +42,23 @@
                                     type="password">
                                 </v-text-field>
                             </validation-provider>
-                            <v-file-input
-                                counter
-                                accept="image/png, image/jpeg"
-                                label="Pick a photo:"
-                                v-model="photo_url"
-                                :rules="rulesPhoto"
-                                prepend-icon="mdi-camera"
-                            ></v-file-input>
                             <v-select
                                 v-model="type"
                                 :items="users_types"
                                 item-text="name"
                                 item-value="type_value"
                                 label="Select User Type"
-                                return-object
                                 single-line
                             ></v-select>
+<!--                            <v-file-input-->
+<!--                                counter-->
+<!--                                accept="image/png, image/jpeg"-->
+<!--                                label="Pick a photo:"-->
+<!--                                v-model="photo_url"-->
+<!--                                :rules="rulesPhoto"-->
+<!--                                prepend-icon="mdi-camera"-->
+<!--                            ></v-file-input>-->
+                            <input type="file" class="custom-file-input" id="customFile" ref="file" @change="handleFileObject()">
                             <v-btn class="mr-4" type="submit" :disabled="invalid">
                                 Submit
                             </v-btn>
@@ -95,23 +96,17 @@ export default {
             email:'',
             password:'',
             password_confirmation:'',
-            photo_url: null,
+            avatar: null,
+            avatarName: null,
             type:'',
             users_types: [
-                {
-                    name: 'Cooker', type_value: 'EC'
-                },
-                {
-                    name: 'Deliveryman', type_value: 'ED'
-                },
-                {
-                    name: 'Manager', type_value: 'EM'
-                },
+                {name: 'Cooker', type_value: 'EC'},
+                {name: 'Deliveryman', type_value: 'ED'},
+                {name: 'Manager', type_value: 'EM'},
             ],
             rulesPhoto: [
                 v => !v || v.size < 2000000 || 'Avatar size should be less than 2 MB!',
             ],
-
         }
     },
     methods: {
@@ -128,7 +123,6 @@ export default {
             this.display = false;
         },
         submit() {
-            console.log(this.photo_url)
             if (this.$refs.observer.validate()) {
                 axios.get('api/users/emailavailable?email='+this.email)
                 .then((response) => {
@@ -140,13 +134,18 @@ export default {
                             this.snackbar = false;
                         }, 2000);
                     } else {
-                        axios.post("api/users", {
-                            name: this.name,
-                            email: this.email,
-                            password: this.password,
-                            password_confirmation: this.password_confirmation,
-                            photo_url: this.photo_url,
-                            type: this.type.type_value
+                        let data = new FormData();
+                        data.append("name",this.name)
+                        data.append("email",this.email)
+                        data.append("password",this.password)
+                        data.append("password_confirmation",this.password_confirmation)
+                        data.append("photo_url",this.avatar)
+                        data.append("type",this.type)
+                        console.log(data)
+                        axios.post("api/users", data, {
+                            headers: {
+                                'Content-Type': "multipart/form-data; charset=utf-8; boundary=" + Math.random().toString().substr(2)
+                            }
                         })
                             .then(() => {
                                 this.color = 'success';
@@ -177,7 +176,11 @@ export default {
                     }, 2000);
                 })
             }
-        }
+        },
+        handleFileObject() {
+            this.avatar = this.$refs.file.files[0]
+            this.avatarName = this.avatar.name
+        },
     },
     created() {
     },

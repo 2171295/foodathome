@@ -19,7 +19,8 @@
                     </v-toolbar>
                     <v-card-text>
                         <div justify="center" align="center">
-                            <v-img :src="'/storage/fotos/'+user.photo_url" max-height="200px" max-width="200px" style="border-radius: 50%;"/>
+                            <v-img v-if="user.photo_url !== null" :src="'/storage/fotos/'+user.photo_url" max-height="200px" max-width="200px" style="border-radius: 50%;"/>
+                            <v-img v-else :src="'/images/user_no_photo.png'" max-height="200px" max-width="200px" style="border-radius: 50%;"/>
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on }">
                                     <v-btn v-on="on"  icon @click="editPhoto" >
@@ -37,7 +38,6 @@
                             <p><b>NIF:</b> {{client.nif}}</p>
                         </div>
                     </v-card-text>
-
                 </v-card>
 
             </v-col>
