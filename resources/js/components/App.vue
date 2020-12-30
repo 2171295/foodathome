@@ -42,7 +42,6 @@
                             </v-list-item-content>
                         </v-list-item>
                     </v-list>
-
                 </v-card>
 
             </v-navigation-drawer>
@@ -116,6 +115,7 @@ export default {
             rightDrawer: false,
             selected:'',
             items:'',
+            cart:[],
             items_admin: [
                 {
                     action: 'mdi-silverware-fork-knife',
@@ -171,11 +171,8 @@ export default {
                 this.$store.commit("clearUserAndToken");
                 this.$nextTick()
                     .then(() => {
-                        console.log("Log out com sucesso" )
-                        console.dir(this.$store.state.user)
                         this.$router.push("/")
                     })
-
             }).catch((error)=>{
                 console.log(error)
             })

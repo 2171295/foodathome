@@ -26,7 +26,7 @@
                                 ></v-text-field>
                             </validation-provider>
                             <div v-if="user.type === 'C'">
-                                <validation-provider v-slot="{ errors }" name="Address" rules="">
+                                <validation-provider v-slot="{ errors }" name="Address" rules="required">
                                     <v-text-field
                                         v-model="aux_client.address"
                                         :error-messages="errors"
@@ -43,7 +43,7 @@
                                     ></v-text-field>
                                 </validation-provider>
                                 <!--TODO adicionar validação personalizada para o phone-->
-                                <validation-provider v-slot="{ errors }" name="Phone" rules="">
+                                <validation-provider v-slot="{ errors }" name="Phone" rules="required|numeric|length:9">
                                     <v-text-field
                                         v-model="aux_client.phone"
                                         :error-messages="errors"

@@ -16,6 +16,7 @@ export default new Vuex.Store({
         availableManagers:[],
         availableCookers:[],
         availableDeliveryman:[],
+        totalValueCart:'',
     },
     mutations: {
         clearUserAndToken (state) {
@@ -80,16 +81,77 @@ export default new Vuex.Store({
         },
         // Mutations to handle Cart
         clearCart (state) {
-            state.cart = []
+            state.cart = [];
+            state.totalValueCart = null;
             localStorage.removeItem('cart')
+            localStorage.removeItem('totalValue')
         },
         setCart (state, cart) {
             state.cart = cart
-            localStorage.setItem('cart', state.cart)
+            localStorage.setItem('cart', JSON.stringify(state.cart))
+        },
+        setTotalValue (state, value) {
+            state.totalValueCart = value
+            localStorage.setItem('totalValue', JSON.stringify(state.totalValueCart))
         },
         addItemToCart (state, itemCart) {
+            for(var i in state.cart){
+                if(state.cart[i].id === itemCart.id){
+                    state.cart[i].quantity ++;
+                    state.cart[i].total_price =(state.cart[i].quantity * itemCart.unit_price).toFixed(2);
+                    localStorage.setItem('cart', JSON.stringify(state.cart))
+
+                    return;
+                }
+            }
+            state.totalValueCart = (Number(state.totalValueCart) + Number(itemCart.unit_price)).toFixed(2);
             state.cart.push(itemCart)
-            localStorage.setItem('cart', state.cart)
+            localStorage.setItem('cart', JSON.stringify(state.cart))
+            localStorage.setItem('totalValue', JSON.stringify(state.totalValueCart))
+        },
+        removeItemFromCart (state, itemCart) {
+            for(var i in state.cart){
+                if(state.cart[i].id === itemCart.id){
+                    state.totalValueCart = (Number(state.totalValueCart) - Number(state.cart[i].total_price)).toFixed(2);
+
+                    state.cart.splice(state.cart.indexOf(i), 1);
+
+                    localStorage.setItem('cart', JSON.stringify(state.cart))
+                    localStorage.setItem('totalValue', JSON.stringify(state.totalValueCart))
+
+                    return;
+                }
+            }
+        },
+        addQuantityItemToCart(state, itemCart){
+            for(var i in state.cart) {
+                if (state.cart[i].id === itemCart.id) {
+                    state.cart[i].quantity++;
+                    state.cart[i].total_price = (state.cart[i].quantity*itemCart.unit_price).toFixed(2);
+                    state.totalValueCart = (Number(state.totalValueCart) + Number(itemCart.unit_price)).toFixed(2);
+                    localStorage.setItem('cart', JSON.stringify(state.cart))
+                    localStorage.setItem('totalValue', JSON.stringify(state.totalValueCart))
+                    return;
+                }
+            }
+        },
+        removeQuantityItemFromCart(state, itemCart){
+            for(var i in state.cart) {
+                if (state.cart[i].id === itemCart.id) {
+                    if (state.cart[i].quantity === 1) {
+                        state.cart.splice(state.cart.indexOf(i), 1);
+                    } else {
+                        state.cart[i].quantity--;
+                        state.cart[i].total_price = (state.cart[i].quantity * itemCart.unit_price).toFixed(2);
+                    }
+                    state.totalValueCart = (Number(state.totalValueCart) - Number(itemCart.unit_price)).toFixed(2);
+
+                    localStorage.setItem('totalValue', JSON.stringify(state.totalValueCart))
+
+                    localStorage.setItem('cart', JSON.stringify(state.cart))
+                    return;
+                }
+            }
         },
         setLoggedUsers(state, users){
             state.loggedUsers = users;
@@ -113,11 +175,19 @@ export default new Vuex.Store({
         setUser (context,user) {
             context.commit("setUser",user)
         },
+        rebuildTotalValueFromStorage (context){
+            if (localStorage.getItem('totalValue') === null) {
+                context.commit('clearCart')
+            } else {
+                context.commit('setTotalValue', JSON.parse(localStorage.getItem('totalValue')))
+            }
+
+        },
         rebuildCartFromStorage (context) {
             if (localStorage.getItem('cart') === null) {
                 context.commit('clearCart')
             } else {
-                context.commit('setCart', localStorage.getItem('cart'))
+                context.commit('setCart', JSON.parse(localStorage.getItem('cart')))
             }
         },
         loadLoggedUser (context){

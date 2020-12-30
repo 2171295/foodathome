@@ -6,7 +6,6 @@
                 <v-icon>{{iconClose}}</v-icon>
             </v-btn>
         </v-snackbar>
-        <!--TODO refefinir as validações deste formulário-->
         <p class="subtitle-1 text-center">Register</p>
         <validation-observer ref="observer" v-slot="{ invalid }">
             <form @submit.prevent="submit">
