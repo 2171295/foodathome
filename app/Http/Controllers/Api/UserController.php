@@ -43,7 +43,7 @@ class UserController extends Controller
         if($request->photo_url != null) {
             $name = $user->id . '_' . time() . '.' . $request->photo_url->getClientOriginalExtension();
             if($user->photo_url != null) {
-                Storage::disk('public')->delete('fotos/'.$user->foto_url);
+                Storage::disk('public')->delete('fotos/'.$user->photo_url);
             }
             Storage::putFileAs('public/fotos', $request->photo_url, $name);
 
@@ -69,6 +69,7 @@ class UserController extends Controller
            }
         }
     }
+
     public function updatePhoto(Request $request, User $user)
     {
         $request->validate([
@@ -77,7 +78,7 @@ class UserController extends Controller
 
         $name = $user->id . '_' . time() . '.' . $request->photo->getClientOriginalExtension();
         if($user->photo_url != null) {
-            Storage::disk('public')->delete('fotos/'.$user->foto_url);
+            Storage::disk('public')->delete('fotos/'.$user->photo_url);
         }
         Storage::putFileAs('public/fotos', $request->photo, $name);
 

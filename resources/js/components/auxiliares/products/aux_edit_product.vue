@@ -41,15 +41,6 @@
                                 label="Select Product Type"
                                 single-line
                             ></v-select>
-                            <v-img :src="'/storage/products/'+aux_product.photo" max-height="200px" max-width="200px" style="border-radius: 50%;"/>
-                            <v-file-input
-                                counter
-                                accept="image/png, image/jpeg"
-                                label="Pick a new photo:"
-                                v-model="file"
-                                prepend-icon="mdi-camera"
-                                v-on:change="onFileChange"
-                            />
                             <div>
                                 <v-btn class="mr-4" type="submit" :disabled="invalid">
                                     Submit
@@ -89,7 +80,6 @@ export default {
 
             display: false,
             aux_product: '',
-            file: null,
 
             product_types: [
                 {name: 'Drink', type_value: 'drink'},
@@ -113,30 +103,24 @@ export default {
             this.resolve(false);
             this.display = false;
         },
-        onFileChange(e){
-            console.log(e);
-            this.file = e;
-        },
         gatherFormData(){
             let data = new FormData();
             data.append("name",this.aux_product.name)
             data.append("type",this.aux_product.type)
             data.append("price",this.aux_product.price)
             data.append("description",this.aux_product.description)
-            data.append("photo_url",this.file)
             return data;
         },
         submit() {
             if (this.$refs.observer.validate()) {
                 axios.put('api/products/'+this.aux_product.id,{
-                    id: this.aux_product.id,
                     name: this.aux_product.name,
                     type: this.aux_product.type,
                     price: this.aux_product.price,
                     description: this.aux_product.description,
-                    photo_url: this.aux_product.photo,
 
-                }) .then(() => {
+                }) .then((response) => {
+                    this.$socket.emit('products_list_updated', response.data.data)
                     this.color = 'success';
                     this.text = "Product successfully updated."
                     this.snackbar = true;

@@ -71,6 +71,7 @@ Route::get('products/{product}', [ProductController::class, 'show']);
 Route::post('products', [ProductController::class, 'store']);
 Route::put('products/{product}', [ProductController::class, 'update']);
 Route::delete('products/{product}', [ProductController::class, 'destroy']);
+Route::post('products/{product}/update_photo', [ProductController::class, 'updatePhoto']);
 Route::get('products/{product}/orders', [ProductController::class, 'getOrders']);
 
 //Rotas para as orders

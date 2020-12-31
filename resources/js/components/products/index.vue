@@ -5,6 +5,7 @@
         <aux_dialog_confirmacao ref="confirm"/>
         <aux_edit_product ref="updateProduct"/>
         <aux_create_product ref="createProduct"/>
+        <aux_edit_product_photo ref="updateImage"/>
 
         <v-toolbar class="d-flex justify-center align-center" style="margin-bottom: 20px;">
             <v-toolbar-title>Products</v-toolbar-title>
@@ -38,10 +39,18 @@
                         <v-tooltip bottom >
                             <template v-slot:activator="{ on }">
                                 <v-btn v-on="on" icon @click="updateProduct(item)">
-                                    <v-icon>mdi-account-edit</v-icon>
+                                    <v-icon>mdi-book-edit</v-icon>
                                 </v-btn>
                             </template>
                             <span>Edit Product</span>
+                        </v-tooltip>
+                        <v-tooltip bottom >
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" icon @click="updateProductImage(item)">
+                                    <v-icon>mdi-image-edit</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Edit Product Image</span>
                         </v-tooltip>
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
@@ -63,9 +72,15 @@ import Aux_snackbar from "../auxiliares/aux_snackbar";
 import Aux_dialog_confirmacao from "../auxiliares/aux_dialog_confirmacao";
 import Aux_edit_product from "../auxiliares/products/aux_edit_product";
 import Aux_create_product from "../auxiliares/products/aux_create_product";
+import Aux_edit_product_photo from "../auxiliares/products/aux_edit_product_photo";
 export default {
     name: "index",
-    components: {Aux_create_product, Aux_edit_product, Aux_dialog_confirmacao, Aux_snackbar},
+    components: {
+        Aux_edit_product_photo,
+        Aux_create_product,
+        Aux_edit_product,
+        Aux_dialog_confirmacao,
+        Aux_snackbar},
     data: () => {
         return {
             search:'',
@@ -104,7 +119,7 @@ export default {
         },
         async updateProduct(item){
             if (await this.$refs.updateProduct.open(item)) {
-                this.getProducts()
+                this.refreshProduct()
             }else{
                 return null;
             }
@@ -114,14 +129,15 @@ export default {
                 "Remove Product", "Are you sure you want to remove this product?"
             )) {
                 axios.delete("api/products/" + item.id)
-                    .then(() => {
+                    .then((response) => {
+                        this.$socket.emit('products_list_updated', response.data.data)
+                        this.refreshProduct(response.data.data)
                         this.snackbar = true;
                         this.text = "Product successfully deleted."
                         this.color = "green"
                         setTimeout(() => {
                             this.snackbar = false;
                         }, 2000);
-                        this.getProducts()
                     })
                     .catch(() => {
                         this.snackbar = true;
@@ -136,6 +152,21 @@ export default {
                 return null;
             }
         },
+        async updateProductImage(item){
+            if (await this.$refs.updateImage.open(item)) {
+                this.refreshProduct()
+            }else{
+                return null;
+            }
+        },
+        refreshProduct(){
+            this.getProducts();
+        },
+    },
+    sockets: {
+        product_list_updated (product_updated) {
+            this.refreshUpdate(product_updated)
+        }
     },
     created(){
         this.getProducts()

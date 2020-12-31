@@ -27,24 +27,16 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request){
         $product = new Product();
         $product->fill($request->validated());
-        if($request->photo_url != null) {
-            $name = $product->id . '_' . time() . '.' . $request->photo_url->getClientOriginalExtension();
-            if($product->photo_url != null) {
-                Storage::disk('public')->delete('products/'.$product->foto_url);
-            }
-            Storage::putFileAs('public/products', $request->photo_url, $name);
-
-            $product->photo_url = $name;
-        }else{
-            $product->photo_url = null;
-        }
+        $name = $product->id . '_' . time() . '.' . $request->photo_url->getClientOriginalExtension();
+        Storage::putFileAs('public/products', $request->photo_url, $name);
+        $product->photo_url = $name;
         $product->save();
         return new ProductResource($product);
     }
 
     public function update(UpdateProductRequest $request, Product $product){
         $product->update($request->validated());
-        if($request->photo_url != $product->photo_url) {
+        if($request->photo_url != null) {
             $name = $product->id . '_' . time() . '.' . $request->photo_url->getClientOriginalExtension();
             if($product->photo_url != null) {
                 Storage::disk('public')->delete('products/'.$product->foto_url);
@@ -60,10 +52,28 @@ class ProductController extends Controller
 
     public function destroy (Product $product){
         $product->delete();
-        return response()->json(null, 204);
+        return response()->json($product, 204);
     }
 
     public function getOrders(Product $product){
         return $product->orders;
+    }
+
+    public function updatePhoto(Request $request, Product $product)
+    {
+        $request->validate([
+            'photo' => 'image|mimes:jpeg,jpg,png',
+        ]);
+
+        $name = $product->id . '_' . time() . '.' . $request->photo->getClientOriginalExtension();
+        if($product->photo_url != null) {
+            Storage::disk('public')->delete('products/'.$product->photo_url);
+        }
+        Storage::putFileAs('public/products', $request->photo, $name);
+
+        $product->photo_url = $name;
+        $product->save();
+
+        return response()->json(new ProductResource($product), 200);
     }
 }

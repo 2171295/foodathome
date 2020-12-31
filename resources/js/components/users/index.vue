@@ -135,7 +135,7 @@ export default {
                 axios.put("api/users/"+item.id+"/block")
                     .then((response) => {
                         this.$socket.emit('user_list_updated',response.data.data)
-                        this.refreshUpdate(response.data.data)
+                        this.refreshUsers(response.data.data)
                         this.snackbar = true;
                         this.text = "User successfully blocked."
                         this.color = "green"
@@ -163,7 +163,7 @@ export default {
                 axios.put("api/users/" + item.id + "/unblock")
                     .then((response) => {
                         this.$socket.emit('user_list_updated', response.data.data)
-                        this.refreshUpdate(response.data.data)
+                        this.refreshUsers(response.data.data)
                         this.snackbar = true;
                         this.text = "User successfully unblocked."
                         this.color = "green"
@@ -191,7 +191,7 @@ export default {
                 axios.delete("api/users/" + item.id)
                     .then((response) => {
                         this.$socket.emit('user_list_updated', response.data.data)
-                        this.refreshUpdate(response.data.data)
+                        this.refreshUsers(response.data.data)
                         this.snackbar = true;
                         this.text = "User successfully deleted."
                         this.color = "green"
@@ -222,19 +222,19 @@ export default {
         updateUser(item){
             console.log("clicou")
         },
-        refreshUpdate: function (updatedUser) {
+        refreshUsers: function (updatedUser) {
             console.log(updatedUser)
             let userIdx = this.users.findIndex((value) => value.id === updatedUser.id)
             if (userIdx >= 0) {
                 this.$set(this.users, userIdx, updatedUser)
             }
             this.user = '';
-            //TODO - Não atualiza os botões na lista, apenas remove o anterior
+            this.getUsers();
         },
     },
     sockets: {
         user_list_updated (user_updated) {
-            this.refreshUpdate(user_updated)
+            this.refreshUsers(user_updated)
         }
     },
     created() {
