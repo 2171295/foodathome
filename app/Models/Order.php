@@ -9,6 +9,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Order extends Model
 {
     use HasFactory;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'status', 'notes', 'customer_id','total_price',
+    ];
 
     public function products()
     {
@@ -26,6 +34,9 @@ class Order extends Model
 
     public function deliveryman(){
         return $this->belongsTo('App\Models\User','delivered_by');
+    }
+    public function customer(){
+        return $this->belongsTo('App\Models\Customer','customer_id');
     }
 
 }

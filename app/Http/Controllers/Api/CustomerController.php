@@ -57,4 +57,8 @@ class CustomerController extends Controller
         $customer->users()->delete();
         return response()->json(null, 204);
     }
+
+    public function getOrders(Customer $customer){
+        return $customer->orders;
+    }
 }

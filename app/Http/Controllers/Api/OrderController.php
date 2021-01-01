@@ -8,6 +8,7 @@ use App\Http\Resources\Order as OrderResource;
 use App\Http\Resources\OrderProducts as OrderProductsResource;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -28,6 +29,10 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request){
         $order = new Order();
+        $mytime = Carbon::now();
+        $order->date = $mytime->toDateTimeString();
+        $order->current_status_at = $mytime->toDateTimeString();
+        $order->opened_at = $mytime->toDateTimeString();
         $order->fill($request->validated());
         $order->save();
         return new OrderResource($order);
@@ -45,5 +50,8 @@ class OrderController extends Controller
 
     public function getProducts(Order $order){
         return OrderProductsResource::collection($order->products);
+    }
+    public function getCustomerOrders(Order $order){
+
     }
 }

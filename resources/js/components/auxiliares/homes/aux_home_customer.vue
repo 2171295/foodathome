@@ -1,36 +1,50 @@
 <template>
         <v-container>
-            <div  id="h2" style="text-align: center">What do you feel like eating today?</div>
             <v-row>
-                <v-col style="text-align: center">
-                    <v-card @click="menuHotDishes" elevation="0" >
+                <div  id="h2" style="text-align: center">What do you feel like eating today?</div>
+                <v-row>
+                    <v-col style="text-align: center">
+                        <v-card @click="menuHotDishes" elevation="0" >
+                            <v-card-text>
+                                <photo_hot_dishes/>
+                                <p>Hot Dishes</p>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col style="text-align: center">
+                        <v-card @click="menuColdDishes" elevation="0" >
+                            <v-card-text>
+                                <photo_cold_dishes/>
+                                <p>Cold Dishes</p>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col style="text-align: center">
+                        <v-card @click="menuDesserts" elevation="0" >
+                            <v-card-text>
+                                <photo_desserts/>
+                                <p>Desserts</p>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col style="text-align: center">
+                        <v-card @click="menuColdDrinks" elevation="0" >
+                            <v-card-text>
+                                <photo_cold_drinks/>
+                                <p>Drinks</p>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-card>
+                        <v-toolbar class="d-flex justify-center">
+                            <v-toolbar-title>Latest Orders</v-toolbar-title>
+                        </v-toolbar>
                         <v-card-text>
-                            <photo_hot_dishes/>
-                            <p>Hot Dishes</p>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-                <v-col style="text-align: center">
-                    <v-card @click="menuColdDishes" elevation="0" >
-                        <v-card-text>
-                            <photo_cold_dishes/>
-                            <p>Cold Dishes</p>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-                <v-col style="text-align: center">
-                    <v-card @click="menuDesserts" elevation="0" >
-                        <v-card-text>
-                            <photo_desserts/>
-                            <p>Desserts</p>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-                <v-col style="text-align: center">
-                    <v-card @click="menuColdDrinks" elevation="0" >
-                        <v-card-text>
-                            <photo_cold_drinks/>
-                            <p>Drinks</p>
+
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -48,40 +62,48 @@ import photo_hot_dishes from "../../images/photo_hot_dishes";
 export default {
     name: "aux_home_customer",
 
-        components: {
-            photo_desserts,
-            photo_cold_dishes,
-            photo_hot_dishes,
-            photo_hot_drinks,
-            photo_cold_drinks
-        },
-        methods: {
-            menuHotDishes() {
-                this.$store.commit("setPage")
-                this.$store.commit("setMenuSearch", "Hot Dish")
-                this.$router.push("/menu")
-
-            },
-            menuColdDishes() {
-                this.$store.commit("setPage")
-                this.$store.commit("setMenuSearch", "Cold Dish")
-                this.$router.push("/menu")
-            },
-            menuDesserts() {
-                this.$store.commit("setPage")
-                this.$store.commit("setMenuSearch", "Dessert")
-                this.$router.push("/menu")
-            },
-            menuColdDrinks() {
-                this.$store.commit("setPage")
-                this.$store.commit("setMenuSearch", "Drink")
-                this.$router.push("/menu")
-            },
+    components: {
+        photo_desserts,
+        photo_cold_dishes,
+        photo_hot_dishes,
+        photo_hot_drinks,
+        photo_cold_drinks
+    },
+    methods: {
+        menuHotDishes() {
+            this.$store.commit("setPage")
+            this.$store.commit("setMenuSearch", "Hot Dish")
+            this.$router.push("/menu")
 
         },
-        created() {
-
+        menuColdDishes() {
+            this.$store.commit("setPage")
+            this.$store.commit("setMenuSearch", "Cold Dish")
+            this.$router.push("/menu")
+        },
+        menuDesserts() {
+            this.$store.commit("setPage")
+            this.$store.commit("setMenuSearch", "Dessert")
+            this.$router.push("/menu")
+        },
+        menuColdDrinks() {
+            this.$store.commit("setPage")
+            this.$store.commit("setMenuSearch", "Drink")
+            this.$router.push("/menu")
+        },
+        getOrders(){
+            axios.get('/api/customers/'+this.$store.state.user.id+'/orders').then((response)=>{
+                console.log(response)
+        }).catch((error)=>{
+            console.log(error)
+            })
         }
+
+    },
+    created() {
+        this.getOrders();
+
+    }
 
 }
 </script>

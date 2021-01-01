@@ -26,9 +26,10 @@ class StoreOrderRequest extends FormRequest
         return [
             'status' => 'required|in:H,P',
             'notes' => 'nullable',
+            'customer_id'=>'required',
             'total_price' => 'required|numeric|between:0,999.99|min:1',
-            'date' => 'required|date',
-            'current_status_at' => 'require|date'
+            'date' => 'date',
+            'current_status_at' => 'date'
         ];
     }
 }

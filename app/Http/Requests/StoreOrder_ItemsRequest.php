@@ -24,7 +24,11 @@ class StoreOrder_ItemsRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'order_id' => 'required',
+            'product_id' => 'required',
+            'quantity'=>'required|numeric|min:1',
+            'unit_price' => 'required|numeric|between:0,999.99|min:1',
+            'sub_total_price' => 'required|numeric|between:0,999.99|min:1',
         ];
     }
 }

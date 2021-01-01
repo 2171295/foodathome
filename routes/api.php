@@ -61,6 +61,7 @@ Route::middleware(['auth:api'])->group(function () {
 //Rotas para os customers
 Route::get('customers', [CustomerController::class, 'index']);
 Route::get('customers/{customer}', [CustomerController::class, 'show']);
+Route::get('customers/{customer}/orders', [CustomerController::class, 'getOrders']);
 Route::post('customers', [CustomerController::class, 'store']);
 Route::put('customers/{customer}', [CustomerController::class, 'update']);
 Route::delete('customers/{customer}', [CustomerController::class, 'destroy']);
