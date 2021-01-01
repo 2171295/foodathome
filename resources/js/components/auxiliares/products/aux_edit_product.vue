@@ -77,6 +77,8 @@ export default {
             snackbar: false,
             text: '',
             // ------------------------
+            valid: false,
+            resolve: null,
 
             display: false,
             aux_product: '',

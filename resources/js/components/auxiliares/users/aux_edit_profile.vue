@@ -72,12 +72,15 @@ import aux_snackbar from "../aux_snackbar";
 
 export default {
     name: "aux_edit_profile",
-    props:['user','client'],
     data: () => {
         return {
             display: false,
+            user:'',
+            client:'',
             aux_user:'',
             aux_client:'',
+            valid: false,
+            resolve: null,
 
             // ---- SNACKBAR INFO -----
             color: '',
@@ -87,11 +90,16 @@ export default {
         }
     },
     methods:{
-        open() {
+        open(user,client) {
+            console.log(user)
             this.display = true;
             this.valid = true
-            this.aux_user = JSON.parse(JSON.stringify(this.user));
-            this.aux_client = JSON.parse(JSON.stringify(this.client));
+            this.user = user;
+            this.aux_user = JSON.parse(JSON.stringify(user));
+            if (client) {
+                this.client= client;
+                this.aux_client = JSON.parse(JSON.stringify(client));
+            }
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
                 this.reject = reject;
