@@ -6,6 +6,9 @@
 
         <aux_dialog_confirmacao ref="confirm"/>
 
+        <aux_edit_profile ref="editUser" :user="user"/>
+        <aux_edit_photo ref="editUserPhoto" :user="user"/>
+
         <v-toolbar class="d-flex justify-center align-center" style="margin-bottom: 20px;">
             <v-toolbar-title>Users</v-toolbar-title>
         </v-toolbar>
@@ -45,6 +48,14 @@
                                 </template>
                                 <span>Edit User</span>
                             </v-tooltip>
+                            <v-tooltip bottom >
+                                <template v-slot:activator="{ on }">
+                                    <v-btn v-on="on" icon @click="updateUserPhoto(item)">
+                                        <v-icon>mdi-image-edit</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Edit User Image</span>
+                            </v-tooltip>
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on }" >
                                     <v-btn v-on="on" icon @click="deleteUser(item)">
@@ -81,10 +92,12 @@
 import Aux_dialog_confirmacao from "../auxiliares/aux_dialog_confirmacao";
 import Aux_snackbar from "../auxiliares/aux_snackbar";
 import Aux_create_user from "../auxiliares/users/aux_create_user";
+import Aux_edit_profile from "../auxiliares/users/aux_edit_profile";
+import Aux_edit_photo from "../auxiliares/users/aux_edit_photo";
 
 export default {
     name: "index",
-    components: {Aux_create_user, Aux_snackbar, Aux_dialog_confirmacao},
+    components: {Aux_edit_photo, Aux_edit_profile, Aux_create_user, Aux_snackbar, Aux_dialog_confirmacao},
     data: () => {
         return {
             search:'',
@@ -149,7 +162,6 @@ export default {
                         this.color = "error"
                         setTimeout(() => {
                             this.snackbar = false;
-                            this.user = '';
                         }, 2000);
                     })
             }else{
@@ -177,7 +189,6 @@ export default {
                         this.color = "error"
                         setTimeout(() => {
                             this.snackbar = false;
-                            this.user = '';
                         }, 2000);
                     })
             }else{
@@ -205,7 +216,6 @@ export default {
                         this.color = "error"
                         setTimeout(() => {
                             this.snackbar = false;
-                            this.user = '';
                         }, 2000);
                     })
             }else{
@@ -219,8 +229,24 @@ export default {
                 return null;
             }
         },
-        updateUser(item){
-            console.log("clicou")
+        async updateUser(item){
+            this.user = item;
+            if (await this.$refs.editUser.open(item,'')) {
+                this.user = '';
+                this.getUsers()
+            }else{
+                this.user = '';
+                return null;
+            }
+        },
+        async updateUserPhoto(item){
+            if (await this.$refs.editUserPhoto.open(item)) {
+                this.user = '';
+                this.getUsers()
+            }else{
+                this.user = '';
+                return null;
+            }
         },
         refreshUsers: function (updatedUser) {
             console.log(updatedUser)

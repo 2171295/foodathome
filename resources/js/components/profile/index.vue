@@ -7,8 +7,8 @@
             </v-btn>
         </v-snackbar>
         <aux_edit_password ref="editPassword" :user="user"/>
-        <aux_edit_profile ref="editProfile" :user="user" :client="client"/>
-        <aux_edit_photo ref="editPhoto" :user="user"/>
+        <aux_edit_profile ref="editProfile" />
+        <aux_edit_photo ref="editPhoto"/>
         <v-row>
             <v-col md="12">
                 <v-card>
@@ -107,14 +107,14 @@ name: "index",
         },
         async editPhoto() {
             if (
-                await this.$refs.editPhoto.open()
+                await this.$refs.editPhoto.open(this.user)
             ) {
                 this.getUser()
             }
         },
         async editProfile() {
             if (
-                await this.$refs.editProfile.open()
+                await this.$refs.editProfile.open(this.user,this.client)
             ) {
                 this.getUser()
             }

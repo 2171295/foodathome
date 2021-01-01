@@ -36,7 +36,6 @@ import {mdiCamera} from "@mdi/js";
 import aux_snackbar from "../aux_snackbar";
 export default {
     name: "aux_edit_photo",
-    props:['user'],
     data: () => ({
         iconCamera: mdiCamera,
         file: null,
@@ -46,11 +45,13 @@ export default {
         snackbar: false,
         text: '',
         // ------------------------
+        user: '',
     }),
     methods:{
-        open() {
+        open(user) {
             this.display = true;
             this.valid = true
+            this.user = user;
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
                 this.reject = reject;
