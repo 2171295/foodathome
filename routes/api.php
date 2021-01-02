@@ -78,10 +78,11 @@ Route::get('products/{product}/orders', [ProductController::class, 'getOrders'])
 //Rotas para as orders
 Route::get('orders', [OrderController::class, 'index']);
 Route::get('orders/{order}', [OrderController::class, 'show']);
+Route::get('orders/{order}/products', [OrderController::class, 'getProducts']);
 Route::post('orders', [OrderController::class, 'store']);
 Route::put('orders/{order}', [OrderController::class, 'update']);
 Route::delete('orders/{order}', [OrderController::class, 'destroy']);
-Route::get('orders/{order}/products', [OrderController::class, 'getProducts']);
+
 
 //Rotas para as Order_Items
 Route::get('orders_items', [Order_ItemsController::class, 'index']);

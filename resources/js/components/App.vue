@@ -23,7 +23,7 @@
             </v-main>
         </v-app>
         <v-app v-else>
-            <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app color="grey lighten-1">
+            <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app color="grey lighten-1"  v-if="this.$store.state.user.type !== 'C'">
                 <v-card class="mx-auto" max-width="500">
                     <v-list>
                         <v-list-item
@@ -46,10 +46,10 @@
 
             </v-navigation-drawer>
             <v-app-bar :clipped-left="clipped" fixed app color="deep-orange lighten-1">
-                <v-btn @click.stop="drawer = !drawer" icon>
+                <v-btn @click.stop="drawer = !drawer" icon  v-if="this.$store.state.user.type !== 'C'">
                     <v-icon>{{iconMenu}}</v-icon>
                 </v-btn>
-                <v-btn icon @click.stop="miniVariant = !miniVariant">
+                <v-btn icon @click.stop="miniVariant = !miniVariant"  v-if="this.$store.state.user.type !== 'C'">
                     <template v-if="miniVariant">
                         <v-icon>{{iconChevronRight}}</v-icon>
                     </template>

@@ -1,56 +1,101 @@
 <template>
-        <v-container>
+    <v-container>
+        <aux_order_information ref="orderInformation"/>
+        <v-row>
+            <div  id="h2" style="text-align: center">What do you feel like eating today?</div>
             <v-row>
-                <div  id="h2" style="text-align: center">What do you feel like eating today?</div>
-                <v-row>
-                    <v-col style="text-align: center">
-                        <v-card @click="menuHotDishes" elevation="0" >
-                            <v-card-text>
-                                <photo_hot_dishes/>
-                                <p>Hot Dishes</p>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                    <v-col style="text-align: center">
-                        <v-card @click="menuColdDishes" elevation="0" >
-                            <v-card-text>
-                                <photo_cold_dishes/>
-                                <p>Cold Dishes</p>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                    <v-col style="text-align: center">
-                        <v-card @click="menuDesserts" elevation="0" >
-                            <v-card-text>
-                                <photo_desserts/>
-                                <p>Desserts</p>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                    <v-col style="text-align: center">
-                        <v-card @click="menuColdDrinks" elevation="0" >
-                            <v-card-text>
-                                <photo_cold_drinks/>
-                                <p>Drinks</p>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                </v-row>
-            </v-row>
-            <v-row>
-                <v-col>
-                    <v-card>
-                        <v-toolbar class="d-flex justify-center">
-                            <v-toolbar-title>Latest Orders</v-toolbar-title>
-                        </v-toolbar>
+                <v-col style="text-align: center">
+                    <v-card @click="menuHotDishes" elevation="0" >
                         <v-card-text>
-
+                            <photo_hot_dishes/>
+                            <p>Hot Dishes</p>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <v-col style="text-align: center">
+                    <v-card @click="menuColdDishes" elevation="0" >
+                        <v-card-text>
+                            <photo_cold_dishes/>
+                            <p>Cold Dishes</p>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <v-col style="text-align: center">
+                    <v-card @click="menuDesserts" elevation="0" >
+                        <v-card-text>
+                            <photo_desserts/>
+                            <p>Desserts</p>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <v-col style="text-align: center">
+                    <v-card @click="menuColdDrinks" elevation="0" >
+                        <v-card-text>
+                            <photo_cold_drinks/>
+                            <p>Drinks</p>
                         </v-card-text>
                     </v-card>
                 </v-col>
             </v-row>
-
-        </v-container>
+        </v-row>
+        <v-row v-if="open_orders.length !== 0">
+            <v-col>
+                <v-card>
+                    <v-toolbar class="d-flex justify-center">
+                        <v-toolbar-title>On Going Orders</v-toolbar-title>
+                    </v-toolbar>
+                    <v-card-text>
+                        <div  v-for="order in open_orders" style="margin-top: 20px; margin-bottom: 50px">
+                            <div class="text--black d-flex justify-center align-center" style="font-size: 20px; margin-bottom: 10px;" >
+                                Order: #{{ order.id }}
+                                <v-spacer></v-spacer>
+                                <v-btn icon @click="orderInformation(order)"><v-icon>mdi-information</v-icon></v-btn>
+                            </div>
+                            <v-stepper v-model="order.status">
+                                <v-stepper-header>
+                                    <v-stepper-step
+                                        :complete="order.status === 'H'"
+                                        step="1"
+                                    >
+                                        Holding...
+                                    </v-stepper-step>
+                                    <v-divider></v-divider>
+                                    <v-stepper-step
+                                        :complete="order.status === 'P'"
+                                        step="2"
+                                    >
+                                        Preparing...
+                                    </v-stepper-step>
+                                    <v-divider></v-divider>
+                                    <v-stepper-step step="3" :complete="order.status === 'R'">
+                                        Ready for delivery...
+                                    </v-stepper-step>
+                                    <v-divider></v-divider>
+                                    <v-stepper-step step="4" :complete="order.status === 'T'">
+                                        In Transit...
+                                    </v-stepper-step>
+                                </v-stepper-header>
+                            </v-stepper>
+                        </div>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+        </v-row>
+        <v-row v-if="all_orders.length !== 0">
+            <v-col>
+                <v-card>
+                    <v-toolbar class="d-flex justify-center">
+                        <v-toolbar-title>Orders history</v-toolbar-title>
+                    </v-toolbar>
+                    <v-card-text>
+                        {{closed_orders}}
+                        <v-data-table :items="closed_orders" :headers="closed_orders_headers">
+                        </v-data-table>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <script>
@@ -59,15 +104,31 @@ import photo_desserts from "../../images/photo_desserts";
 import photo_hot_drinks from "../../images/photo_hot_drinks";
 import photo_cold_dishes from "../../images/photo_cold_dishes";
 import photo_hot_dishes from "../../images/photo_hot_dishes";
+import aux_order_information from "../aux_order_information";
+import VData from "../../../../../public/js/app";
 export default {
     name: "aux_home_customer",
+    data: () => ({
+        all_orders:[],
+        closed_orders:[],
+        open_orders:[],
+        open_orders_headers:[
+            {text: 'ID', align: 'start', sortable: true, value: 'id'},
+        ],
+        closed_orders_headers:[
+            {text: 'Order #', align: 'start', sortable: true, value: 'id'},
 
+        ]
+
+    }),
     components: {
+        VData,
         photo_desserts,
         photo_cold_dishes,
         photo_hot_dishes,
         photo_hot_drinks,
-        photo_cold_drinks
+        photo_cold_drinks,
+        aux_order_information,
     },
     methods: {
         menuHotDishes() {
@@ -94,15 +155,27 @@ export default {
         getOrders(){
             axios.get('/api/customers/'+this.$store.state.user.id+'/orders').then((response)=>{
                 console.log(response)
+                this.all_orders = response.data;
+                for(var i in response.data){
+                    if(response.data[i].status === 'C' || response.data[i].status === 'D'){
+                        this.closed_orders.push(response.data[i]);
+                    }else{
+                        this.open_orders.push(response.data[i]);
+                    }
+                }
         }).catch((error)=>{
             console.log(error)
             })
-        }
+        },
+        async orderInformation(order) {
+            if (await this.$refs.orderInformation.open(order)) {
+
+            }
+        },
 
     },
     created() {
         this.getOrders();
-
     }
 
 }
