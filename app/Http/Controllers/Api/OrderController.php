@@ -81,4 +81,11 @@ class OrderController extends Controller
         $order->current_status_at = $mytime->toDateTimeString();
         $order->save();
     }
+
+    public function holdingOrders(){
+        $order = Order::where('status','H')->orderBy('current_status_at')->first();
+        if ($order != null)
+            return new OrderResource($order);
+        return null;
+    }
 }

@@ -2,6 +2,7 @@
     <div >
         <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
         <aux_shopping_cart ref="shoppingCart"/>
+        <aux_dialog_notification ref="notification"/>
         <v-app v-if="!this.$store.state.user">
             <v-app-bar :clipped-left="true" fixed app color="deep-orange lighten-1" >
                 <v-btn icon to="/">
@@ -97,6 +98,7 @@
 import aux_shopping_cart from "./auxiliares/aux_shopping_cart";
 import { mdiHome, mdiAccount, mdiLogout, mdiChevronRight, mdiChevronLeft, mdiMenu} from '@mdi/js'
 import Aux_snackbar from "./auxiliares/aux_snackbar";
+import aux_dialog_notification from "./auxiliares/aux_dialog_notification";
 export default {
     name: "App",
     data() {
@@ -200,9 +202,35 @@ export default {
                 this.items = this.items_cook;
             }
         },
-        availableCooker() {
+        notification: function (user) {
+            let msg = window.prompt('You have a new order to prepare.')
+            let payload = {
+                destinationUser: user,
+                message: msg
+            }
+            this.$socket.emit('notification', payload)
 
-        }
+        },
+        defineCooker(cooker,order){
+            axios.put('api/orders/' + order.id + '/cook', {
+                cooker: cooker
+            })
+                .then(() => {
+                    console.log("Order is being prepared by " + cooker.name)
+                    //enviar notificação ao cooker
+                    axios.put('api/users/' + cooker.id + '/not_available')
+                        .then(() => {
+                            //notificar user
+                            this.notification(cooker);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        },
     },
     sockets: {
         user_blocked(user_blocked) {
@@ -217,29 +245,13 @@ export default {
             }
 
         },
-        order_created(order){
+        order_created(order) {
             //verificar se há cookers disponiveis
             axios.get('api/users/available_cookers')
                 .then((response) => {
                     let cooker = response.data;
                     if (cooker) {
-                        axios.put('api/orders/' + order.id + '/cook',{
-                            cooker: cooker
-                        })
-                            .then((response) => {
-                                console.log("Order is being prepared by "+cooker.name)
-                                //enviar notificação ao cooker
-                                axios.put('api/users/'+cooker.id+'/not_available')
-                                .then(()=>{
-
-                                })
-                                .catch(()=>{
-
-                                })
-                            })
-                            .catch((error)=>{
-                                console.log(error);
-                            })
+                        this.defineCooker(cooker,order)
                     }
                 })
                 .catch((error) => {
@@ -248,11 +260,57 @@ export default {
             //se não, fica em holding
 
         },
-        user_logged(user){
-            //verifica se o user é um cooker
+        user_logged(user) {
+            switch (user.type) {
+                //verifica se o user é um cooker
+                case ('EC'):
+                    //verifica se há holding orders
+                    axios.get('api/orders/holding')
+                        .then((response) => {
+                            let order = response.data.data;
+                            if(order){
+                                this.defineCooker(user,order)
+                            }
+                        })
+                        .catch(() => {
 
-            //verifica se o user é um deliveryman
+                        })
+                    break;
+                //verifica se o user é um deliveryman
+                case ('ED'):
+                    //TODO - falta fazer o caso de um deliveryman logar
+                    break;
+            }
+
         },
+        user_available(user) {
+            switch (user.type) {
+                //verifica se o user é um cooker
+                case ('EC'):
+                    //verifica se há holding orders
+                    axios.get('api/orders/holding')
+                        .then((response) => {
+                            let order = response.data.data;
+                            if(order){
+                                this.defineCooker(user,order)
+                            }
+                        })
+                        .catch(() => {
+                            console.log(error)
+                        })
+                    break;
+                //verifica se o user é um deliveryman
+                case ('ED'):
+                    //TODO - falta fazer o caso de um deliveryman logar
+                    break;
+            }
+
+        },
+        notification(payload) {
+            this.$refs.notification.open(
+                "New Order!", payload.message
+            )
+        }
     },
     updated() {
         if(this.$store.state.user){
@@ -260,11 +318,12 @@ export default {
         }
     },
     components:{
+        aux_dialog_notification,
         Aux_snackbar,
         aux_shopping_cart,
     },
     created() {
-        this.availableCooker();
+        this.teste();
     }
 
 }
