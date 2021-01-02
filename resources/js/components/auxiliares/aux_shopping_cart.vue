@@ -193,6 +193,7 @@ export default {
                 "notes": this.notes,
                 "total_price": this.total_value,
             }).then((response)=>{
+                this.$socket.emit('order_created',response.data.data)
                 console.log(response)
                 for(var item in this.items){
                     console.log("entrou")

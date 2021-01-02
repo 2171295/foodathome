@@ -1,11 +1,6 @@
 <template>
     <div>
-        <v-snackbar v-model="snackbar" :bottom="y === 'bottom'" :color="color" :left="x === 'left'" :multi-line="mode === 'multi-line'" :timeout="timeout" :top="y === 'top'" :vertical="mode === 'vertical'">
-            {{ text }}
-            <v-btn dark text @click="snackbar = false">
-                <v-icon>mdi-close</v-icon>
-            </v-btn>
-        </v-snackbar>
+        <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
         <aux_edit_password ref="editPassword" :user="user"/>
         <aux_edit_profile ref="editProfile" />
         <aux_edit_photo ref="editPhoto"/>
@@ -50,6 +45,7 @@ import {ValidationObserver, ValidationProvider} from "vee-validate";
 import aux_edit_password from "../auxiliares/users/aux_edit_password";
 import aux_edit_profile from "../auxiliares/users/aux_edit_profile";
 import aux_edit_photo from "../auxiliares/users/aux_edit_photo";
+import Aux_snackbar from "../auxiliares/aux_snackbar";
 export default {
 name: "index",
     data: () => {
@@ -71,10 +67,6 @@ name: "index",
             color: '',
             snackbar: false,
             text: '',
-            mode: '',
-            timeout: 2000,
-            x: null,
-            y: 'top',
             // ------------------------
         }
     },
@@ -96,6 +88,17 @@ name: "index",
                 }else{
                     this.vcardTitle  = "Employee's Personal Data";
                 }
+            })
+            .catch(()=>{
+                this.color = 'red';
+                this.text = "Something went wrong."
+                this.snackbar = true;
+                setTimeout(() => {
+                    this.snackbar = false;
+                }, 2000);
+                this.$store.commit("clearUserAndToken");
+                this.$router.push("/")
+
             })
         },
         async editPassword() {
@@ -125,6 +128,7 @@ name: "index",
         this.getUser();
     },
     components: {
+        Aux_snackbar,
         ValidationProvider,
         ValidationObserver,
         aux_edit_photo,

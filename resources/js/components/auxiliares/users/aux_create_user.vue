@@ -185,10 +185,6 @@ export default {
                 })
             }
         },
-        handleFileObject() {
-            this.avatar = this.$refs.file.files[0]
-            this.avatarName = this.avatar.name
-        },
     },
     created() {
     },

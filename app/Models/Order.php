@@ -39,4 +39,8 @@ class Order extends Model
         return $this->belongsTo('App\Models\Customer','customer_id');
     }
 
+    public function getCustomer(){
+        return Customer::findOrFail($this->customer_id);
+    }
+
 }

@@ -120,15 +120,23 @@ class UserController extends Controller
     }
 
     public function availableCookers(){
-        return User::where('available_at','!=',null)->where('type','=','EC')->get();
+        return User::whereNotNull('available_at')->where('type','=','EC')->orderBy('available_at','asc')->first();
     }
 
     public function availableDeliveryman(){
-        return User::where('available_at','!=',null)->where('type','=','ED')->get();
+        return User::whereNotNull('available_at')->where('type','=','ED')->get();
     }
 
     public function availableManagers(){
-        return User::where('available_at','!=',null)->where('type','=','EM')->get();
+        return User::whereNotNull('available_at')->where('type','=','EM')->get();
+    }
+
+    public function cooker_orders(User $user){
+        return $user->cooker_orders;
+    }
+
+    public function deliveryman_orders(User $user){
+        return $user->deliveryman_orders;
     }
 
     public function loggedAt(User $user){
@@ -154,6 +162,11 @@ class UserController extends Controller
         $user->blocked = 0;
         $user->save();
         return new UserResource($user);
+    }
+
+    public function notAvailable(User $user){
+        $user->available_at = null;
+        $user->save();
     }
 
     public function confirmPassword(Request $request, User $user){

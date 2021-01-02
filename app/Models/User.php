@@ -50,6 +50,14 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\Customer', 'id');
     }
 
+    public function cooker_orders(){
+        return $this->$this->hasMany('prepared_by');
+    }
+
+    public function deliveryman_orders(){
+        return $this->$this->hasMany('delivered_by');
+    }
+
     public function typeToString(){
         switch ($this->type) {
             case 'EC':

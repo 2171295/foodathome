@@ -9,6 +9,8 @@ use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
@@ -31,8 +33,19 @@ class CustomerController extends Controller
         $validatedData = $request->validated();
         $user = new User();
         $user->fill($validatedData);
-        $user->password = bcrypt($user->password);
+        $user->password = Hash::make($user->password);
         $user->type = "C";
+        if($request->photo_url != null) {
+            $name = $user->id . '_' . time() . '.' . $request->photo_url->getClientOriginalExtension();
+            if($user->photo_url != null) {
+                Storage::disk('public')->delete('fotos/'.$user->photo_url);
+            }
+            Storage::putFileAs('public/fotos', $request->photo_url, $name);
+
+            $user->photo_url = $name;
+        }else{
+            $user->photo_url = null;
+        }
         $user->save();
         $customer = new Customer();
         $customer->fill($validatedData);

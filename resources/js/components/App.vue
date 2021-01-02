@@ -1,5 +1,6 @@
 <template>
     <div >
+        <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
         <aux_shopping_cart ref="shoppingCart"/>
         <v-app v-if="!this.$store.state.user">
             <v-app-bar :clipped-left="true" fixed app color="deep-orange lighten-1" >
@@ -95,10 +96,17 @@
 <script>
 import aux_shopping_cart from "./auxiliares/aux_shopping_cart";
 import { mdiHome, mdiAccount, mdiLogout, mdiChevronRight, mdiChevronLeft, mdiMenu} from '@mdi/js'
+import Aux_snackbar from "./auxiliares/aux_snackbar";
 export default {
     name: "App",
     data() {
         return {
+            // ---- SNACKBAR INFO -----
+            color: '',
+            snackbar: false,
+            text: '',
+            // ------------------------
+
             iconHome: mdiHome,
             iconAccount: mdiAccount,
             iconLogout: mdiLogout,
@@ -192,6 +200,59 @@ export default {
                 this.items = this.items_cook;
             }
         },
+        availableCooker() {
+
+        }
+    },
+    sockets: {
+        user_blocked(user_blocked) {
+            if(this.$store.state.user.id===user_blocked.id){
+                this.color = 'blue';
+                this.text = "Your account has been blocked Logging out..."
+                this.snackbar = true;
+                setTimeout(() => {
+                    this.snackbar = false;
+                }, 2000);
+                this.logout();
+            }
+
+        },
+        order_created(order){
+            //verificar se há cookers disponiveis
+            axios.get('api/users/available_cookers')
+                .then((response) => {
+                    let cooker = response.data;
+                    if (cooker) {
+                        axios.put('api/orders/' + order.id + '/cook',{
+                            cooker: cooker
+                        })
+                            .then((response) => {
+                                console.log("Order is being prepared by "+cooker.name)
+                                //enviar notificação ao cooker
+                                axios.put('api/users/'+cooker.id+'/not_available')
+                                .then(()=>{
+
+                                })
+                                .catch(()=>{
+
+                                })
+                            })
+                            .catch((error)=>{
+                                console.log(error);
+                            })
+                    }
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+            //se não, fica em holding
+
+        },
+        user_logged(user){
+            //verifica se o user é um cooker
+
+            //verifica se o user é um deliveryman
+        },
     },
     updated() {
         if(this.$store.state.user){
@@ -199,7 +260,11 @@ export default {
         }
     },
     components:{
+        Aux_snackbar,
         aux_shopping_cart,
+    },
+    created() {
+        this.availableCooker();
     }
 
 }

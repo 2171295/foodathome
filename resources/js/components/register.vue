@@ -8,7 +8,7 @@
         </v-snackbar>
         <p class="subtitle-1 text-center">Register</p>
         <validation-observer ref="observer" v-slot="{ invalid }">
-            <form @submit.prevent="submit">
+            <form @submit="submit" enctype="multipart/form-data">
                 <validation-provider v-slot="{ errors }" name="Name" rules="required|alpha_spaces">
                     <v-text-field
                         v-model="name"
@@ -67,14 +67,14 @@
                         label="NIF"
                     ></v-text-field>
                 </validation-provider>
-                <!--<v-file-input
+                <v-file-input
                     counter
                     accept="image/png, image/jpeg"
                     label="Pick a photo:"
-                    v-model="photo"
-                    :rules="rulesPhoto"
-                    :prepend-icon="iconCamera"
-                ></v-file-input>-->
+                    v-model="file"
+                    prepend-icon="mdi-camera"
+                    v-on:change="onFileChange"
+                />
 
                 <v-btn class="mr-4" type="submit" :disabled="invalid">
                     Submit
@@ -117,65 +117,71 @@ extend('length', {
 })
 
 export default {
-
     name: "index",
     data: () => ({
-    valid: true,
-    // ---- SNACKBAR INFO -----
-    color: '',
-    mode: '',
-    snackbar: false,
-    text: '',
-    timeout: 4000,
-    x: null,
-    y: 'top',
-    // ---- FORM DATA -----
-    name:'',
-    email:'',
-    address:'',
-    phone:'',
-    nif:null,
-    photo:null,
-    password:'',
-    confirmationPassword:'',
-    rulesPhoto: [
-        v => !v || v.size < 2000000 || 'Avatar size should be less than 2 MB!',
-    ],
-    iconCamera: mdiCamera,
-    iconClose: mdiClose,
-
+        valid: true,
+        // ---- SNACKBAR INFO -----
+        color: '',
+        mode: '',
+        snackbar: false,
+        text: '',
+        timeout: 4000,
+        x: null,
+        y: 'top',
+        // ---- FORM DATA -----
+        name: '',
+        email: '',
+        address: '',
+        phone: '',
+        nif: null,
+        file: null,
+        password: '',
+        confirmationPassword: '',
+        rulesPhoto: [
+            v => !v || v.size < 2000000 || 'Avatar size should be less than 2 MB!',
+        ],
+        iconCamera: mdiCamera,
+        iconClose: mdiClose,
     }),
-
-    methods:{
-        submit: function () {
+    methods: {
+        submit(e) {
+            e.preventDefault();
             if (this.$refs.observer.validate()) {
-
-                axios.post("/api/customers", {
-                    "name":this.name,
-                    "email":this.email,
-                    "address":this.address,
-                    "phone":this.phone,
-                    "password":this.password,
-
-                    "nif":this.nif,
-                    "photo_url":this.photo
-                /*TODO se nenhuma photo for adicionada, mandar null*/
-                })
+                let data = this.gatherFormData();
+                const config = {
+                    headers: { 'content-type': 'multipart/form-data' }
+                }
+                axios.post("/api/customers", data,config)
                     .then((response) => {
-                    this.snackbar = true;
-                    this.text = "Account created succesfully."
-                    this.color = "green"
-                    setTimeout(() => {
-                        this.$router.push('/');
-                    }, 1500);
+                        this.snackbar = true;
+                        this.text = "Account created succesfully."
+                        this.color = "green"
+                        setTimeout(() => {
+                            this.$router.push('/');
+                        }, 1500);
 
-                }).catch(error => {
+                    }).catch(error => {
                     this.snackbar = true;
                     this.text = "There was an error creating your account. Please try again latter."
                     this.color = "red"
                 })
             }
-        }
+        },
+        onFileChange(e) {
+            console.log(e);
+            this.file = e;
+        },
+        gatherFormData() {
+            let data = new FormData();
+            data.append("name", this.name)
+            data.append("email", this.email)
+            data.append("address", this.address)
+            data.append("phone", this.phone)
+            data.append("nif", this.nif)
+            data.append("password", this.password)
+            data.append("photo_url", this.file)
+            return data;
+        },
     },
     components: {
         ValidationProvider,

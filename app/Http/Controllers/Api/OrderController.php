@@ -8,6 +8,7 @@ use App\Http\Resources\Order as OrderResource;
 use App\Http\Resources\OrderProducts as OrderProductsResource;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -20,6 +21,10 @@ class OrderController extends Controller
         } else {
             return OrderResource::collection(Order::all());
         }
+    }
+
+    public function openOrders(){
+        return OrderResource::collection(Order::where('status','!=','D')->where('status','!=','C')->orderBy('current_status_at','desc')->get());
     }
 
     public function show(Order $order)
@@ -48,10 +53,32 @@ class OrderController extends Controller
         return response()->json(null, 204);
     }
 
-    public function getProducts(Order $order){
+    public function getProducts(Order $order)
+    {
         return OrderProductsResource::collection($order->products);
     }
-    public function getCustomerOrders(Order $order){
 
+    public function preparedBy(User $cook)
+    {
+        $order = Order::where('status', 'P')->where('prepared_by', $cook->id)->first();
+        if ($order != null)
+            return new OrderResource($order);
+        return null;
+    }
+
+    public function deliveredBy(User $deliveryman)
+    {
+        $order = Order::where('status', 'T')->where('delivered_by', $deliveryman->id)->first();
+        if ($order != null)
+            return new OrderResource($order);
+        return null;
+    }
+
+    public function defineCooker(Request $request, Order $order){
+        $mytime = Carbon::now();
+        $cooker = $request->get('cooker');
+        $order->prepared_by = $cooker->id;
+        $order->current_status_at = $mytime->toDateTimeString();
+        $order->save();
     }
 }

@@ -148,6 +148,7 @@ export default {
                 axios.put("api/users/"+item.id+"/block")
                     .then((response) => {
                         this.$socket.emit('user_list_updated',response.data.data)
+                        this.$socket.emit('user_blocked',response.data.data)
                         this.refreshUsers(response.data.data)
                         this.snackbar = true;
                         this.text = "User successfully blocked."
