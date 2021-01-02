@@ -88,8 +88,20 @@
                         <v-toolbar-title>Orders history</v-toolbar-title>
                     </v-toolbar>
                     <v-card-text>
-                        {{closed_orders}}
                         <v-data-table :items="closed_orders" :headers="closed_orders_headers">
+                            <template v-slot:item.status="{ item }">
+                                <div v-if="item.status === 'D'">
+                                    Delivered
+                                </div>
+                                <div v-if="item.status === 'C'">
+                                    Canceled
+                                </div>
+                            </template>
+                            <template v-slot:item.actions="{ item }">
+                                <v-btn icon @click="orderInformation(item)">
+                                    <v-icon>mdi-information</v-icon>
+                                </v-btn>
+                            </template>
                         </v-data-table>
                     </v-card-text>
                 </v-card>
@@ -117,6 +129,10 @@ export default {
         ],
         closed_orders_headers:[
             {text: 'Order #', align: 'start', sortable: true, value: 'id'},
+            {text: 'Status', align: 'start', sortable: true, value: 'status'},
+            {text: 'Date', align: 'start', sortable: true, value: 'date'},
+            {text: 'Total Price (€)', align: 'start', sortable: true, value: 'total_price'},
+            {text: 'More', align: 'start', sortable: true, value: 'actions'},
 
         ]
 
@@ -153,7 +169,6 @@ export default {
         },
         getOrders(){
             axios.get('/api/customers/'+this.$store.state.user.id+'/orders').then((response)=>{
-                console.log(response)
                 this.all_orders = response.data;
                 for(var i in response.data){
                     if(response.data[i].status === 'C' || response.data[i].status === 'D'){
