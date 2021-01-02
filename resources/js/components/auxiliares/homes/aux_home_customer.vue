@@ -105,7 +105,7 @@ import photo_hot_drinks from "../../images/photo_hot_drinks";
 import photo_cold_dishes from "../../images/photo_cold_dishes";
 import photo_hot_dishes from "../../images/photo_hot_dishes";
 import aux_order_information from "../aux_order_information";
-import VData from "../../../../../public/js/app";
+
 export default {
     name: "aux_home_customer",
     data: () => ({
@@ -122,7 +122,6 @@ export default {
 
     }),
     components: {
-        VData,
         photo_desserts,
         photo_cold_dishes,
         photo_hot_dishes,
