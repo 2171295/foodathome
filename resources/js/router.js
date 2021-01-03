@@ -25,7 +25,8 @@ import IndexProducts from './components/products/index';
 const index_produtos = Vue.component('index_produtos',IndexProducts);
 import IndexUsers from './components/users/index';
 const index_users = Vue.component('index_users',IndexUsers);
-
+import IndexStatistics from './components/statistics/index'
+const index_statistics = Vue.component('index_statistics', IndexStatistics)
 const routes = [
     {
         path: '/',
@@ -68,6 +69,11 @@ const routes = [
     {
         path:  '/users',
         component: index_users,
+        meta: {requiresAuth: true}
+    },
+    {
+        path:  '/statistics',
+        component: index_statistics,
         meta: {requiresAuth: true}
     }
 ];

@@ -37,7 +37,7 @@
                         <p><b>Status:</b> Delivered</p>
                     </template>
                     <p><b>Total price:</b> {{order.total_price}}€</p>
-                    <p><b>Ordered at:</b> {{order.created_at}}</p>
+                    <p><b>Ordered at:</b> {{order.date}}</p>
                     <div v-if="order.notes !== null"><p><b>Notes:</b> {{ order.notes }}</p></div>
                     <v-data-table :items="orderItems" :headers="headers" hide-default-footer></v-data-table>
                 </v-card-text>
