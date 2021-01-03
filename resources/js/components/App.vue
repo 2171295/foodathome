@@ -308,7 +308,7 @@ export default {
         aux_shopping_cart,
     },
     created() {
-        this.teste();
+
     }
 
 }
