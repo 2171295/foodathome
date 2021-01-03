@@ -5,7 +5,7 @@ export default {
     name: "chart_orders",
     extends: Bar,
     data: () => ({
-        num_delivered:5,
+        num_delivered:0,
         num_canceled:0,
         num_ready:0,
         num_transit:0,

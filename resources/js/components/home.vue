@@ -13,7 +13,7 @@
             <aux_home_cook></aux_home_cook>
         </template>
         <template v-if="this.$store.state.user.type === 'ED'">
-            <aux_home_deliveryman></aux_home_deliveryman>
+            <aux_home_deliveryman/>
         </template>
         <template v-if="this.$store.state.user.type === 'C'">
             <aux_home_customer/>
