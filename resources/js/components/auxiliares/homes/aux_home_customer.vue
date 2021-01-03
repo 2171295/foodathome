@@ -169,6 +169,8 @@ export default {
         },
         getOrders(){
             axios.get('/api/customers/'+this.$store.state.user.id+'/orders').then((response)=>{
+                this.open_orders = [];
+                this.closed_orders = [];
                 this.all_orders = response.data;
                 for(var i in response.data){
                     if(response.data[i].status === 'C' || response.data[i].status === 'D'){
@@ -187,6 +189,17 @@ export default {
             }
         },
 
+    },
+    sockets:{
+        order_assign_cook(user){
+            this.getOrders()
+        },
+        order_cooked(order){
+            this.getOrders()
+        },
+        order_taken_delivery(user) {
+            this.getOrders()
+        }
     },
     created() {
         this.getOrders();

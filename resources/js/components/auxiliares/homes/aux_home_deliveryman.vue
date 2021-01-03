@@ -94,9 +94,12 @@ export default {
         }
     },
     sockets: {
-        order_taken_delivery(user){
-          this.getOrders()
-      }
+        order_cooked(order){
+            this.getOrders()
+        },
+        order_taken_delivery(user) {
+            this.getOrders()
+        }
     },
     created() {
         this.getOrders()

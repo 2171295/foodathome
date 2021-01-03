@@ -178,7 +178,7 @@ export default {
             if(user.id === this.$store.state.user.id){
                 this.getOrderBeingPrepared();
             }
-        }
+        },
     },
     created() {
         this.getOrderBeingPrepared();
