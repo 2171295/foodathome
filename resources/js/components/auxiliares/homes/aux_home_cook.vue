@@ -74,6 +74,7 @@ export default {
 
             order:'',
             preparation_time:'',
+            working_time:'',
             order_items: [],
 
             search:'',
@@ -157,11 +158,25 @@ export default {
             let start = new Date(this.order.current_status_at);
             let now = new Date()
             this.preparation_time = Math.floor((now - start) / (1000 * 60));
+        },
+        // workingTime() {
+        //     console.log(this.$store.state.user)
+        //     let start = new Date(this.$store.state.user.logged_At);
+        //     let now = new Date()
+        //     this.working_time = Math.floor((now - start) / (1000 * 60));
+        // }
+    },
+    sockets:{
+        order_assign(user){
+            if(user.id === this.$store.state.user.id){
+                this.getOrderBeingPrepared();
+            }
         }
     },
     created() {
         this.getOrderBeingPrepared();
         setInterval(this.preparationTime,61000)
+        setInterval(this.workingTime,61000)
     },
 }
 </script>

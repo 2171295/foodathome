@@ -21,7 +21,8 @@ class User extends JsonResource
             'type' => $this->type,
             'blocked' => $this->blockedToStr(),
             'photo_url'=> $this->photo_url,
-            'deleted_At'=> $this->deleted_at
+            'deleted_at'=> $this->deleted_at,
+            'logged_at' => $this->logged_at,
         ];
     }
 }

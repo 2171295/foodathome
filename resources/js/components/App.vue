@@ -197,12 +197,12 @@ export default {
 
         },
         defineCooker(cooker,order){
-            console.log(cooker)
             axios.put('api/orders/' + order.id + '/cook', {
                 cooker: cooker
             })
                 .then(() => {
                     console.log("Order is being prepared by " + cooker.name)
+                    this.$socket.emit('order_assign',cooker);
                     //enviar notificação ao cooker
                     axios.put('api/users/' + cooker.id + '/not_available')
                         .then(() => {
@@ -284,7 +284,6 @@ export default {
 
         },
         notification(payload) {
-            console.log(payload.user)
             this.$refs.notification.open(
                 "New Order!", payload.message
             )

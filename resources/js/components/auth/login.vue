@@ -109,7 +109,7 @@ export default {
                     /*this.$store.commit("getUser")*/
                 }
             })
-            .catch((response)=> {
+            .catch(()=> {
                 this.$store.commit("clearUserAndToken");
                 this.color = "black";
                 this.text = "Your username and/or password do not match."
