@@ -9,7 +9,7 @@
                     <v-card-text>
                         <v-data-table
                             :headers="headers_users"
-                            :items="this.$store.state.loggedUsers"
+                            :items="logged_users"
                             :items-per-page="5"
                             class="elevation-1"
                         ></v-data-table>
@@ -24,7 +24,7 @@
                     <v-card-text>
                         <v-data-table
                             :headers="headers_orders"
-                            :items="Orders"
+                            :items="open_orders"
                             :items-per-page="5"
                             class="elevation-1"
                         ></v-data-table>
@@ -36,10 +36,13 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
     name: "aux_home_manager",
     sockets: {
         user_logged(){
+            console.log("Entrou no user logged")
             this.refreshLoggedUsers();
         },
         user_logged_out(){
@@ -58,8 +61,8 @@ export default {
             headers_orders: [
                 {text: 'ID', align: 'start', sortable: true, value: 'id', },
                 {text: 'Status', align: 'start', sortable: true, value: 'status',},
-                {text: 'Cooker', sortable: true, value: 'cooker'},
-                {text: 'Deliveryman', sortable: true, value: 'deliveryman'},
+                {text: 'Cooker', sortable: true, value: 'cooker.name'},
+                {text: 'Deliveryman', sortable: true, value: 'deliveryman.name'},
                 {text: 'Time', sortable: true, value: 'current_status_at'},
                 {text: 'Actions', sortable: false, value: 'actions'},
             ],
@@ -67,16 +70,76 @@ export default {
     },
     methods: {
         refreshLoggedUsers(){
-            this.$store.dispatch("loadLoggedUser");
+            this.loadLoggedUser();
             this.$store.dispatch("loadAvailableCookers");
             this.$store.dispatch("loadAvailableDeliveryman");
         },
+        loadLoggedUser (){
+            axios.get("api/users/logged_users")
+                .then((response)=>{
+                    this.logged_users = response.data;
+                    this.toStringType()
+                })
+                .catch((error) =>{
+                    console.log("Error getting logged users: "+error)
+                })
+        },
         getOpenOrder(){
+            axios.get("api/orders/open")
+                .then((response) => {
+                    this.open_orders=response.data.data;
+                    this.toStringStatus()
+                })
+                .catch((error) =>{
+                    console.log("Error getting open orders: "+error)
+                })
+        },
+        toStringStatus(){
+            this.open_orders.forEach(value =>
+            {
+                switch (value.status){
+                    case 'D':
+                        value.status = "Delivered";
+                        break;
+                    case 'H':
+                        value.status = "Holding";
+                        break;
+                    case 'C':
+                        value.status = "Canceled";
+                        break;
+                    case 'T':
+                        value.status = "Transit";
+                        break;
+                    case 'P':
+                        value.status = "Preparing";
+                        break;
+                    case 'R':
+                        value.status = "Ready";
+                        break;
+                }
+            })
+        },
+        toStringType(){
+            this.logged_users.forEach(value =>
+            {
+                switch (value.type){
+                    case 'EC':
+                        value.type = "Cooker";
+                        break;
+                    case 'EM':
+                        value.type = "Manager";
+                        break;
+                    case 'ED':
+                        value.type = "Deliveryman";
+                        break;
 
+                }
+            })
         }
     },
     created() {
-        this.$store.dispatch("loadLoggedUser");
+        this.loadLoggedUser();
+        this.getOpenOrder();
         this.$store.dispatch("loadAvailableCookers");
         this.$store.dispatch("loadAvailableDeliveryman");
     },

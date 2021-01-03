@@ -12,7 +12,6 @@ export default new Vuex.Store({
         menu_items:[],
         menu_search:'',
         cart:[],
-        loggedUsers:[],
         availableManagers:[],
         availableCookers:[],
         availableDeliveryman:[],
@@ -189,15 +188,6 @@ export default new Vuex.Store({
             } else {
                 context.commit('setCart', JSON.parse(localStorage.getItem('cart')))
             }
-        },
-        loadLoggedUser (context){
-            axios.get("api/users/logged_users")
-                .then((response)=>{
-                    context.commit("setLoggedUsers",response.data)
-                })
-                .catch((error) =>{
-                    console.log("Error getting logged users: "+error)
-                })
         },
         loadAvailableCookers (context){
             axios.get("api/users/available_cookers")

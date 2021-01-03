@@ -10,13 +10,13 @@
                     <v-card-text v-if="order">
                         <v-row>
                             <v-col>
-                                <p><b>ID:</b>{{ order.id }}</p>
-                                <p><b>Customer:</b>{{ order.customer }}</p>
-                                <p><b>Customer Notes:</b>{{ order.notes }}</p>
+                                <p><b>ID: </b>{{ order.id }}</p>
+                                <p><b>Customer: </b>{{ order.customer.name }}</p>
+                                <p><b>Customer Notes: </b>{{ order.notes }}</p>
                             </v-col>
                             <v-col>
-                                <p><b>Started At:</b>{{ order.current_status_at }}</p>
-                                <p><b>Preparation Time:</b>{{ preparation_time }}</p>
+                                <p><b>Started At: </b>{{ order.current_status_at }}</p>
+                                <p><b>Preparation Time: </b>{{ preparation_time }} minutos</p>
                             </v-col>
                         </v-row>
                         <!--                        Lista com os Items da Order-->
@@ -76,9 +76,9 @@ export default {
         getOrderBeingPrepared() {
             axios.get('api/orders/preparedby/' + this.$store.state.user.id)
                 .then((response) => {
-                    console.log(response);
-                    if (response.data) {
-                        this.order = response;
+                    if (response.data.data) {
+                        this.order = response.data.data;
+                        this.preparationTime();
                         axios.get('api/orders_items/order/' + this.order.id)
                             .then((response) => {
                                 this.order_items = response.data.data;
@@ -105,6 +105,11 @@ export default {
         finishOrder(){
             //TODO - fazer a função de terminar a preparação da order
             //Emit to websocket que o user ficou available
+        },
+        preparationTime(){
+            let start = new Date(this.order.current_status_at);
+            let now = new Date()
+            this.preparation_time = Math.floor((now - start) / (1000*60));
         }
     },
     created() {

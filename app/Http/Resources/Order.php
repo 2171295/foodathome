@@ -17,10 +17,13 @@ class Order extends JsonResource
         return [
             'id'=> $this->id,
             'customer'=> $this->getCustomer(),
+            'cooker' => $this->getCooker(),
+            'deliveryman' => $this->getDeliveryman(),
             'status' => $this->status,
             'notes' => $this->notes,
             'total_price'=> $this->total_price,
             'date' => $this->date,
+            'current_status_at' => $this->current_status_at,
         ];
     }
 }

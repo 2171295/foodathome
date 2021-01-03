@@ -212,6 +212,7 @@ export default {
 
         },
         defineCooker(cooker,order){
+            console.log(cooker)
             axios.put('api/orders/' + order.id + '/cook', {
                 cooker: cooker
             })
@@ -267,13 +268,14 @@ export default {
                     //verifica se há holding orders
                     axios.get('api/orders/holding')
                         .then((response) => {
+                            console.log("Check holding orders")
                             let order = response.data.data;
                             if(order){
                                 this.defineCooker(user,order)
                             }
                         })
-                        .catch(() => {
-
+                        .catch((error) => {
+                            console.log(error)
                         })
                     break;
                 //verifica se o user é um deliveryman
@@ -307,9 +309,25 @@ export default {
 
         },
         notification(payload) {
+            console.log(payload.user)
             this.$refs.notification.open(
                 "New Order!", payload.message
             )
+        },
+        connect () {
+            // If user is logged resend the message user_logged
+            if (this.$store.state.user) {
+                this.$socket.emit('user_logged', this.$store.state.user)
+            }
+        },
+        user_disconnect(user){
+            axios.put("api/users/"+user.id+"/logout")
+            .then((response)=>{
+                console.log("User Disconnect")
+            })
+            .catch((error)=>{
+                console.log(error)
+            })
         }
     },
     updated() {
@@ -323,7 +341,7 @@ export default {
         aux_shopping_cart,
     },
     created() {
-        this.teste();
+
     }
 
 }

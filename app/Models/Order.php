@@ -40,7 +40,21 @@ class Order extends Model
     }
 
     public function getCustomer(){
-        return Customer::findOrFail($this->customer_id);
+        return User::findOrFail($this->customer_id);
+    }
+
+    public function getCooker(){
+        if($this->prepared_by != null)
+            return User::findOrFail($this->prepared_by);
+        else
+            return "-";
+    }
+
+    public function getDeliveryman(){
+        if($this->delivered_by != null)
+            return User::findOrFail($this->delivered_by);
+        else
+            return "-";
     }
 
 }

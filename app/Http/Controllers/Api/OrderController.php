@@ -58,9 +58,9 @@ class OrderController extends Controller
         return OrderProductsResource::collection($order->products);
     }
 
-    public function preparedBy(User $cook)
+    public function preparedBy(User $user)
     {
-        $order = Order::where('status', 'P')->where('prepared_by', $cook->id)->first();
+        $order = Order::where('status', 'P')->where('prepared_by', $user->id)->first();
         if ($order != null)
             return new OrderResource($order);
         return null;
@@ -76,9 +76,10 @@ class OrderController extends Controller
 
     public function defineCooker(Request $request, Order $order){
         $mytime = Carbon::now();
-        $cooker = $request->get('cooker');
-        $order->prepared_by = $cooker->id;
+        $cooker = $request->cooker;
+        $order->prepared_by = $cooker['id'];
         $order->current_status_at = $mytime->toDateTimeString();
+        $order->status = 'P';
         $order->save();
     }
 
