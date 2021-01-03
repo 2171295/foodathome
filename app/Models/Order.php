@@ -40,7 +40,10 @@ class Order extends Model
     }
 
     public function getCustomer(){
-        return User::findOrFail($this->customer_id);
+        $user =  User::findOrFail($this->customer_id);
+        $customer = Customer::findOrFail($this->customer_id);
+        $data = array('user' => $user,'customer'=>$customer);
+        return $data;
     }
 
     public function getCooker(){

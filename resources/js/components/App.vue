@@ -197,7 +197,7 @@ export default {
             })
                 .then(() => {
                     console.log("Order is being prepared by " + cooker.name)
-                    this.$socket.emit('order_assign',cooker);
+                    this.$socket.emit('order_assign_cook',cooker);
                     //enviar notificação ao cooker
                     axios.put('api/users/' + cooker.id + '/not_available')
                         .then(() => {

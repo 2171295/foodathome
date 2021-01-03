@@ -69,9 +69,9 @@ class OrderController extends Controller
         return null;
     }
 
-    public function deliveredBy(User $deliveryman)
+    public function deliveredBy(User $user)
     {
-        $order = Order::where('status', 'T')->where('delivered_by', $deliveryman->id)->first();
+        $order = Order::where('status', 'T')->where('delivered_by', $user->id)->first();
         if ($order != null)
             return new OrderResource($order);
         return null;
@@ -88,7 +88,7 @@ class OrderController extends Controller
     public function defineDeliveryMan(Request $request, Order $order){
         $mytime = Carbon::now();
         $delivery_man = $request->delivery_man;
-        $order->prepared_by = $delivery_man['id'];
+        $order->delivered_by = $delivery_man['id'];
         $order->current_status_at = $mytime->toDateTimeString();
         $order->status = 'T';
         $order->save();

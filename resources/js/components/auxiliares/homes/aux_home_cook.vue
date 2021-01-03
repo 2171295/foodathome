@@ -1,6 +1,7 @@
 <template>
     <v-container>
         <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
+        <aux_dialog_confirmacao ref="confirm"/>
         <v-row>
             <v-col>
                 <v-toolbar class="d-flex justify-center align-center" style="margin-bottom: 20px;">
@@ -12,7 +13,7 @@
                             <v-row>
                                 <v-col>
                                     <p><b>ID: </b>{{ order.id }}</p>
-                                    <p><b>Customer: </b>{{ order.customer.name }}</p>
+                                    <p><b>Customer: </b>{{ order.customer.customer.name }}</p>
                                     <p><b>Customer Notes: </b>{{ order.notes }}</p>
                                 </v-col>
                                 <v-col>
@@ -61,9 +62,10 @@
 
 <script>
 import Aux_snackbar from "../aux_snackbar";
+import Aux_dialog_confirmacao from "../aux_dialog_confirmacao";
 export default {
     name: "aux_home_cook",
-    components: {Aux_snackbar},
+    components: {Aux_dialog_confirmacao, Aux_snackbar},
     data: () => {
         return {
             // ---- SNACKBAR INFO -----
@@ -117,42 +119,47 @@ export default {
                     }, 2000);
                 })
         },
-        finishOrder() {
-            axios.put('/api/orders/' + this.order.id + '/cooked', {
-                preparation_time: this.preparation_time
-            })
-                .then(() => {
-                    this.snackbar = true;
-                    this.text = "Order finished."
-                    this.color = "green"
-                    setTimeout(() => {
-                        this.snackbar = false;
-                    }, 2000);
-                    this.$socket.emit('order_cooked', this.order)
-                    axios.put('api/users/' + this.$store.state.user.id + '/available')
-                        .then(() => {
-                            this.$socket.emit('user_available', this.$store.state.user)
-                            this.getOrderBeingPrepared();
-                        })
-                        .catch((error) => {
-                            console.log(error)
-                            this.color = 'red';
-                            this.text = "Error setting you available."
-                            this.snackbar = true;
-                            setTimeout(() => {
-                                this.snackbar = false;
-                            }, 2000);
-                        })
+        async finishOrder() {
+            if (await this.$refs.confirm.open(
+                "Finish Cooking",
+                "Are you sure the order is completed ?")
+            ) {
+                axios.put('/api/orders/' + this.order.id + '/cooked', {
+                    preparation_time: this.preparation_time
                 })
-                .catch((error) => {
-                    console.log(error)
-                    this.color = 'red';
-                    this.text = "Error finishing order."
-                    this.snackbar = true;
-                    setTimeout(() => {
-                        this.snackbar = false;
-                    }, 2000);
-                })
+                    .then(() => {
+                        this.snackbar = true;
+                        this.text = "Order finished."
+                        this.color = "green"
+                        setTimeout(() => {
+                            this.snackbar = false;
+                        }, 2000);
+                        this.$socket.emit('order_cooked', this.order)
+                        axios.put('api/users/' + this.$store.state.user.id + '/available')
+                            .then(() => {
+                                this.$socket.emit('user_available', this.$store.state.user)
+                                this.getOrderBeingPrepared();
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                                this.color = 'red';
+                                this.text = "Error setting you available."
+                                this.snackbar = true;
+                                setTimeout(() => {
+                                    this.snackbar = false;
+                                }, 2000);
+                            })
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        this.color = 'red';
+                        this.text = "Error finishing order."
+                        this.snackbar = true;
+                        setTimeout(() => {
+                            this.snackbar = false;
+                        }, 2000);
+                    })
+            }
         },
         preparationTime() {
             let start = new Date(this.order.current_status_at);
@@ -167,7 +174,7 @@ export default {
         // }
     },
     sockets:{
-        order_assign(user){
+        order_assign_cook(user){
             if(user.id === this.$store.state.user.id){
                 this.getOrderBeingPrepared();
             }

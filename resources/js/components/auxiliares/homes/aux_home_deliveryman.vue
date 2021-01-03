@@ -9,7 +9,7 @@
                     </v-toolbar>
                     <v-card-text>
                         <div v-if="activeOrder === null">
-                            You're not currently delivering and order.
+                            You're not currently delivering an order.
                         </div>
                         <div v-else>
                             <p><b>Order Number:</b> {{activeOrder.id}}</p>
@@ -60,7 +60,7 @@ export default {
         ordersReady:[],
         headers:[
             {text: 'ID', align: 'start', sortable: true, value: 'id'},
-            {text: 'Address', align: 'start', sortable: true, value: 'customer.address'},
+            {text: 'Address', align: 'start', sortable: true, value: 'customer.customer.address'},
             {text: 'Notes', align: 'start', sortable: true, value: 'notes'},
             {text: 'Actions', align: 'start', sortable: true, value: 'actions'},
         ],
@@ -68,13 +68,14 @@ export default {
     methods:{
         getOrders(){
             axios.get('/api/orders/ready').then((response)=>{
-                console.log(response.data.data)
                 this.ordersReady = response.data.data;
             })
         },
         getMyOrder(){
             axios.get('/api/orders/deliveredby/'+this.$store.state.user.id).then((response)=>{
-                this.ordersReady = response.data.data;
+                console.log(response)
+                if(response.data.data)
+                    this.activeOrder = response.data.data;
             })
         },
         async takeOrder(item) {
@@ -86,14 +87,20 @@ export default {
                     delivery_man: this.$store.state.user
                 }).then((response) => {
                     this.activeOrder = item;
+                    this.$socket.emit('order_taken_delivery',this.$store.state.user)
                     this.getOrders()
                 })
             }
         }
     },
+    sockets: {
+        order_taken_delivery(user){
+          this.getOrders()
+      }
+    },
     created() {
-        this.getMyOrder()
         this.getOrders()
+        this.getMyOrder()
     }
 }
 </script>
