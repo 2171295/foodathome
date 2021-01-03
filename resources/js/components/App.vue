@@ -25,7 +25,7 @@
             </v-main>
         </v-app>
         <v-app v-else>
-            <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app color="grey lighten-1"  v-if="this.$store.state.user.type !== 'C'">
+            <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" :clipped="clipped" fixed app color="grey lighten-1"  v-if="this.$store.state.user.type === 'EM'">
                 <v-card class="mx-auto" max-width="500">
                     <v-list>
                         <v-list-item
@@ -48,10 +48,10 @@
 
             </v-navigation-drawer>
             <v-app-bar :clipped-left="clipped" fixed app color="deep-orange lighten-1">
-                <v-btn @click.stop="drawer = !drawer" icon  v-if="this.$store.state.user.type !== 'C'">
+                <v-btn @click.stop="drawer = !drawer" icon  v-if="this.$store.state.user.type === 'EM'">
                     <v-icon>{{iconMenu}}</v-icon>
                 </v-btn>
-                <v-btn icon @click.stop="miniVariant = !miniVariant"  v-if="this.$store.state.user.type !== 'C'">
+                <v-btn icon @click.stop="miniVariant = !miniVariant"  v-if="this.$store.state.user.type === 'EM'">
                     <template v-if="miniVariant">
                         <v-icon>{{iconChevronRight}}</v-icon>
                     </template>
@@ -207,7 +207,7 @@ export default {
                     axios.put('api/users/' + cooker.id + '/not_available')
                         .then(() => {
                             //notificar user
-                            this.notification(cooker);
+                            //this.notification(cooker);
                         })
                         .catch((error) => {
                             console.log(error);
@@ -243,8 +243,6 @@ export default {
                 .catch((error) => {
                     console.log(error)
                 })
-            //se não, fica em holding
-
         },
         user_logged(user) {
             switch (user.type) {
@@ -262,10 +260,6 @@ export default {
                         .catch((error) => {
                             console.log(error)
                         })
-                    break;
-                //verifica se o user é um deliveryman
-                case ('ED'):
-                    //TODO - falta fazer o caso de um deliveryman logar
                     break;
             }
 
@@ -285,10 +279,6 @@ export default {
                         .catch(() => {
                             console.log(error)
                         })
-                    break;
-                //verifica se o user é um deliveryman
-                case ('ED'):
-                    //TODO - falta fazer o caso de um deliveryman logar
                     break;
             }
 

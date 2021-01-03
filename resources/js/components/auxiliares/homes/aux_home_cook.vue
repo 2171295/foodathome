@@ -3,42 +3,57 @@
         <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
         <v-row>
             <v-col>
-                <v-card>
-                    <v-toolbar class="d-flex justify-center align-center" style="margin-bottom: 20px;">
-                        <v-toolbar-title>Order Being Prepared</v-toolbar-title>
-                    </v-toolbar>
-                    <v-card-text v-if="order">
-                        <v-row>
-                            <v-col>
-                                <p><b>ID: </b>{{ order.id }}</p>
-                                <p><b>Customer: </b>{{ order.customer.name }}</p>
-                                <p><b>Customer Notes: </b>{{ order.notes }}</p>
-                            </v-col>
-                            <v-col>
-                                <p><b>Started At: </b>{{ order.current_status_at }}</p>
-                                <p><b>Preparation Time: </b>{{ preparation_time }} minutos</p>
-                            </v-col>
-                        </v-row>
-                        <!--                        Lista com os Items da Order-->
-                        <v-toolbar style="margin-bottom: 10px;">
-                            <v-text-field label="Search:" v-model="search"></v-text-field>
-                        </v-toolbar>
+                <v-toolbar class="d-flex justify-center align-center" style="margin-bottom: 20px;">
+                    <v-toolbar-title>Order Being Prepared</v-toolbar-title>
+                </v-toolbar>
+                <template v-if="order">
+                    <v-card>
                         <v-card-text>
-                            <v-data-table
-                                :headers="headers"
-                                :items="order_items"
-                                :items-per-page="10"
-                                class="elevation-1"
-                                :search="search"
-                            >
-                            </v-data-table>
+                            <v-row>
+                                <v-col>
+                                    <p><b>ID: </b>{{ order.id }}</p>
+                                    <p><b>Customer: </b>{{ order.customer.name }}</p>
+                                    <p><b>Customer Notes: </b>{{ order.notes }}</p>
+                                </v-col>
+                                <v-col>
+                                    <p><b>Started At: </b>{{ order.current_status_at }}</p>
+                                    <p><b>Preparation Time: </b>{{ preparation_time }} minutos</p>
+                                </v-col>
+                            </v-row>
                         </v-card-text>
-                        <v-btn @click="finishOrder()">Finish</v-btn>
-                    </v-card-text>
-                    <v-card-text v-else>
-                        <p><b>You have no order assign</b></p>
-                    </v-card-text>
-                </v-card>
+                    </v-card>
+                    <v-card style="margin-top: 10px">
+                        <v-card-text>
+                            <!--                        Lista com os Items da Order-->
+                            <v-toolbar style="margin-bottom: 10px;">
+                                <v-text-field label="Search:" v-model="search"></v-text-field>
+                            </v-toolbar>
+                            <v-card-text>
+                                <v-data-table
+                                    :headers="headers"
+                                    :items="order_items"
+                                    :items-per-page="10"
+                                    class="elevation-1"
+                                    :search="search"
+                                >
+                                    <template v-slot:item.img="{ item }">
+                                        <v-img :src="'/storage/products/'+item.product.photo_url" width="100px" height="100px"
+                                               style="border-radius: 50%"/>
+                                    </template>
+                                </v-data-table>
+                            </v-card-text>
+                            <v-btn @click="finishOrder">Finish</v-btn>
+                        </v-card-text>
+                    </v-card>
+                </template>
+                <template v-else>
+                    <v-card>
+                        <v-card-text>
+                            <p><b>You have no order assign</b></p>
+                        </v-card-text>
+                    </v-card>
+                </template>
+
             </v-col>
         </v-row>
     </v-container>
@@ -63,12 +78,11 @@ export default {
 
             search:'',
             headers: [
-                {text: '', sortable: false, value: 'img'},
-                {text: 'Name', align: 'start', sortable: true, value: 'name',},
-                {text: 'Type', align: 'start', sortable: true, value: 'type',},
+                {text: '', value: 'img'},
+                {text: 'Name', align: 'start', sortable: true, value: 'product.name',},
+                {text: 'Type', align: 'start', sortable: true, value: 'product.type',},
                 {text: 'Quantity', align: 'start', sortable: true, value: 'quantity',},
-                {text: 'Description', sortable: true, value: 'email'},
-                {text: 'Actions', align: 'start', sortable: false, value: 'actions',},
+                {text: 'Description', align: 'start', sortable: false, value: 'product.description',},
             ],
         }
     },
@@ -102,18 +116,52 @@ export default {
                     }, 2000);
                 })
         },
-        finishOrder(){
-            //TODO - fazer a função de terminar a preparação da order
-            //Emit to websocket que o user ficou available
+        finishOrder() {
+            axios.put('/api/orders/' + this.order.id + '/cooked', {
+                preparation_time: this.preparation_time
+            })
+                .then(() => {
+                    this.snackbar = true;
+                    this.text = "Order finished."
+                    this.color = "green"
+                    setTimeout(() => {
+                        this.snackbar = false;
+                    }, 2000);
+                    this.$socket.emit('order_cooked', this.order)
+                    axios.put('api/users/' + this.$store.state.user.id + '/available')
+                        .then(() => {
+                            this.$socket.emit('user_available', this.$store.state.user)
+                            this.getOrderBeingPrepared();
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            this.color = 'red';
+                            this.text = "Error setting you available."
+                            this.snackbar = true;
+                            setTimeout(() => {
+                                this.snackbar = false;
+                            }, 2000);
+                        })
+                })
+                .catch((error) => {
+                    console.log(error)
+                    this.color = 'red';
+                    this.text = "Error finishing order."
+                    this.snackbar = true;
+                    setTimeout(() => {
+                        this.snackbar = false;
+                    }, 2000);
+                })
         },
-        preparationTime(){
+        preparationTime() {
             let start = new Date(this.order.current_status_at);
             let now = new Date()
-            this.preparation_time = Math.floor((now - start) / (1000*60));
+            this.preparation_time = Math.floor((now - start) / (1000 * 60));
         }
     },
     created() {
         this.getOrderBeingPrepared();
+        setInterval(this.preparationTime,61000)
     },
 }
 </script>

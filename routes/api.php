@@ -54,6 +54,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('users/{user}/confirm_password', [UserController::class, 'confirmPassword']);
     Route::put('users/{user}/update_password', [UserController::class, 'updatePassword']);
     Route::put('users/{user}/not_available', [UserController::class, 'notAvailable']);
+    Route::put('users/{user}/available', [UserController::class, 'available']);
 
 
 });
@@ -86,6 +87,7 @@ Route::post('orders', [OrderController::class, 'store']);
 Route::put('orders/{order}', [OrderController::class, 'update']);
 Route::delete('orders/{order}', [OrderController::class, 'destroy']);
 Route::put('orders/{order}/cook',[OrderController::class,'defineCooker']);
+Route::put('orders/{order}/cooked',[OrderController::class,'orderCooked']);
 Route::get('orders/{order}/products', [OrderController::class, 'getProducts']);
 Route::get('orders/preparedby/{user}', [OrderController::class, 'preparedBy']);
 Route::get('orders/deliveredby/{user}', [OrderController::class, 'deliveredBy']);

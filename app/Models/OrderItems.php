@@ -21,4 +21,13 @@ class OrderItems extends Pivot
 
     public $incrementing = true;
     public $timestamps = false;
+
+    public function getProduct(){
+        return Product::findOrFail($this->product_id);
+    }
+
+    public function getOrder(){
+        return Order::findOrFail($this->order_id);
+    }
+
 }

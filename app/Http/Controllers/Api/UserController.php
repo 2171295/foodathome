@@ -169,6 +169,12 @@ class UserController extends Controller
         $user->save();
     }
 
+    public function available(User $user){
+        $mytime = Carbon::now();
+        $user->available_at = $mytime->toDateTimeString();
+        $user->save();
+    }
+
     public function confirmPassword(Request $request, User $user){
         if(Hash::check($request->get('oldPassword'),$user->password)){
             return response()->json(null, 200);

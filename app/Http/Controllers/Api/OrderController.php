@@ -89,4 +89,13 @@ class OrderController extends Controller
             return new OrderResource($order);
         return null;
     }
+
+    public function orderCooked(Request $request,Order $order){
+        $preparation_time = $request->preparation_time;
+        $mytime = Carbon::now();
+        $order->current_status_at = $mytime->toDateTimeString();
+        $order->preparation_time = $preparation_time;
+        $order->status = 'R';
+        $order->save();
+    }
 }
