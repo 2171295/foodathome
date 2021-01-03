@@ -141,24 +141,9 @@ export default {
                     to: '/products'
                 },
                 {
-                    action: 'mdi-school',
-                    to: '/mensagens',
-                    items: [{ title: 'List' }],
-                    title: 'Mensagens',
-                },
-            ],
-            items_cook: [
-                {
-                    icon: this.iconHome,
-                    title: 'Consultar Projetos',
-                    to: '/projetos/',
-                },
-            ],
-            items_deliveryman: [
-                {
-                    icon: this.iconHome,
-                    title: 'Consultar Projetos',
-                    to: '/projetos/',
+                    action: 'mdi-chart-areaspline',
+                    to: '/statistics',
+                    title: 'Statistics',
                 },
             ],
         }
