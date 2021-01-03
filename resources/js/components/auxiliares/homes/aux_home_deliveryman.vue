@@ -12,7 +12,14 @@
                             You're not currently delivering an order.
                         </div>
                         <div v-else>
+                            {{activeOrder}}
+                            <v-img :src="'/storage/fotos/'+activeOrder.customer.user.photo_url" max-height="200px" max-width="200px" style="border-radius: 50%;"/>
                             <p><b>Order Number:</b> {{activeOrder.id}}</p>
+                            <p><b>Customer name:</b> {{activeOrder.customer.user.name}}</p>
+                            <p><b>Customer address:</b> {{activeOrder.customer.customer.address}}</p>
+                            <p><b>Customer email:</b> {{activeOrder.customer.user.email}}</p>
+                            <p><b>Order notes:</b> {{activeOrder.notes}}</p>
+                            <p><b>Delivery time:</b> {{preparation_time}} minutes</p>
                         </div>
                     </v-card-text>
                 </v-card>
@@ -54,6 +61,7 @@ export default {
     name: "aux_home_deliveryman",
     components:{
         aux_dialog_confirmacao,
+        preparation_time:'',
     },
     data: () => ({
         activeOrder: null,
@@ -76,12 +84,13 @@ export default {
                 console.log(response)
                 if(response.data.data)
                     this.activeOrder = response.data.data;
+                    this.preparationTime()
             })
         },
         async takeOrder(item) {
             if (await this.$refs.confirm.open(
-                "Eliminar utilizador",
-                "Tem a certeza que quer eliminar o utilizador " + item.email + " ?")
+                "Take Order",
+                "Are you sure you want to take this order ?")
             ) {
                 axios.put('/api/orders/' + item.id + '/delivery_man', {
                     delivery_man: this.$store.state.user
@@ -89,9 +98,16 @@ export default {
                     this.activeOrder = item;
                     this.$socket.emit('order_taken_delivery',this.$store.state.user)
                     this.getOrders()
+                    this.preparationTime();
                 })
             }
-        }
+        },
+        preparationTime() {
+            let start = new Date(this.activeOrder.current_status_at);
+            let start = new Date(this.activeOrder.);
+            let now = new Date()
+            this.preparation_time = Math.floor((now - start) / (1000 * 60));
+        },
     },
     sockets: {
         order_cooked(order){
