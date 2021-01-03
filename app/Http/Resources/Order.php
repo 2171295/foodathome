@@ -23,6 +23,7 @@ class Order extends JsonResource
             'notes' => $this->notes,
             'total_price'=> $this->total_price,
             'date' => $this->date,
+            'opened_at' => $this->opened_at,
             'current_status_at' => $this->current_status_at,
         ];
     }

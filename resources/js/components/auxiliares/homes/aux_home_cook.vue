@@ -183,7 +183,7 @@ export default {
     created() {
         this.getOrderBeingPrepared();
         setInterval(this.preparationTime,61000)
-        setInterval(this.workingTime,61000)
+        //setInterval(this.workingTime,61000)
     },
 }
 </script>
