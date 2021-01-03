@@ -26,6 +26,9 @@ class OrderController extends Controller
     public function openOrders(){
         return OrderResource::collection(Order::where('status','!=','D')->where('status','!=','C')->orderBy('current_status_at','desc')->get());
     }
+    public function ordersReady(){
+        return OrderResource::collection(Order::where('status','R')->orderBy('current_status_at')->get());
+    }
 
     public function show(Order $order)
     {
@@ -80,6 +83,14 @@ class OrderController extends Controller
         $order->prepared_by = $cooker['id'];
         $order->current_status_at = $mytime->toDateTimeString();
         $order->status = 'P';
+        $order->save();
+    }
+    public function defineDeliveryMan(Request $request, Order $order){
+        $mytime = Carbon::now();
+        $delivery_man = $request->delivery_man;
+        $order->prepared_by = $delivery_man['id'];
+        $order->current_status_at = $mytime->toDateTimeString();
+        $order->status = 'T';
         $order->save();
     }
 

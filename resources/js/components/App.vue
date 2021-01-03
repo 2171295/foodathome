@@ -180,12 +180,7 @@ export default {
             if(this.$store.state.user.type === 'EM'){
                 this.items = this.items_admin;
             }
-            if(this.$store.state.user.type === 'ED'){
-                this.items = this.items_deliveryman;
-            }
-            if(this.$store.state.user.type === 'EC'){
-                this.items = this.items_cook;
-            }
+
         },
         notification: function (user) {
             let msg = window.prompt('You have a new order to prepare.')

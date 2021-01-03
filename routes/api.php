@@ -80,6 +80,7 @@ Route::get('products/{product}/orders', [ProductController::class, 'getOrders'])
 //Rotas para as orders
 Route::get('orders', [OrderController::class, 'index']);
 Route::get('orders/open',[OrderController::class,'openOrders']);
+Route::get('orders/ready',[OrderController::class,'ordersReady']);
 Route::get('orders/holding', [OrderController::class, 'holdingOrders']);
 Route::get('orders/{order}', [OrderController::class, 'show']);
 Route::get('orders/{order}/products', [OrderController::class, 'getProducts']);
@@ -88,6 +89,7 @@ Route::put('orders/{order}', [OrderController::class, 'update']);
 Route::delete('orders/{order}', [OrderController::class, 'destroy']);
 Route::put('orders/{order}/cook',[OrderController::class,'defineCooker']);
 Route::put('orders/{order}/cooked',[OrderController::class,'orderCooked']);
+Route::put('orders/{order}/delivery_man',[OrderController::class,'defineDeliveryMan']);
 Route::get('orders/{order}/products', [OrderController::class, 'getProducts']);
 Route::get('orders/preparedby/{user}', [OrderController::class, 'preparedBy']);
 Route::get('orders/deliveredby/{user}', [OrderController::class, 'deliveredBy']);
