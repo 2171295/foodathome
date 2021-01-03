@@ -103,7 +103,8 @@ export default {
                 })
         },
         finishOrder(){
-
+            //TODO - fazer a função de terminar a preparação da order
+            //Emit to websocket que o user ficou available
         }
     },
     created() {
