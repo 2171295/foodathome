@@ -5,6 +5,7 @@
         <aux_dialog_notification ref="notification"/>
         <v-row>
             <v-col>
+                <p><b>Working Time: {{working_time}} minutes</b></p>
                 <v-toolbar class="d-flex justify-center align-center" style="margin-bottom: 20px;">
                     <v-toolbar-title>Order Being Prepared</v-toolbar-title>
                 </v-toolbar>
@@ -97,7 +98,7 @@ export default {
                 .then((response) => {
                     if (response.data.data) {
                         this.order = response.data.data;
-                        this.preparationTime();
+                        this.timeCounters();
                         axios.get('api/orders_items/order/' + this.order.id)
                             .then((response) => {
                                 this.order_items = response.data.data;
@@ -163,20 +164,16 @@ export default {
                     })
             }
         },
-        preparationTime() {
+        timeCounters() {
             let start = new Date(this.order.current_status_at);
             let now = new Date()
             this.preparation_time = Math.floor((now - start) / (1000 * 60));
+            start = new Date(this.$store.state.user_logged_at);
+            this.working_time = Math.floor((now - start) / (1000 * 60));
         },
         async notification(){
             await this.$refs.notification.open("New Order", "New Order has been assign!")
-        }
-        // workingTime() {
-        //     console.log(this.$store.state.user)
-        //     let start = new Date(this.$store.state.user.logged_At);
-        //     let now = new Date()
-        //     this.working_time = Math.floor((now - start) / (1000 * 60));
-        // }
+        },
     },
     sockets:{
         order_assign_cook(user){
@@ -188,8 +185,7 @@ export default {
     },
     created() {
         this.getOrderBeingPrepared();
-        setInterval(this.preparationTime,61000)
-        //setInterval(this.workingTime,61000)
+        setInterval(this.timeCounters,61000)
     },
 }
 </script>

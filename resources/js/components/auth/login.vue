@@ -74,47 +74,49 @@ export default {
             // ------------------------
             user: {
                 email: '',
-                password:'',
+                password: '',
             },
         }
     },
-    methods:{
-        onSubmit(){
+    methods: {
+        onSubmit() {
             this.break = false;
             this.$store.commit('clearUserAndToken')
-            axios.post("api/login", this.user).
-            then((response) => {
-                if(response.data.errorCode){
+            axios.post("api/login", this.user)
+                .then((response) => {
+                    if (response.data.errorCode) {
+                        this.color = "black";
+                        this.text = response.data.msg;
+                        this.snackbar = true;
+                        this.break = true;
+                    } else {
+                        this.$store.commit("setToken", response.data.access_token);
+                        return axios.get("api/users/me");
+                    }
+                })
+                .then((response) => {
+                    if (this.break === false) {
+                        axios.put("api/users/" + response.data.data.id + "/logged")
+                            .then((response) => {
+                                this.$store.commit('setLoggedAt', response.data.data.logged_at)
+                                this.$store.dispatch('setUser', response.data.data)
+                                    .then(() => {
+                                        this.$router.push('/home');
+                                    })
+                                    .catch(error => {
+                                        this.color = "black";
+                                        this.text = "Set user in store didn't work."
+                                        this.snackbar = true;
+                                    })
+                            })
+                    }
+                })
+                .catch(() => {
+                    this.$store.commit("clearUserAndToken");
                     this.color = "black";
-                    this.text =  response.data.msg;
+                    this.text = "Your username and/or password do not match."
                     this.snackbar = true;
-                    this.break = true;
-                }else{
-                    this.$store.commit("setToken", response.data.access_token);
-                    return axios.get("api/users/me");
-                }
-            })
-            .then((response) => {
-                if (this.break === false) {
-                    axios.put("api/users/" + response.data.data.id + "/logged");
-                    this.$store.dispatch('setUser', response.data.data)
-                        .then(() => {
-                            this.$router.push('/home');
-                        })
-                        .catch(error => {
-                            this.color = "black";
-                            this.text = "Set user in store didn't work."
-                            this.snackbar = true;
-                        })
-                    /*this.$store.commit("getUser")*/
-                }
-            })
-            .catch(()=> {
-                this.$store.commit("clearUserAndToken");
-                this.color = "black";
-                this.text = "Your username and/or password do not match."
-                this.snackbar = true;
-            });
+                });
         },
     },
 }

@@ -2,6 +2,7 @@
     <div>
         <v-row>
             <v-col md="6">
+                <p><b>Working Time: {{working_time}} minutes</b></p>
                 <v-toolbar class="d-flex justify-center align-center" style="margin-bottom: 20px;">
                     <v-toolbar-title>Logged Employees</v-toolbar-title>
                 </v-toolbar>
@@ -65,6 +66,7 @@ export default {
                 {text: 'Current Status At', sortable: true, value: 'current_status_at'},
                 {text: 'Actions', sortable: false, value: 'actions'},
             ],
+            working_time:'',
         }
     },
     methods: {
@@ -133,13 +135,20 @@ export default {
                         break;
                 }
             })
-        }
+        },
+        timeCounters() {
+            let now = new Date()
+            let start = new Date(this.$store.state.user_logged_at);
+            this.working_time = Math.floor((now - start) / (1000 * 60));
+        },
     },
     created() {
         this.loadLoggedUser();
         this.getOpenOrder();
-        this.$store.dispatch("loadAvailableCookers");
-        this.$store.dispatch("loadAvailableDeliveryman");
+        this.timeCounters();
+        setInterval(this.timeCounters,61000)
+        // this.$store.dispatch("loadAvailableCookers");
+        // this.$store.dispatch("loadAvailableDeliveryman");
     },
 }
 </script>

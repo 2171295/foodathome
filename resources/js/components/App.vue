@@ -163,6 +163,7 @@ export default {
             axios.post("/api/logout").then((response)=>{
                 axios.put("api/users/"+this.$store.state.user.id+"/logout");
                 this.$store.commit("clearUserAndToken");
+                this.$store.commit('clearLoggedAt');
                 this.$nextTick()
                     .then(() => {
                         this.$router.push("/")

@@ -9,6 +9,7 @@ export default new Vuex.Store({
     state: {
         token: "",
         user: null,
+        user_logged_at:'',
         menu_items:[],
         menu_search:'',
         cart:[],
@@ -39,6 +40,12 @@ export default new Vuex.Store({
             state.token = "";
             sessionStorage.removeItem("token");
             axios.defaults.headers.common.Authorization = undefined;
+        },
+        clearLoggedAt(state){
+            state.user_logged_at= '';
+        },
+        setLoggedAt(state,logged_at){
+            state.user_logged_at = logged_at;
         },
         setUser (state, user) {
             if (state.user !== user) {

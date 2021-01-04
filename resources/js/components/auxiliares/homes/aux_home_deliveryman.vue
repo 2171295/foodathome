@@ -4,6 +4,7 @@
         <v-row>
             <v-col>
                 <v-card>
+                    <p><b>Working Time: {{working_time}} minutes</b></p>
                     <v-toolbar class="d-flex justify-center">
                         <v-toolbar-title>Active Order</v-toolbar-title>
                     </v-toolbar>
@@ -96,6 +97,7 @@ export default {
         order_items:[],
         delivery_time:'',
         total_time:'',
+        working_time:'',
         search:'',
         headers:[
             {text: 'ID', align: 'start', sortable: true, value: 'id'},
@@ -123,7 +125,6 @@ export default {
             axios.get('/api/orders/deliveredby/' + this.$store.state.user.id)
                 .then((response) => {
                     if (response.data.data) {
-                        console.log(this.$store.state.user)
                         if(this.$store.state.user.available_at != null){
                             this.delivering();
                         }
@@ -176,6 +177,8 @@ export default {
             this.delivery_time = Math.floor((now - start) / (1000 * 60));
             start = new Date(this.activeOrder.opened_at);
             this.total_time = Math.floor((now - start) / (1000 * 60));
+            start = new Date(this.$store.state.user_logged_at);
+            this.working_time = Math.floor((now - start) / (1000 * 60));
         },
         async orderDelivered () {
 
@@ -197,8 +200,9 @@ export default {
                         }, 2000);
                         this.$socket.emit('order_delivered', this.activeOrder)
                         axios.put('api/users/' + this.$store.state.user.id + '/available')
-                            .then(() => {
+                            .then((response) => {
                                 this.$socket.emit('user_available', this.$store.state.user)
+                                this.$store.dispatch('setUser',response.data.data)
                                 this.getOrders()
                                 this.getMyOrder()
                             })
