@@ -2,7 +2,7 @@
     <div >
         <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
         <aux_shopping_cart ref="shoppingCart"/>
-        <aux_dialog_notification ref="notification"/>
+
         <v-app v-if="!this.$store.state.user">
             <v-app-bar :clipped-left="true" fixed app color="deep-orange lighten-1" >
                 <v-btn icon to="/">
@@ -182,15 +182,6 @@ export default {
             }
 
         },
-        notification: function (user) {
-            let msg = window.prompt('You have a new order to prepare.')
-            let payload = {
-                destinationUser: user,
-                message: msg
-            }
-            this.$socket.emit('notification', payload)
-
-        },
         defineCooker(cooker,order){
             axios.put('api/orders/' + order.id + '/cook', {
                 cooker: cooker
@@ -278,11 +269,6 @@ export default {
             }
 
         },
-        notification(payload) {
-            this.$refs.notification.open(
-                "New Order!", payload.message
-            )
-        },
         connect () {
             // If user is logged resend the message user_logged
             if (this.$store.state.user) {
@@ -305,7 +291,6 @@ export default {
         }
     },
     components:{
-        aux_dialog_notification,
         Aux_snackbar,
         aux_shopping_cart,
     },

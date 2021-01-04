@@ -123,6 +123,10 @@ export default {
             axios.get('/api/orders/deliveredby/' + this.$store.state.user.id)
                 .then((response) => {
                     if (response.data.data) {
+                        console.log(this.$store.state.user)
+                        if(this.$store.state.user.available_at != null){
+                            this.delivering();
+                        }
                         this.activeOrder = response.data.data;
                         this.timeCounter()
                         axios.get('api/orders_items/order/' + this.activeOrder.id)
@@ -138,7 +142,6 @@ export default {
                                 }, 2000);
                             })
                     }
-                    console.log(this.activeOrder)
                 })
         },
         async takeOrder(item) {
@@ -151,18 +154,20 @@ export default {
                 }).then((response) => {
                     this.activeOrder = item;
                     this.$socket.emit('order_taken_delivery',this.$store.state.user)
-                    axios.put('api/users/' + this.$store.state.user.id + '/not_available')
-                        .then(() => {
-                            //notificar user
-                            //this.notification(cooker);
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        })
+                    this.delivering();
                     this.getOrders()
                     this.timeCounter();
                 })
             }
+        },
+        delivering(){
+            axios.put('api/users/' + this.$store.state.user.id + '/not_available')
+                .then(() => {
+                    console.log("User is delivering")
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
         },
         timeCounter() {
             let start = new Date(this.activeOrder.current_status_at);

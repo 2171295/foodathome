@@ -2,6 +2,7 @@
     <v-container>
         <aux_snackbar :text="text" :snackbar="snackbar" :color="color"/>
         <aux_dialog_confirmacao ref="confirm"/>
+        <aux_dialog_notification ref="notification"/>
         <v-row>
             <v-col>
                 <v-toolbar class="d-flex justify-center align-center" style="margin-bottom: 20px;">
@@ -63,9 +64,10 @@
 <script>
 import Aux_snackbar from "../aux_snackbar";
 import Aux_dialog_confirmacao from "../aux_dialog_confirmacao";
+import Aux_dialog_notification from "../aux_dialog_notification";
 export default {
     name: "aux_home_cook",
-    components: {Aux_dialog_confirmacao, Aux_snackbar},
+    components: {Aux_dialog_notification, Aux_dialog_confirmacao, Aux_snackbar},
     data: () => {
         return {
             // ---- SNACKBAR INFO -----
@@ -166,6 +168,9 @@ export default {
             let now = new Date()
             this.preparation_time = Math.floor((now - start) / (1000 * 60));
         },
+        async notification(){
+            await this.$refs.notification.open("New Order", "New Order has been assign!")
+        }
         // workingTime() {
         //     console.log(this.$store.state.user)
         //     let start = new Date(this.$store.state.user.logged_At);
@@ -177,6 +182,7 @@ export default {
         order_assign_cook(user){
             if(user.id === this.$store.state.user.id){
                 this.getOrderBeingPrepared();
+                this.notification();
             }
         },
     },

@@ -27,6 +27,8 @@
                         </div>
                         <p><b>Name:</b> {{user.name}}</p>
                         <p><b>Email:</b> {{user.email}}</p>
+                        <p><b>Logged Since:</b> {{user.logged_at}}</p>
+                        <p><b>Status:</b> {{user.status}}</p>
                         <div v-if="this.user.type === 'C'">
                             <p><b>Address:</b> {{client.address}}</p>
                             <p><b>Phone:</b> {{client.phone}}</p>

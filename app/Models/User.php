@@ -77,4 +77,20 @@ class User extends Authenticatable
                 return 'No';
         }
     }
+
+    public function userStatus(){
+        if($this->type == 'C'){
+            return null;
+        }
+        if($this->logged_at != null && $this->available_at != null){
+            return "Available";
+        }
+        if($this->logged_at != null && $this->available_at == null && $this->type == 'EC'){
+            return "Cooking";
+        }
+        if($this->logged_at != null && $this->available_at == null && $this->type == 'ED'){
+            return "Delivering";
+        }
+        return "Offline";
+    }
 }

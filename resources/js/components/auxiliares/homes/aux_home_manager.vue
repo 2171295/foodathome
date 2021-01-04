@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import axios from "axios";
 
 export default {
     name: "aux_home_manager",
@@ -63,7 +62,7 @@ export default {
                 {text: 'Status', align: 'start', sortable: true, value: 'status',},
                 {text: 'Cooker', sortable: true, value: 'cooker.name'},
                 {text: 'Deliveryman', sortable: true, value: 'deliveryman.name'},
-                {text: 'Time', sortable: true, value: 'current_status_at'},
+                {text: 'Current Status At', sortable: true, value: 'current_status_at'},
                 {text: 'Actions', sortable: false, value: 'actions'},
             ],
         }
@@ -132,7 +131,6 @@ export default {
                     case 'ED':
                         value.type = "Deliveryman";
                         break;
-
                 }
             })
         }

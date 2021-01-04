@@ -18,6 +18,7 @@ class User extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'status' => $this->userStatus(),
             'type' => $this->type,
             'blocked' => $this->blockedToStr(),
             'photo_url'=> $this->photo_url,

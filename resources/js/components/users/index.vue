@@ -29,7 +29,7 @@
                 <v-data-table
                     :headers="headers"
                     :items="users"
-                    :items-per-page="10"
+                    :items-per-page="20"
                     :item-class= "row_classes"
                     class="elevation-1"
                     :search="search"
@@ -107,6 +107,7 @@ export default {
                 {text: '', sortable: false, value: 'img'},
                 {text: 'ID', align: 'start', sortable: true, value: 'id',},
                 {text: 'Name', align: 'start', sortable: true, value: 'name',},
+                {text: 'Status', align: 'start', sortable: true, value: 'status',},
                 {text: 'Email', sortable: true, value: 'email'},
                 {text: 'Type', align: 'start', sortable: true, value: 'type',},
                 {text: 'Blocked', align: 'start', sortable: true, value: 'blocked',},
@@ -138,6 +139,7 @@ export default {
             axios.get("api/users/with_trash")
                 .then((response) => {
                     this.users = response.data.data
+                    this.toStringType()
                     this.loggedUser = this.$store.state.user
                 })
         },
@@ -249,19 +251,42 @@ export default {
                 return null;
             }
         },
-        refreshUsers: function (updatedUser) {
-            console.log(updatedUser)
-            let userIdx = this.users.findIndex((value) => value.id === updatedUser.id)
-            if (userIdx >= 0) {
-                this.$set(this.users, userIdx, updatedUser)
-            }
-            this.user = '';
-            this.getUsers();
+        // refreshUsers: function (updatedUser) {
+        //     console.log(updatedUser)
+        //     let userIdx = this.users.findIndex((value) => value.id === updatedUser.id)
+        //     if (userIdx >= 0) {
+        //         this.$set(this.users, userIdx, updatedUser)
+        //     }
+        //     this.user = '';
+        //     this.getUsers();
+        // },
+        toStringType(){
+            this.users.forEach(value =>
+            {
+                switch (value.type){
+                    case 'EC':
+                        value.type = "Cooker";
+                        break;
+                    case 'EM':
+                        value.type = "Manager";
+                        break;
+                    case 'ED':
+                        value.type = "Deliveryman";
+                        break;
+                }
+            })
         },
     },
     sockets: {
         user_list_updated (user_updated) {
-            this.refreshUsers(user_updated)
+            //this.refreshUsers(user_updated)
+            this.getUsers();
+        },
+        user_logged(user){
+            this.getUsers();
+        },
+        user_logged_out(user){
+            this.getUsers();
         }
     },
     created() {
