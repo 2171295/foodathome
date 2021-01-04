@@ -199,6 +199,9 @@ export default {
         },
         order_taken_delivery(user) {
             this.getOrders()
+        },
+        order_delivered(order){
+            this.getOrders()
         }
     },
     created() {

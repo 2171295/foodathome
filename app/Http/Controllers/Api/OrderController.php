@@ -109,4 +109,16 @@ class OrderController extends Controller
         $order->status = 'R';
         $order->save();
     }
+
+    public function orderDelivered(Request $request,Order $order){
+        $delivery_time = $request->delivery_time;
+        $total_time = $request->total_time;
+        $mytime = Carbon::now();
+        $order->current_status_at = $mytime->toDateTimeString();
+        $order->delivery_time = $delivery_time;
+        $order->total_time = $total_time;
+        $order->closed_at = $mytime->toDateTimeString();
+        $order->status = 'D';
+        $order->save();
+    }
 }

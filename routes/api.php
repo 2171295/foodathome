@@ -90,6 +90,7 @@ Route::delete('orders/{order}', [OrderController::class, 'destroy']);
 Route::put('orders/{order}/cook',[OrderController::class,'defineCooker']);
 Route::put('orders/{order}/cooked',[OrderController::class,'orderCooked']);
 Route::put('orders/{order}/delivery_man',[OrderController::class,'defineDeliveryMan']);
+Route::put('orders/{order}/delivered',[OrderController::class,'orderDelivered']);
 Route::get('orders/{order}/products', [OrderController::class, 'getProducts']);
 Route::get('orders/preparedby/{user}', [OrderController::class, 'preparedBy']);
 Route::get('orders/deliveredby/{user}', [OrderController::class, 'deliveredBy']);
