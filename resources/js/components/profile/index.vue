@@ -25,14 +25,14 @@
                                 <span>Edit profile picture</span>
                             </v-tooltip>
                         </div>
-                        <p><b>Name:</b> {{user.name}}</p>
-                        <p><b>Email:</b> {{user.email}}</p>
-                        <p><b>Logged Since:</b> {{user.logged_at}}</p>
-                        <p><b>Status:</b> {{user.status}}</p>
+                        <p><b>Name:</b> {{ user.name }}</p>
+                        <p><b>Email:</b> {{ user.email }}</p>
+                        <p><b>Logged Since:</b> {{ user.logged_at }}</p>
+                        <p><b>Status:</b> {{ user.status }}</p>
                         <div v-if="this.user.type === 'C'">
-                            <p><b>Address:</b> {{client.address}}</p>
-                            <p><b>Phone:</b> {{client.phone}}</p>
-                            <p><b>NIF:</b> {{client.nif}}</p>
+                            <p><b>Address:</b> {{ client.address }}</p>
+                            <p><b>Phone:</b> {{ client.phone }}</p>
+                            <p><b>NIF:</b> {{ client.nif }}</p>
                         </div>
                     </v-card-text>
                 </v-card>
@@ -48,23 +48,24 @@ import aux_edit_password from "../auxiliares/users/aux_edit_password";
 import aux_edit_profile from "../auxiliares/users/aux_edit_profile";
 import aux_edit_photo from "../auxiliares/users/aux_edit_photo";
 import Aux_snackbar from "../auxiliares/aux_snackbar";
+
 export default {
-name: "index",
+    name: "index",
     data: () => {
         return {
-            user:'',
-            client:'',
-            dialog_edit_user:false,
-            dialog_password:false,
-            vcardTitle:'',
+            user: '',
+            client: '',
+            dialog_edit_user: false,
+            dialog_password: false,
+            vcardTitle: '',
 
 
             // Dados para editar password:
-            name:'',
-            email:'',
-            address:'',
-            nif:'',
-            phone:'',
+            name: '',
+            email: '',
+            address: '',
+            nif: '',
+            phone: '',
             // ---- SNACKBAR INFO -----
             color: '',
             snackbar: false,
@@ -72,36 +73,25 @@ name: "index",
             // ------------------------
         }
     },
-    methods:{
+    methods: {
+        getUser() {
+            //this.user = response.data.data
+            this.user = this.$store.state.user
+            console.log(this.user)
+            this.email = this.user.email;
+            this.name = this.user.name;
+            if (this.user.type === "C") {
+                axios.get('api/customers/' + this.user.id).then((response) => {
+                    this.client = response.data.data;
+                    this.nif = this.client.nif;
+                    this.phone = this.client.phone;
+                    this.address = this.client.address;
+                })
+                this.vcardTitle = "Client's Personal Data";
+            } else {
+                this.vcardTitle = "Employee's Personal Data";
+            }
 
-        getUser(){
-            axios.get('api/users/me').then((response) => {
-                this.user = response.data.data
-                this.email = this.user.email;
-                this.name = this.user.name;
-                if(this.user.type === "C"){
-                    axios.get('api/customers/'+this.user.id).then((response) => {
-                        this.client = response.data.data;
-                        this.nif = this.client.nif;
-                        this.phone = this.client.phone;
-                        this.address = this.client.address;
-                    })
-                    this.vcardTitle  = "Client's Personal Data";
-                }else{
-                    this.vcardTitle  = "Employee's Personal Data";
-                }
-            })
-            .catch(()=>{
-                this.color = 'red';
-                this.text = "Something went wrong."
-                this.snackbar = true;
-                setTimeout(() => {
-                    this.snackbar = false;
-                }, 2000);
-                this.$store.commit("clearUserAndToken");
-                this.$router.push("/")
-
-            })
         },
         async editPassword() {
             if (
@@ -119,14 +109,14 @@ name: "index",
         },
         async editProfile() {
             if (
-                await this.$refs.editProfile.open(this.user,this.client)
+                await this.$refs.editProfile.open(this.user, this.client)
             ) {
                 this.getUser()
             }
         },
 
     },
-    created(){
+    created() {
         this.getUser();
     },
     components: {

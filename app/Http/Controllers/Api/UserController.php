@@ -144,6 +144,7 @@ class UserController extends Controller
         $user->logged_at = $mytime->toDateTimeString();
         $user->available_at = $mytime->toDateTimeString();
         $user->save();
+        return new UserResource($user);
     }
 
     public function logout(User $user){
@@ -167,6 +168,7 @@ class UserController extends Controller
     public function notAvailable(User $user){
         $user->available_at = null;
         $user->save();
+        return new UserResource($user);
     }
 
     public function available(User $user){

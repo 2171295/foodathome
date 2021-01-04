@@ -24,6 +24,7 @@ class User extends JsonResource
             'photo_url'=> $this->photo_url,
             'deleted_at'=> $this->deleted_at,
             'logged_at' => $this->logged_at,
+            'available_at' => $this->available_at,
         ];
     }
 }

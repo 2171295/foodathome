@@ -162,8 +162,9 @@ export default {
         },
         delivering(){
             axios.put('api/users/' + this.$store.state.user.id + '/not_available')
-                .then(() => {
+                .then((response) => {
                     console.log("User is delivering")
+                    this.$store.dispatch('setUser',response.data.data)
                 })
                 .catch((error) => {
                     console.log(error);

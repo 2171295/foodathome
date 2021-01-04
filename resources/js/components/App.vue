@@ -266,7 +266,14 @@ export default {
         connect () {
             // If user is logged resend the message user_logged
             if (this.$store.state.user) {
-                this.$socket.emit('user_logged', this.$store.state.user)
+                axios.put("api/users/" + this.$store.state.user.id + "/logged")
+                .then((response)=>{
+                    this.$store.dispatch('setUser',response.data.data)
+                    this.$socket.emit('user_logged', this.$store.state.user)
+                })
+                .catch((error)=>{
+                    console.log(error)
+                })
             }
         },
         user_disconnect(user){
@@ -277,11 +284,6 @@ export default {
             .catch((error)=>{
                 console.log(error)
             })
-        }
-    },
-    updated() {
-        if(this.$store.state.user){
-            this.setUser()
         }
     },
     components:{
