@@ -124,9 +124,8 @@ export default {
             right: true,
             rightDrawer: false,
             selected:'',
-            items:'',
             cart:[],
-            items_admin: [
+            items: [
                 {
                     action: 'mdi-silverware-fork-knife',
                     // active: true,
@@ -176,12 +175,7 @@ export default {
         toProfile(){
             this.$router.push("/profile")
         },
-        setUser(){
-            if(this.$store.state.user.type === 'EM'){
-                this.items = this.items_admin;
-            }
 
-        },
         defineCooker(cooker,order){
             axios.put('api/orders/' + order.id + '/cook', {
                 cooker: cooker

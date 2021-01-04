@@ -36,17 +36,6 @@ export default {
         aux_home_customer
     },
 
-    data: () => {
-        return {
-
-        }
-    },
-    methods: {
-
-    },
-    created() {
-        this.$store.dispatch("loadLoggedUser")
-    },
 }
 </script>
 
