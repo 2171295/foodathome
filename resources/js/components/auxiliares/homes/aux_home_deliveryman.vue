@@ -13,8 +13,8 @@
                         </v-card-text>
                     </v-row>
                     <v-row v-else>
-                        <v-col>
-                            <v-card-text class="d-flex align-center justify-center">
+                        <v-col md="4">
+                            <v-card-text >
                                 <v-img :src="'/storage/fotos/'+activeOrder.customer.user.photo_url"
                                        max-height="200px"
                                        max-width="200px" style="border-radius: 50%;"/>
