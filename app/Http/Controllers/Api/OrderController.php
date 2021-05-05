@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\Order as OrderResource;
+use App\Http\Resources\SimpleOrder as SimpleOrderResource;
 use App\Http\Resources\OrderProducts as OrderProductsResource;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -17,9 +18,9 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         if ($request->has('page')) {
-            return OrderResource::collection(Order::paginate(5));
+            return SimpleOrderResource::collection(Order::paginate(5));
         } else {
-            return OrderResource::collection(Order::all());
+            return SimpleOrderResource::collection(Order::all());
         }
     }
 
@@ -108,6 +109,7 @@ class OrderController extends Controller
         $order->preparation_time = $preparation_time;
         $order->status = 'R';
         $order->save();
+        return new OrderResource($order);
     }
 
     public function orderDelivered(Request $request,Order $order){
@@ -120,5 +122,14 @@ class OrderController extends Controller
         $order->closed_at = $mytime->toDateTimeString();
         $order->status = 'D';
         $order->save();
+        return new OrderResource($order);
+    }
+
+    public function cancelOrder(Order $order){
+        $mytime = Carbon::now();
+        $order->closed_at = $mytime->toDateTimeString();
+        $order->status = 'C';
+        $order->save();
+        return new OrderResource($order);
     }
 }

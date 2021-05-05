@@ -1,6 +1,7 @@
 <template>
     <v-container>
         <aux_dialog_confirmacao ref="confirm"/>
+        <aux_dialog_notification ref="notification"/>
         <v-row>
             <v-col>
                 <v-card>
@@ -86,9 +87,11 @@
 
 <script>
 import aux_dialog_confirmacao from "../aux_dialog_confirmacao";
+import Aux_dialog_notification from "../aux_dialog_notification";
 export default {
     name: "aux_home_deliveryman",
     components:{
+        Aux_dialog_notification,
         aux_dialog_confirmacao,
     },
     data: () => ({
@@ -227,6 +230,9 @@ export default {
                     })
             }
         },
+        async notification(title,message){
+            await this.$refs.notification.open(title,message)
+        },
     },
     sockets: {
         order_cooked(order){
@@ -238,6 +244,13 @@ export default {
         order_delivered(order){
             this.getOrders()
             this.getMyOrder()
+        },
+        order_canceled(order){
+            if(order.id === this.activeOrder.id){
+                this.getOrders()
+                this.getMyOrder()
+                this.notification("Order "+ order.id +" canceled", "Your current order has canceled by the manager!");
+            }
         }
     },
     created() {

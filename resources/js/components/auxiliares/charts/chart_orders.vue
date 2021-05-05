@@ -72,13 +72,8 @@ export default {
     },created() {
         this.getOrders()
     },
-    mounted() {
-        this.getOrders()
-
-    },
     watch:{
         data: function() {
-            //this.renderChart(this.data, this.options);
             this.renderChart();
         }
     }

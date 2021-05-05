@@ -115,8 +115,8 @@ class UserController extends Controller
 
     public function usersLogged(){
         $users = User::where('logged_at','!=',null)->get();
-        return response()->json($users);
-        //return UserResource::collection($users);
+        //return response()->json($users);
+        return UserResource::collection($users);
     }
 
     public function availableCookers(){

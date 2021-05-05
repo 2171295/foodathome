@@ -15,7 +15,7 @@
                             <v-row>
                                 <v-col>
                                     <p><b>ID: </b>{{ order.id }}</p>
-                                    <p><b>Customer: </b>{{ order.customer.customer.name }}</p>
+                                    <p><b>Customer: </b>{{ order.customer.user.name }}</p>
                                     <p><b>Customer Notes: </b>{{ order.notes }}</p>
                                 </v-col>
                                 <v-col>
@@ -97,6 +97,7 @@ export default {
             axios.get('api/orders/preparedby/' + this.$store.state.user.id)
                 .then((response) => {
                     if (response.data.data) {
+                        console.log(response.data.data)
                         this.order = response.data.data;
                         this.timeCounters();
                         axios.get('api/orders_items/order/' + this.order.id)
@@ -138,6 +139,7 @@ export default {
                             this.snackbar = false;
                         }, 2000);
                         this.$socket.emit('order_cooked', this.order)
+                        this.getOrderBeingPrepared();
                         axios.put('api/users/' + this.$store.state.user.id + '/available')
                             .then(() => {
                                 this.$socket.emit('user_available', this.$store.state.user)
@@ -171,17 +173,23 @@ export default {
             start = new Date(this.$store.state.user_logged_at);
             this.working_time = Math.floor((now - start) / (1000 * 60));
         },
-        async notification(){
-            await this.$refs.notification.open("New Order", "New Order has been assign!")
+        async notification(title,message){
+            await this.$refs.notification.open(title,message)
         },
     },
     sockets:{
         order_assign_cook(user){
             if(user.id === this.$store.state.user.id){
                 this.getOrderBeingPrepared();
-                this.notification();
+                this.notification("New Order", "New Order has been assign!");
             }
         },
+        order_canceled(order){
+            if(order.id === this.order.id){
+                this.getOrderBeingPrepared();
+                this.notification("Order "+ order.id +" canceled", "Your current order has canceled by the manager!");
+            }
+        }
     },
     created() {
         this.getOrderBeingPrepared();

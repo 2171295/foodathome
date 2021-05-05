@@ -43,9 +43,14 @@ export default new Vuex.Store({
         },
         clearLoggedAt(state){
             state.user_logged_at= '';
+            localStorage.removeItem("user_logged_at");
         },
         setLoggedAt(state,logged_at){
             state.user_logged_at = logged_at;
+            localStorage.setItem("user_logged_at", logged_at);
+        },
+        loadLoggetAt(state){
+            state.user_logged_at = localStorage.getItem("user_logged_at");
         },
         setUser (state, user) {
             if (state.user !== user) {

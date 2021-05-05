@@ -105,10 +105,6 @@ export default {
                  })
              });
         },
-        async orderInformation(order) {
-            if (await this.$refs.orderInformation.open(order)) {
-            }
-        },
     },
     created() {
         this.getOrders()

@@ -38,8 +38,8 @@
                         <v-img v-if="item.photo_url !== null" :src="'/storage/fotos/'+item.photo_url" width="100px" height="100px" style="border-radius: 50%"/>
                         <v-img v-else :src="'/images/user_no_photo.png'" width="100px" height="100px" style="border-radius: 50%"/>
                     </template>
-                    <template v-slot:item.actions="{item}">
-                        <div v-if="item.email !== loggedUser.email && item.deleted_At === null">
+                    <template v-slot:item.actions="{ item }">
+                        <div v-if="item.email !== loggedUser.email && item.deleted_at === null">
                             <v-tooltip bottom v-if="item.type !== 'C'">
                                 <template v-slot:activator="{ on }" >
                                     <v-btn v-on="on" icon @click="updateUser(item)">
@@ -126,13 +126,13 @@ export default {
     methods: {
         row_classes(item) {
             if(item.email === this.loggedUser.email){
-                return "blue";
+                return "yellow";
             }
-            if (item.blocked === 'Yes' && item.deleted_At !== null) {
-                return "red";
-            }
-            if (item.blocked === 'Yes' && item.deleted_At === null) {
+            if (item.blocked === 'Yes' && item.deleted_at === null) {
                 return "grey";
+            }
+            if (item.blocked === 'Yes' && item.deleted_at !== null) {
+                return "red";
             }
         },
         getUsers(){
@@ -151,7 +151,7 @@ export default {
                     .then((response) => {
                         this.$socket.emit('user_list_updated',response.data.data)
                         this.$socket.emit('user_blocked',response.data.data)
-                        this.refreshUsers(response.data.data)
+                        this.getUsers();
                         this.snackbar = true;
                         this.text = "User successfully blocked."
                         this.color = "green"
@@ -178,8 +178,8 @@ export default {
                 axios.put("api/users/" + item.id + "/unblock")
                     .then((response) => {
                         this.$socket.emit('user_list_updated', response.data.data)
-                        this.refreshUsers(response.data.data)
                         this.snackbar = true;
+                        this.getUsers();
                         this.text = "User successfully unblocked."
                         this.color = "green"
                         setTimeout(() => {
@@ -205,8 +205,8 @@ export default {
                 axios.delete("api/users/" + item.id)
                     .then((response) => {
                         this.$socket.emit('user_list_updated', response.data.data)
-                        this.refreshUsers(response.data.data)
                         this.snackbar = true;
+                        this.getUsers();
                         this.text = "User successfully deleted."
                         this.color = "green"
                         setTimeout(() => {
