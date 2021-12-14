@@ -11,14 +11,7 @@ import Vuelidate from 'vuelidate'
 
 Vue.use(Vuelidate)
 
-import VueSocketIO from "vue-socket.io"
 
-Vue.use(
-    new VueSocketIO({
-        debug: true,
-        connection: "http://127.0.0.1:8080"
-    })
-)
 
 import store from "./stores/global-store";
 import router from "./router";

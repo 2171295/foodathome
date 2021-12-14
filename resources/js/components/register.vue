@@ -179,7 +179,6 @@ export default {
             data.append("phone", this.phone)
             data.append("nif", this.nif)
             data.append("password", this.password)
-            data.append("photo_url", this.file)
             return data;
         },
     },

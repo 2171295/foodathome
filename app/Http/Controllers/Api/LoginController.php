@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -39,17 +40,24 @@ class LoginController extends Controller
 
         switch ($errorCode){
             case '200':
+                Log::channel('cyber')->info($request);
                 return json_decode((string)$response->getBody(), true);
                 break;
             case '301':
+                Log::channel('cyber')->warning("BLOCKED USER");
+                Log::channel('cyber')->warning($request);
                 return response()->json(
                     ['msg' => 'Your account was blocked.', 'errorCode' => $errorCode]);
             break;
             case '302':
+                Log::channel('cyber')->warning("DELETED USER");
+                Log::channel('cyber')->warning($request);
                 return response()->json(
                     ['msg' => 'Your account was deleted.', 'errorCode' => $errorCode]);
             break;
             default:
+                Log::channel('cyber')->warning("WRONG CREDENTIALS");
+                Log::channel('cyber')->warning($request);
                 return response()->json(
                     ['msg' => 'User credentials are invalid'], $errorCode);
         }
