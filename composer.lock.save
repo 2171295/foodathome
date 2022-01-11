@@ -6,7 +6,7 @@
     ],
     "content-hash": "1dc8e9f752a4308687e180b6d4cf7b46",
     "packages": [
-        {
+{
             "name": "asm89/stack-cors",
             "version": "v2.0.2",
             "source": {
@@ -35,7 +35,7 @@
                     "dev-master": "2.0-dev"
                 }
             },
-            "autoload": {
+"autoload": {
                 "psr-4": {
                     "Asm89\\Stack\\": "src/"
                 }
