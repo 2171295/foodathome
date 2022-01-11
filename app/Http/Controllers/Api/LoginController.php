@@ -40,24 +40,25 @@ class LoginController extends Controller
 
         switch ($errorCode){
             case '200':
-                Log::channel('cyber')->info($request);
-                return json_decode((string)$response->getBody(), true);
+                Log::channel('syslog')->info($request);
+                Log::channel('cyber')->info("login Sucesfull");
+		return json_decode((string)$response->getBody(), true);
                 break;
             case '301':
                 Log::channel('cyber')->warning("BLOCKED USER");
-                Log::channel('cyber')->warning($request);
+//                Log::channel('cyber')->warning($request);
                 return response()->json(
                     ['msg' => 'Your account was blocked.', 'errorCode' => $errorCode]);
             break;
             case '302':
                 Log::channel('cyber')->warning("DELETED USER");
-                Log::channel('cyber')->warning($request);
+//                Log::channel('cyber')->warning($request);
                 return response()->json(
                     ['msg' => 'Your account was deleted.', 'errorCode' => $errorCode]);
             break;
             default:
-                Log::channel('cyber')->warning("WRONG CREDENTIALS");
-                Log::channel('cyber')->warning($request);
+                Log::channel('cyber')->info("Wrong Credentials");
+//                Log::channel('cyber')->warning($request);
                 return response()->json(
                     ['msg' => 'User credentials are invalid'], $errorCode);
         }
