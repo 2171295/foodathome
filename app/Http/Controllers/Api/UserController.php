@@ -9,7 +9,9 @@ use App\Http\Resources\User as UserResource;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -92,6 +94,7 @@ class UserController extends Controller
     {
         $user->blocked = 1;
         $user->delete();
+        Log::channel('cyber')->info("USER DELETED - ".Auth::user()->email." deleted user: '" . $user->email . "'");
         return response()->json($user, 204);
     }
 
@@ -156,12 +159,14 @@ class UserController extends Controller
     public function block(User $user){
         $user->blocked = 1;
         $user->save();
+        Log::channel('cyber')->info("USER BLOCKED - ".Auth::user()->email." blocked user: '" . $user->email . "'");
         return new UserResource($user);
     }
 
     public function unblock(User $user){
         $user->blocked = 0;
         $user->save();
+        Log::channel('cyber')->info("USER BLOCKED - '".Auth::user()->email."' unblocked user: '" . $user->email . "'");
         return new UserResource($user);
     }
 

@@ -112,7 +112,7 @@ export default {
         },
         async createProduct(){
             if (await this.$refs.createProduct.open()) {
-                this.getProducts()
+                this.refreshProduct()
             }else{
                 return null;
             }
@@ -130,7 +130,7 @@ export default {
             )) {
                 axios.delete("api/products/" + item.id)
                     .then((response) => {
-                        this.$socket.emit('products_list_updated', response.data.data)
+                        //this.$socket.emit('products_list_updated', response.data.data)
                         this.refreshProduct(response.data.data)
                         this.snackbar = true;
                         this.text = "Product successfully deleted."

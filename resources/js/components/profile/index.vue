@@ -77,7 +77,6 @@ export default {
         getUser() {
             //this.user = response.data.data
             this.user = this.$store.state.user
-            console.log(this.user)
             this.email = this.user.email;
             this.name = this.user.name;
             if (this.user.type === "C") {

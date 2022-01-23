@@ -20,9 +20,9 @@ export default new Vuex.Store({
     },
     mutations: {
         clearUserAndToken (state) {
-            if (state.user) {
-                this._vm.$socket.emit('user_logged_out', state.user)
-            }
+            // if (state.user) {
+            //     this._vm.$socket.emit('user_logged_out', state.user)
+            // }
             sessionStorage.removeItem("user");
             sessionStorage.removeItem("token");
             axios.defaults.headers.common.Authorization = undefined;
@@ -30,9 +30,9 @@ export default new Vuex.Store({
             state.token = "";
         },
         clearUser (state) {
-            if (state.user) {
-                this._vm.$socket.emit('user_logged_out', state.user)
-            }
+            // if (state.user) {
+            //     this._vm.$socket.emit('user_logged_out', state.user)
+            // }
             state.user = null;
             sessionStorage.removeItem("user");
         },
@@ -54,14 +54,14 @@ export default new Vuex.Store({
         },
         setUser (state, user) {
             if (state.user !== user) {
-                if (state.user) {
-                    this._vm.$socket.emit('user_logged_out', state.user)
-                }
+                // if (state.user) {
+                //     this._vm.$socket.emit('user_logged_out', state.user)
+                // }
                 state.user = user
                 sessionStorage.setItem("user", JSON.stringify(user));
-                if (state.user) {
-                    this._vm.$socket.emit('user_logged', state.user)
-                }
+                // if (state.user) {
+                //     this._vm.$socket.emit('user_logged', state.user)
+                // }
             }
         },
         setToken (state, token) {

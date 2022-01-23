@@ -149,8 +149,8 @@ export default {
             )){
                 axios.put("api/users/"+item.id+"/block")
                     .then((response) => {
-                        this.$socket.emit('user_list_updated',response.data.data)
-                        this.$socket.emit('user_blocked',response.data.data)
+                        //this.$socket.emit('user_list_updated',response.data.data)
+                        //this.$socket.emit('user_blocked',response.data.data)
                         this.getUsers();
                         this.snackbar = true;
                         this.text = "User successfully blocked."
@@ -177,7 +177,7 @@ export default {
             )) {
                 axios.put("api/users/" + item.id + "/unblock")
                     .then((response) => {
-                        this.$socket.emit('user_list_updated', response.data.data)
+                        //this.$socket.emit('user_list_updated', response.data.data)
                         this.snackbar = true;
                         this.getUsers();
                         this.text = "User successfully unblocked."
@@ -204,7 +204,7 @@ export default {
             )){
                 axios.delete("api/users/" + item.id)
                     .then((response) => {
-                        this.$socket.emit('user_list_updated', response.data.data)
+                        //this.$socket.emit('user_list_updated', response.data.data)
                         this.snackbar = true;
                         this.getUsers();
                         this.text = "User successfully deleted."
